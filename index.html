@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulacan Business</title>
+
+```
+<link rel="stylesheet" href="style.css">
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+```
+
+</head>
+
+<body>
+
+```
+<header class="navbar">
+    <div class="logo">Bulacan Business</div>
+
+    <div id="userArea" class="user-area">
+        <button id="showLoginBtn" class="btn">Login</button>
+        <button id="showSignupBtn" class="btn secondary">Sign Up</button>
+    </div>
+</header>
+
+<main>
+
+    <!-- HOME -->
+    <section id="homeSection" class="hero">
+        <h1>Welcome to Bulacan Business</h1>
+        <p>Discover products and businesses in Bulacan.</p>
+    </section>
+
+    <!-- AUTH -->
+    <section id="authSection" class="auth-container hidden">
+
+        <!-- LOGIN -->
+        <div id="loginBox" class="auth-box">
+            <h2>Login</h2>
+
+            <form id="loginForm">
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="Email"
+                    required
+                >
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Password"
+                    required
+                >
+
+                <button type="submit" class="btn full">
+                    Login
+                </button>
+            </form>
+
+            <p>
+                Don't have an account?
+                <button id="switchToSignup" class="link-btn">
+                    Sign Up
+                </button>
+            </p>
+
+            <p id="loginMessage" class="message"></p>
+        </div>
+
+
+        <!-- SIGN UP -->
+        <div id="signupBox" class="auth-box hidden">
+            <h2>Create Account</h2>
+
+            <form id="signupForm">
+
+                <input
+                    type="text"
+                    id="signupUsername"
+                    placeholder="Username"
+                    required
+                >
+
+                <input
+                    type="email"
+                    id="signupEmail"
+                    placeholder="Email"
+                    required
+                >
+
+                <input
+                    type="password"
+                    id="signupPassword"
+                    placeholder="Password"
+                    minlength="6"
+                    required
+                >
+
+                <button type="submit" class="btn full">
+                    Create Account
+                </button>
+
+            </form>
+
+            <p>
+                Already have an account?
+                <button id="switchToLogin" class="link-btn">
+                    Login
+                </button>
+            </p>
+
+            <p id="signupMessage" class="message"></p>
+        </div>
+
+    </section>
+
+
+    <!-- USER DASHBOARD -->
+    <section id="userSection" class="dashboard hidden">
+
+        <h2>User Dashboard</h2>
+
+        <p>
+            Welcome,
+            <strong id="usernameDisplay"></strong>
+        </p>
+
+        <button id="logoutBtn" class="btn">
+            Logout
+        </button>
+
+    </section>
+
+
+    <!-- PRODUCTS -->
+    <section id="productsSection" class="products-section">
+
+        <h2>Our Products</h2>
+
+        <div id="productsContainer" class="products-grid">
+            <!-- Products will load here -->
+        </div>
+
+    </section>
+
+
+    <!-- ADMIN DASHBOARD -->
+    <section id="adminSection" class="admin-dashboard hidden">
+
+        <h2>👑 Admin Dashboard</h2>
+
+        <p>Manage your products below.</p>
+
+        <!-- ADD PRODUCT -->
+        <div class="admin-form">
+
+            <h3>Add Product</h3>
+
+            <form id="productForm">
+
+                <input
+                    type="text"
+                    id="productName"
+                    placeholder="Product name"
+                    required
+                >
+
+                <input
+                    type="number"
+                    id="productPrice"
+                    placeholder="Price"
+                    min="0"
+                    step="0.01"
+                    required
+                >
+
+                <input
+                    type="text"
+                    id="productImage"
+                    placeholder="Image URL"
+                >
+
+                <textarea
+                    id="productDescription"
+                    placeholder="Product description"
+                ></textarea>
+
+                <button type="submit" class="btn">
+                    Add Product
+                </button>
+
+            </form>
+
+            <p id="productMessage" class="message"></p>
+
+        </div>
+
+
+        <!-- ADMIN PRODUCTS -->
+        <div class="admin-products">
+
+            <h3>Manage Products</h3>
+
+            <div id="adminProductsContainer">
+                <!-- Admin products will load here -->
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 Bulacan Business</p>
+</footer>
+
+
+<!-- YOUR JAVASCRIPT -->
+<script src="script.js"></script>
+```
+
+</body>
+</html>
