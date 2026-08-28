@@ -243,53 +243,7 @@ loginForm?.addEventListener("submit", async (event) => {
     }
 
 });
-/* ==========================================
-   FORGOT PASSWORD
-   ========================================== */
 
-forgotPasswordBtn?.addEventListener("click", async () => {
-
-    const email =
-        document.getElementById("loginEmail").value.trim();
-
-    if (!email) {
-        loginMessage.textContent =
-            "Enter your email first.";
-        return;
-    }
-
-    loginMessage.textContent =
-        "Sending password reset email...";
-
-    try {
-
-        const { error } =
-            await supabaseClient.auth.resetPasswordForEmail(
-                email,
-                {
-                    redirectTo:
-                        window.location.origin
-                }
-            );
-
-        if (error) {
-            throw error;
-        }
-
-        loginMessage.textContent =
-            "Password reset email sent. Check your email.";
-
-    } catch (error) {
-
-        console.error("Password reset error:", error);
-
-        loginMessage.textContent =
-            "Password reset failed: " +
-            error.message;
-
-    }
-
-});
 
 /* ==========================================
    LOGOUT
@@ -313,7 +267,174 @@ logoutBtn?.addEventListener("click", async () => {
 
 });
 
+const forgotPasswordBtn =
+    document.getElementById("forgotPasswordBtn");
 
+const resetPasswordSection =
+    document.getElementById("resetPasswordSection");
+
+const resetPasswordForm =
+    document.getElementById("resetPasswordForm");
+
+const resetPasswordMessage =
+    document.getElementById("resetPasswordMessage");
+
+
+/* ==========================================
+   FORGOT PASSWORD
+   ========================================== */
+
+forgotPasswordBtn?.addEventListener("click", async () => {
+
+    const email =
+        document.getElementById("loginEmail").value.trim();
+
+    if (!email) {
+        loginMessage.textContent =
+            "Enter your email first.";
+        return;
+    }
+
+    loginMessage.textContent =
+        "Sending password reset email...";
+
+    try {
+
+        const redirectUrl =
+            window.location.origin +
+            window.location.pathname;
+
+        const { error } =
+            await supabaseClient.auth
+                .resetPasswordForEmail(
+                    email,
+                    {
+                        redirectTo: redirectUrl
+                    }
+                );
+
+        if (error) {
+            throw error;
+        }
+
+        loginMessage.textContent =
+            "Password reset email sent. Check your email.";
+
+    } catch (error) {
+
+        console.error(
+            "Password reset error:",
+            error
+        );
+
+        loginMessage.textContent =
+            "Password reset failed: " +
+            error.message;
+    }
+
+});
+
+
+/* ==========================================
+   PASSWORD RECOVERY
+   ========================================== */
+
+supabaseClient.auth.onAuthStateChange(
+    async (event, session) => {
+
+        if (event === "PASSWORD_RECOVERY") {
+
+            homeSection.classList.add("hidden");
+            authSection.classList.add("hidden");
+            userSection.classList.add("hidden");
+            productsSection.classList.add("hidden");
+            cartSection.classList.add("hidden");
+            adminSection.classList.add("hidden");
+
+            resetPasswordSection.classList.remove(
+                "hidden"
+            );
+        }
+
+    }
+);
+
+
+/* ==========================================
+   CHANGE PASSWORD
+   ========================================== */
+
+resetPasswordForm?.addEventListener(
+    "submit",
+    async (event) => {
+
+        event.preventDefault();
+
+        const password =
+            document.getElementById(
+                "newPassword"
+            ).value;
+
+        const confirmPassword =
+            document.getElementById(
+                "confirmPassword"
+            ).value;
+
+        if (password !== confirmPassword) {
+
+            resetPasswordMessage.textContent =
+                "Passwords do not match.";
+
+            return;
+        }
+
+        resetPasswordMessage.textContent =
+            "Updating password...";
+
+        const { error } =
+            await supabaseClient.auth.updateUser({
+                password: password
+            });
+
+        if (error) {
+
+            resetPasswordMessage.textContent =
+                "Password update failed: " +
+                error.message;
+
+            return;
+        }
+
+        resetPasswordMessage.textContent =
+            "Password changed successfully!";
+
+        resetPasswordForm.reset();
+
+        setTimeout(() => {
+
+            resetPasswordSection.classList.add(
+                "hidden"
+            );
+
+            authSection.classList.remove(
+                "hidden"
+            );
+
+            loginBox.classList.remove(
+                "hidden"
+            );
+
+            signupBox.classList.add(
+                "hidden"
+            );
+
+            loginMessage.textContent =
+                "You can now login with your new password.";
+
+        }, 2000);
+
+    }
+);
 /* ==========================================
    LOAD USER
    ========================================== */
