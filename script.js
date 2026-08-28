@@ -1,8 +1,7 @@
 /* ==========================================
-   BULACAN BUSINESS - SUPABASE CONNECTION
+   BULACAN BUSINESS
+   SUPABASE
    ========================================== */
-const productsSection =
-    document.getElementById("productsSection");
 
 const SUPABASE_URL =
     "https://clnsyeilgralccihuodd.supabase.co";
@@ -22,22 +21,20 @@ const supabaseClient = window.supabase.createClient(
 
 const homeSection = document.getElementById("homeSection");
 const authSection = document.getElementById("authSection");
-
 const loginBox = document.getElementById("loginBox");
 const signupBox = document.getElementById("signupBox");
-
 const userSection = document.getElementById("userSection");
 const adminSection = document.getElementById("adminSection");
+const productsSection = document.getElementById("productsSection");
+const cartSection = document.getElementById("cartSection");
 
 const showLoginBtn = document.getElementById("showLoginBtn");
 const showSignupBtn = document.getElementById("showSignupBtn");
-
 const switchToSignup = document.getElementById("switchToSignup");
 const switchToLogin = document.getElementById("switchToLogin");
 
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
-
 const logoutBtn = document.getElementById("logoutBtn");
 
 const usernameDisplay =
@@ -49,20 +46,17 @@ const loginMessage =
 const signupMessage =
     document.getElementById("signupMessage");
 
+const productsContainer =
+    document.getElementById("productsContainer");
+
 const productForm =
     document.getElementById("productForm");
 
 const productMessage =
     document.getElementById("productMessage");
 
-const productsContainer =
-    document.getElementById("productsContainer");
-
 const adminProductsContainer =
     document.getElementById("adminProductsContainer");
-
-const cartSection =
-    document.getElementById("cartSection");
 
 const cartItems =
     document.getElementById("cartItems");
@@ -85,226 +79,195 @@ let cart = [];
 
 
 /* ==========================================
-   SHOW LOGIN
+   LOGIN / SIGNUP BUTTONS
    ========================================== */
 
-if (showLoginBtn) {
+showLoginBtn?.addEventListener("click", () => {
 
-    showLoginBtn.addEventListener("click", () => {
+    authSection.classList.remove("hidden");
+    homeSection.classList.add("hidden");
 
-        authSection.classList.remove("hidden");
+    loginBox.classList.remove("hidden");
+    signupBox.classList.add("hidden");
 
-        loginBox.classList.remove("hidden");
-        signupBox.classList.add("hidden");
-
-        homeSection.classList.add("hidden");
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-    });
-
-}
+});
 
 
-/* ==========================================
-   SHOW SIGN UP
-   ========================================== */
+showSignupBtn?.addEventListener("click", () => {
 
-if (showSignupBtn) {
+    authSection.classList.remove("hidden");
+    homeSection.classList.add("hidden");
 
-    showSignupBtn.addEventListener("click", () => {
+    loginBox.classList.add("hidden");
+    signupBox.classList.remove("hidden");
 
-        authSection.classList.remove("hidden");
-
-        loginBox.classList.add("hidden");
-        signupBox.classList.remove("hidden");
-
-        homeSection.classList.add("hidden");
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-    });
-
-}
+});
 
 
-/* ==========================================
-   SWITCH LOGIN / SIGNUP
-   ========================================== */
+switchToSignup?.addEventListener("click", () => {
 
-if (switchToSignup) {
+    loginBox.classList.add("hidden");
+    signupBox.classList.remove("hidden");
 
-    switchToSignup.addEventListener("click", () => {
-
-        loginBox.classList.add("hidden");
-        signupBox.classList.remove("hidden");
-
-        loginMessage.textContent = "";
-
-    });
-
-}
+});
 
 
-if (switchToLogin) {
+switchToLogin?.addEventListener("click", () => {
 
-    switchToLogin.addEventListener("click", () => {
+    signupBox.classList.add("hidden");
+    loginBox.classList.remove("hidden");
 
-        signupBox.classList.add("hidden");
-        loginBox.classList.remove("hidden");
-
-        signupMessage.textContent = "";
-
-    });
-
-}
+});
 
 
 /* ==========================================
    SIGN UP
    ========================================== */
 
-if (signupForm) {
+signupForm?.addEventListener("submit", async (event) => {
 
-    signupForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-        event.preventDefault();
+    const username =
+        document.getElementById("signupUsername").value.trim();
 
-        const username =
-            document.getElementById("signupUsername").value.trim();
+    const email =
+        document.getElementById("signupEmail").value.trim();
 
-        const email =
-            document.getElementById("signupEmail").value.trim();
+    const password =
+        document.getElementById("signupPassword").value;
 
-        const password =
-            document.getElementById("signupPassword").value;
+    signupMessage.textContent = "Creating account...";
 
-        signupMessage.textContent =
-            "Creating account...";
+    try {
 
-        try {
-
-            const { data, error } =
-                await supabaseClient.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        data: {
-                            username: username
-                        }
+        const { data, error } =
+            await supabaseClient.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        username
                     }
-                });
+                }
+            });
 
-            if (error) {
-                throw error;
-            }
-
-            signupMessage.textContent =
-                "Account created successfully! Check your email if confirmation is required.";
-
-            signupForm.reset();
-
-        } catch (error) {
-
-            console.error("Signup error:", error);
-
-            signupMessage.textContent =
-                "Sign up failed: " + error.message;
-
+        if (error) {
+            throw error;
         }
 
-    });
+        /*
+         * Create profile only when we receive a user.
+         */
 
-}
+        if (data.user) {
+
+            const { error: profileError } =
+                await supabaseClient
+                    .from("profiles")
+                    .upsert({
+                        id: data.user.id,
+                        username: username,
+                        role: "user"
+                    });
+
+            if (profileError) {
+                console.error(
+                    "Profile creation error:",
+                    profileError
+                );
+            }
+        }
+
+        signupMessage.textContent =
+            "Account created successfully.";
+
+        signupForm.reset();
+
+    } catch (error) {
+
+        console.error("Signup error:", error);
+
+        signupMessage.textContent =
+            "Sign up failed: " + error.message;
+
+    }
+
+});
 
 
 /* ==========================================
    LOGIN
    ========================================== */
 
-if (loginForm) {
+loginForm?.addEventListener("submit", async (event) => {
 
-    loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-        event.preventDefault();
+    const email =
+        document.getElementById("loginEmail").value.trim();
 
-        const email =
-            document.getElementById("loginEmail").value.trim();
+    const password =
+        document.getElementById("loginPassword").value;
 
-        const password =
-            document.getElementById("loginPassword").value;
+    loginMessage.textContent = "Logging in...";
 
-        loginMessage.textContent =
-            "Logging in...";
+    try {
 
-        try {
+        const { data, error } =
+            await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
 
-            const { data, error } =
-                await supabaseClient.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
-
-            if (error) {
-                throw error;
-            }
-
-            loginMessage.textContent =
-                "Login successful!";
-
-            loginForm.reset();
-
-            await loadUser();
-
-        } catch (error) {
-
-            console.error("Login error:", error);
-
-            loginMessage.textContent =
-                "Login failed: " + error.message;
-
+        if (error) {
+            throw error;
         }
 
-    });
+        loginMessage.textContent =
+            "Login successful!";
 
-}
+        loginForm.reset();
+
+        await loadUser();
+
+    } catch (error) {
+
+        console.error("Login error:", error);
+
+        loginMessage.textContent =
+            "Login failed: " + error.message;
+
+    }
+
+});
 
 
 /* ==========================================
    LOGOUT
    ========================================== */
 
-if (logoutBtn) {
+logoutBtn?.addEventListener("click", async () => {
 
-    logoutBtn.addEventListener("click", async () => {
+    const { error } =
+        await supabaseClient.auth.signOut();
 
-        const { error } =
-            await supabaseClient.auth.signOut();
+    if (error) {
 
-        if (error) {
+        console.error(error);
+        return;
 
-            console.error("Logout error:", error);
+    }
 
-            return;
-        }
+    cart = [];
 
-        cart = [];
+    showLoggedOut();
 
-        location.reload();
-
-    });
-
-}
+});
 
 
 /* ==========================================
-   LOAD CURRENT USER
+   LOAD USER
    ========================================== */
 
 async function loadUser() {
@@ -316,24 +279,63 @@ async function loadUser() {
     if (!user) {
 
         showLoggedOut();
-
         return;
+
     }
 
-    const { data: profile, error } =
-        await supabaseClient
-            .from("profiles")
-            .select("*")
-            .eq("id", user.id)
-            .single();
+    const {
+        data: profile,
+        error
+    } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle();
 
     if (error) {
 
-        console.error("Profile error:", error);
+        console.error(
+            "Profile error:",
+            error
+        );
 
         showLoggedOut();
+        return;
+
+    }
+
+    /*
+     * If profile does not exist,
+     * create a normal user profile.
+     */
+
+    if (!profile) {
+
+        const username =
+            user.user_metadata?.username ||
+            user.email?.split("@")[0] ||
+            "User";
+
+        const { data: newProfile } =
+            await supabaseClient
+                .from("profiles")
+                .insert({
+                    id: user.id,
+                    username: username,
+                    role: "user"
+                })
+                .select()
+                .single();
+
+        showLoggedIn(
+            newProfile || {
+                username,
+                role: "user"
+            }
+        );
 
         return;
+
     }
 
     showLoggedIn(profile);
@@ -342,7 +344,7 @@ async function loadUser() {
 
 
 /* ==========================================
-   SHOW LOGGED OUT
+   LOGGED OUT
    ========================================== */
 
 function showLoggedOut() {
@@ -359,13 +361,15 @@ function showLoggedOut() {
     showLoginBtn.classList.remove("hidden");
     showSignupBtn.classList.remove("hidden");
 
-    cart = [];
+    productsContainer.innerHTML = "";
+
     renderCart();
+
 }
 
 
 /* ==========================================
-   SHOW LOGGED IN
+   LOGGED IN
    ========================================== */
 
 function showLoggedIn(profile) {
@@ -374,6 +378,7 @@ function showLoggedIn(profile) {
     authSection.classList.add("hidden");
 
     userSection.classList.remove("hidden");
+
     productsSection.classList.remove("hidden");
     cartSection.classList.remove("hidden");
 
@@ -384,14 +389,20 @@ function showLoggedIn(profile) {
         profile.username || "User";
 
     if (profile.role === "admin") {
+
         adminSection.classList.remove("hidden");
+
         loadAdminProducts();
+
     } else {
+
         adminSection.classList.add("hidden");
+
     }
 
     loadProducts();
     renderCart();
+
 }
 
 
@@ -401,22 +412,31 @@ function showLoggedIn(profile) {
 
 async function loadProducts() {
 
+    productsContainer.innerHTML =
+        "<p>Loading products...</p>";
+
     const {
         data: products,
         error
     } = await supabaseClient
         .from("products")
         .select("*")
-        .order("id", { ascending: false });
+        .order("id", {
+            ascending: false
+        });
 
     if (error) {
 
-        console.error("Products error:", error);
+        console.error(
+            "Products error:",
+            error
+        );
 
         productsContainer.innerHTML =
             "<p>Unable to load products.</p>";
 
         return;
+
     }
 
     if (!products || products.length === 0) {
@@ -425,6 +445,7 @@ async function loadProducts() {
             "<p>No products available.</p>";
 
         return;
+
     }
 
     productsContainer.innerHTML = "";
@@ -463,7 +484,9 @@ async function loadProducts() {
                 </p>
 
                 <p>
-                    ${escapeHTML(product.description || "")}
+                    ${escapeHTML(
+                        product.description || ""
+                    )}
                 </p>
 
                 <button
@@ -500,17 +523,20 @@ async function addToCart(productId) {
 
     if (error || !product) {
 
-        alert("Unable to add product to cart.");
+        alert("Unable to add product.");
 
         return;
+
     }
 
-    const existingItem =
-        cart.find(item => item.id === product.id);
+    const existing =
+        cart.find(item =>
+            item.id === product.id
+        );
 
-    if (existingItem) {
+    if (existing) {
 
-        existingItem.quantity += 1;
+        existing.quantity++;
 
     } else {
 
@@ -535,13 +561,15 @@ async function addToCart(productId) {
 
 
 /* ==========================================
-   REMOVE FROM CART
+   REMOVE
    ========================================== */
 
 function removeFromCart(productId) {
 
     cart =
-        cart.filter(item => item.id !== productId);
+        cart.filter(item =>
+            item.id !== productId
+        );
 
     renderCart();
 
@@ -549,13 +577,15 @@ function removeFromCart(productId) {
 
 
 /* ==========================================
-   CHANGE QUANTITY
+   QUANTITY
    ========================================== */
 
 function changeQuantity(productId, amount) {
 
     const item =
-        cart.find(item => item.id === productId);
+        cart.find(item =>
+            item.id === productId
+        );
 
     if (!item) {
         return;
@@ -566,8 +596,8 @@ function changeQuantity(productId, amount) {
     if (item.quantity <= 0) {
 
         removeFromCart(productId);
-
         return;
+
     }
 
     renderCart();
@@ -594,6 +624,7 @@ function renderCart() {
             "₱0.00";
 
         return;
+
     }
 
     cartItems.innerHTML = "";
@@ -627,7 +658,6 @@ function renderCart() {
                             minimumFractionDigits: 2
                         }
                     )}
-                    each
                 </p>
 
             </div>
@@ -636,7 +666,10 @@ function renderCart() {
 
                 <button
                     class="quantity-btn"
-                    onclick="changeQuantity(${item.id}, -1)"
+                    onclick="changeQuantity(
+                        ${item.id},
+                        -1
+                    )"
                 >
                     −
                 </button>
@@ -647,7 +680,10 @@ function renderCart() {
 
                 <button
                     class="quantity-btn"
-                    onclick="changeQuantity(${item.id}, 1)"
+                    onclick="changeQuantity(
+                        ${item.id},
+                        1
+                    )"
                 >
                     +
                 </button>
@@ -665,11 +701,12 @@ function renderCart() {
 
             <button
                 class="btn remove-cart-btn"
-                onclick="removeFromCart(${item.id})"
+                onclick="removeFromCart(
+                    ${item.id}
+                )"
             >
                 Remove
             </button>
-
         `;
 
         cartItems.appendChild(div);
@@ -689,172 +726,288 @@ function renderCart() {
 
 
 /* ==========================================
-   CHECKOUT
+   CHECKOUT / SAVE ORDER
    ========================================== */
 
-if (checkoutForm) {
+checkoutForm?.addEventListener(
+    "submit",
+    async (event) => {
 
-    checkoutForm.addEventListener(
-        "submit",
-        async (event) => {
+        event.preventDefault();
 
-            event.preventDefault();
+        checkoutMessage.textContent = "";
 
-            if (cart.length === 0) {
-
-                checkoutMessage.textContent =
-                    "Your cart is empty.";
-
-                return;
-            }
-
-            const customerName =
-                document.getElementById(
-                    "customerName"
-                ).value.trim();
-
-            const customerAddress =
-                document.getElementById(
-                    "customerAddress"
-                ).value.trim();
-
-            const customerPhone =
-                document.getElementById(
-                    "customerPhone"
-                ).value.trim();
-
-            const paymentMethod =
-                document.getElementById(
-                    "paymentMethod"
-                ).value;
-
-            const total =
-                cart.reduce(
-                    (sum, item) =>
-                        sum + (item.price * item.quantity),
-                    0
-                );
+        if (cart.length === 0) {
 
             checkoutMessage.textContent =
-                "Processing order...";
+                "Your cart is empty.";
 
-            /*
-               IMPORTANT:
-               This part only prepares the order.
-               It will be connected to an orders table
-               once that table is created in Supabase.
-            */
-
-            console.log({
-                customerName,
-                customerAddress,
-                customerPhone,
-                paymentMethod,
-                items: cart,
-                total
-            });
-
-            checkoutMessage.textContent =
-                "Order details ready! Payment method: " +
-                paymentMethod +
-                ". Total: ₱" +
-                total.toLocaleString(
-                    "en-PH",
-                    {
-                        minimumFractionDigits: 2
-                    }
-                );
+            return;
 
         }
-    );
 
-}
+        const {
+            data: { user }
+        } = await supabaseClient.auth.getUser();
+
+        if (!user) {
+
+            checkoutMessage.textContent =
+                "Please login before placing an order.";
+
+            return;
+
+        }
+
+        const customerName =
+            document.getElementById(
+                "customerName"
+            ).value.trim();
+
+        const customerAddress =
+            document.getElementById(
+                "customerAddress"
+            ).value.trim();
+
+        const customerPhone =
+            document.getElementById(
+                "customerPhone"
+            ).value.trim();
+
+        const paymentMethod =
+            document.getElementById(
+                "paymentMethod"
+            ).value;
+
+        const total =
+            cart.reduce(
+                (sum, item) =>
+                    sum +
+                    item.price *
+                    item.quantity,
+                0
+            );
+
+        checkoutMessage.textContent =
+            "Saving order...";
+
+        try {
+
+            /* CREATE ORDER */
+
+            const {
+                data: order,
+                error: orderError
+            } = await supabaseClient
+                .from("orders")
+                .insert({
+                    user_id: user.id,
+
+                    customer_name:
+                        customerName,
+
+                    customer_address:
+                        customerAddress,
+
+                    customer_phone:
+                        customerPhone,
+
+                    payment_method:
+                        paymentMethod,
+
+                    gcash_number:
+                        paymentMethod === "GCash"
+                            ? "09090661615"
+                            : null,
+
+                    total_amount:
+                        total,
+
+                    status:
+                        "Pending"
+                })
+                .select()
+                .single();
+
+            if (orderError) {
+                throw orderError;
+            }
 
 
-/* ==========================================
-   ADD PRODUCT
-   ========================================== */
+            /* CREATE ORDER ITEMS */
 
-if (productForm) {
+            const orderItems =
+                cart.map(item => ({
 
-    productForm.addEventListener(
-        "submit",
-        async (event) => {
+                    order_id:
+                        order.id,
 
-            event.preventDefault();
+                    product_id:
+                        item.id,
 
-            const name =
-                document.getElementById(
-                    "productName"
-                ).value.trim();
+                    product_name:
+                        item.name,
 
-            const price =
-                Number(
-                    document.getElementById(
-                        "productPrice"
-                    ).value
-                );
+                    price:
+                        item.price,
 
-            const image =
-                document.getElementById(
-                    "productImage"
-                ).value.trim();
+                    quantity:
+                        item.quantity,
 
-            const description =
-                document.getElementById(
-                    "productDescription"
-                ).value.trim();
+                    subtotal:
+                        item.price *
+                        item.quantity
 
-            productMessage.textContent =
-                "Adding product...";
+                }));
 
-            const { error } =
+
+            const {
+                error: itemsError
+            } = await supabaseClient
+                .from("order_items")
+                .insert(orderItems);
+
+            if (itemsError) {
+
+                /*
+                 * Remove order if items failed.
+                 */
+
                 await supabaseClient
-                    .from("products")
-                    .insert([{
-                        name: name,
-                        price: price,
-                        image: image,
-                        description: description
-                    }]);
+                    .from("orders")
+                    .delete()
+                    .eq("id", order.id);
 
-            if (error) {
+                throw itemsError;
 
-                console.error(
-                    "Add product error:",
-                    error
-                );
-
-                productMessage.textContent =
-                    "Failed to add product: " +
-                    error.message;
-
-                return;
             }
 
-            productMessage.textContent =
-                "Product added successfully!";
 
-            productForm.reset();
+            /* SUCCESS */
 
-            await loadProducts();
-            await loadAdminProducts();
+            let message =
+                "Order placed successfully! ";
+
+            if (paymentMethod === "GCash") {
+
+                message +=
+                    "Please send ₱" +
+                    total.toLocaleString(
+                        "en-PH",
+                        {
+                            minimumFractionDigits: 2
+                        }
+                    ) +
+                    " to GCash 09090661615.";
+
+            } else if (
+                paymentMethod ===
+                "Cash on Delivery"
+            ) {
+
+                message +=
+                    "Payment will be collected upon delivery.";
+
+            }
+
+            checkoutMessage.textContent =
+                message;
+
+            cart = [];
+
+            renderCart();
+
+            checkoutForm.reset();
+
+        } catch (error) {
+
+            console.error(
+                "Order error:",
+                error
+            );
+
+            checkoutMessage.textContent =
+                "Order failed: " +
+                error.message;
 
         }
-    );
 
-}
+    }
+);
 
 
 /* ==========================================
-   LOAD ADMIN PRODUCTS
+   ADMIN - ADD PRODUCT
+   ========================================== */
+
+productForm?.addEventListener(
+    "submit",
+    async (event) => {
+
+        event.preventDefault();
+
+        const name =
+            document.getElementById(
+                "productName"
+            ).value.trim();
+
+        const price =
+            Number(
+                document.getElementById(
+                    "productPrice"
+                ).value
+            );
+
+        const image =
+            document.getElementById(
+                "productImage"
+            ).value.trim();
+
+        const description =
+            document.getElementById(
+                "productDescription"
+            ).value.trim();
+
+        productMessage.textContent =
+            "Adding product...";
+
+        const { error } =
+            await supabaseClient
+                .from("products")
+                .insert({
+                    name,
+                    price,
+                    image,
+                    description
+                });
+
+        if (error) {
+
+            productMessage.textContent =
+                "Failed: " +
+                error.message;
+
+            return;
+
+        }
+
+        productMessage.textContent =
+            "Product added successfully!";
+
+        productForm.reset();
+
+        await loadProducts();
+        await loadAdminProducts();
+
+    }
+);
+
+
+/* ==========================================
+   ADMIN PRODUCTS
    ========================================== */
 
 async function loadAdminProducts() {
-
-    if (!adminProductsContainer) {
-        return;
-    }
 
     const {
         data: products,
@@ -862,30 +1015,19 @@ async function loadAdminProducts() {
     } = await supabaseClient
         .from("products")
         .select("*")
-        .order("id", { ascending: false });
+        .order("id", {
+            ascending: false
+        });
 
     if (error) {
 
-        console.error(
-            "Admin products error:",
-            error
-        );
-
-        adminProductsContainer.innerHTML =
-            "<p>Unable to load products.</p>";
+        console.error(error);
 
         return;
+
     }
 
     adminProductsContainer.innerHTML = "";
-
-    if (!products || products.length === 0) {
-
-        adminProductsContainer.innerHTML =
-            "<p>No products available.</p>";
-
-        return;
-    }
 
     products.forEach(product => {
 
@@ -904,7 +1046,9 @@ async function loadAdminProducts() {
                 </strong>
 
                 <p>
-                    ₱${Number(product.price).toLocaleString(
+                    ₱${Number(
+                        product.price
+                    ).toLocaleString(
                         "en-PH",
                         {
                             minimumFractionDigits: 2
@@ -918,14 +1062,18 @@ async function loadAdminProducts() {
 
                 <button
                     class="btn edit-btn"
-                    onclick="editProduct(${product.id})"
+                    onclick="editProduct(
+                        ${product.id}
+                    )"
                 >
                     Edit
                 </button>
 
                 <button
                     class="btn delete-btn"
-                    onclick="deleteProduct(${product.id})"
+                    onclick="deleteProduct(
+                        ${product.id}
+                    )"
                 >
                     Delete
                 </button>
@@ -946,24 +1094,24 @@ async function loadAdminProducts() {
 
 async function editProduct(id) {
 
-    const newName =
-        prompt("Enter new product name:");
+    const name =
+        prompt("New product name:");
 
-    if (newName === null) {
+    if (name === null) {
         return;
     }
 
-    const newPrice =
-        prompt("Enter new price:");
+    const price =
+        prompt("New price:");
 
-    if (newPrice === null) {
+    if (price === null) {
         return;
     }
 
-    const newDescription =
-        prompt("Enter new description:");
+    const description =
+        prompt("New description:");
 
-    if (newDescription === null) {
+    if (description === null) {
         return;
     }
 
@@ -971,25 +1119,22 @@ async function editProduct(id) {
         await supabaseClient
             .from("products")
             .update({
-                name: newName,
-                price: Number(newPrice),
-                description: newDescription
+                name,
+                price: Number(price),
+                description
             })
             .eq("id", id);
 
     if (error) {
 
         alert(
-            "Failed to update product: " +
+            "Update failed: " +
             error.message
         );
 
         return;
-    }
 
-    alert(
-        "Product updated successfully!"
-    );
+    }
 
     await loadProducts();
     await loadAdminProducts();
@@ -1003,12 +1148,11 @@ async function editProduct(id) {
 
 async function deleteProduct(id) {
 
-    const confirmed =
-        confirm(
-            "Are you sure you want to delete this product?"
-        );
-
-    if (!confirmed) {
+    if (
+        !confirm(
+            "Delete this product?"
+        )
+    ) {
         return;
     }
 
@@ -1021,16 +1165,13 @@ async function deleteProduct(id) {
     if (error) {
 
         alert(
-            "Failed to delete product: " +
+            "Delete failed: " +
             error.message
         );
 
         return;
-    }
 
-    alert(
-        "Product deleted successfully!"
-    );
+    }
 
     await loadProducts();
     await loadAdminProducts();
@@ -1039,7 +1180,7 @@ async function deleteProduct(id) {
 
 
 /* ==========================================
-   BASIC HTML ESCAPING
+   ESCAPE HTML
    ========================================== */
 
 function escapeHTML(value) {
@@ -1055,7 +1196,7 @@ function escapeHTML(value) {
 
 
 /* ==========================================
-   AUTH STATE LISTENER
+   AUTH STATE
    ========================================== */
 
 supabaseClient.auth.onAuthStateChange(
@@ -1076,8 +1217,7 @@ supabaseClient.auth.onAuthStateChange(
 
 
 /* ==========================================
-   START WEBSITE
+   START
    ========================================== */
 
-loadUser();
 loadUser();
