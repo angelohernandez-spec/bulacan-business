@@ -2,8 +2,6 @@
    BULACAN BUSINESS
    SUPABASE
    ========================================== */
-const forgotPasswordBtn =
-    document.getElementById("forgotPasswordBtn");
 
 const SUPABASE_URL =
     "https://clnsyeilgralccihuodd.supabase.co";
@@ -21,23 +19,59 @@ const supabaseClient = window.supabase.createClient(
    ELEMENTS
    ========================================== */
 
-const homeSection = document.getElementById("homeSection");
-const authSection = document.getElementById("authSection");
-const loginBox = document.getElementById("loginBox");
-const signupBox = document.getElementById("signupBox");
-const userSection = document.getElementById("userSection");
-const adminSection = document.getElementById("adminSection");
-const productsSection = document.getElementById("productsSection");
-const cartSection = document.getElementById("cartSection");
+const homeSection =
+    document.getElementById("homeSection");
 
-const showLoginBtn = document.getElementById("showLoginBtn");
-const showSignupBtn = document.getElementById("showSignupBtn");
-const switchToSignup = document.getElementById("switchToSignup");
-const switchToLogin = document.getElementById("switchToLogin");
+const authSection =
+    document.getElementById("authSection");
 
-const loginForm = document.getElementById("loginForm");
-const signupForm = document.getElementById("signupForm");
-const logoutBtn = document.getElementById("logoutBtn");
+const loginBox =
+    document.getElementById("loginBox");
+
+const signupBox =
+    document.getElementById("signupBox");
+
+const userSection =
+    document.getElementById("userSection");
+
+const adminSection =
+    document.getElementById("adminSection");
+
+const productsSection =
+    document.getElementById("productsSection");
+
+const cartSection =
+    document.getElementById("cartSection");
+
+const resetPasswordSection =
+    document.getElementById("resetPasswordSection");
+
+const showLoginBtn =
+    document.getElementById("showLoginBtn");
+
+const showSignupBtn =
+    document.getElementById("showSignupBtn");
+
+const switchToSignup =
+    document.getElementById("switchToSignup");
+
+const switchToLogin =
+    document.getElementById("switchToLogin");
+
+const loginForm =
+    document.getElementById("loginForm");
+
+const signupForm =
+    document.getElementById("signupForm");
+
+const logoutBtn =
+    document.getElementById("logoutBtn");
+
+const forgotPasswordBtn =
+    document.getElementById("forgotPasswordBtn");
+
+const resetPasswordForm =
+    document.getElementById("resetPasswordForm");
 
 const usernameDisplay =
     document.getElementById("usernameDisplay");
@@ -48,8 +82,17 @@ const loginMessage =
 const signupMessage =
     document.getElementById("signupMessage");
 
+const resetPasswordMessage =
+    document.getElementById("resetPasswordMessage");
+
 const productsContainer =
     document.getElementById("productsContainer");
+
+const productsTitle =
+    document.getElementById("productsTitle");
+
+const selectedRegionText =
+    document.getElementById("selectedRegion");
 
 const productForm =
     document.getElementById("productForm");
@@ -58,7 +101,9 @@ const productMessage =
     document.getElementById("productMessage");
 
 const adminProductsContainer =
-    document.getElementById("adminProductsContainer");
+    document.getElementById(
+        "adminProductsContainer"
+    );
 
 const cartItems =
     document.getElementById("cartItems");
@@ -79,6 +124,8 @@ const checkoutMessage =
 
 let cart = [];
 
+let selectedRegion = "Luzon";
+
 
 /* ==========================================
    LOGIN / SIGNUP BUTTONS
@@ -87,9 +134,11 @@ let cart = [];
 showLoginBtn?.addEventListener("click", () => {
 
     authSection.classList.remove("hidden");
+
     homeSection.classList.add("hidden");
 
     loginBox.classList.remove("hidden");
+
     signupBox.classList.add("hidden");
 
 });
@@ -98,9 +147,11 @@ showLoginBtn?.addEventListener("click", () => {
 showSignupBtn?.addEventListener("click", () => {
 
     authSection.classList.remove("hidden");
+
     homeSection.classList.add("hidden");
 
     loginBox.classList.add("hidden");
+
     signupBox.classList.remove("hidden");
 
 });
@@ -109,6 +160,7 @@ showSignupBtn?.addEventListener("click", () => {
 switchToSignup?.addEventListener("click", () => {
 
     loginBox.classList.add("hidden");
+
     signupBox.classList.remove("hidden");
 
 });
@@ -117,6 +169,7 @@ switchToSignup?.addEventListener("click", () => {
 switchToLogin?.addEventListener("click", () => {
 
     signupBox.classList.add("hidden");
+
     loginBox.classList.remove("hidden");
 
 });
@@ -126,213 +179,226 @@ switchToLogin?.addEventListener("click", () => {
    SIGN UP
    ========================================== */
 
-signupForm?.addEventListener("submit", async (event) => {
+signupForm?.addEventListener(
+    "submit",
+    async (event) => {
 
-    event.preventDefault();
+        event.preventDefault();
 
-    const username =
-        document.getElementById("signupUsername").value.trim();
+        const username =
+            document.getElementById(
+                "signupUsername"
+            ).value.trim();
 
-    const email =
-        document.getElementById("signupEmail").value.trim();
+        const email =
+            document.getElementById(
+                "signupEmail"
+            ).value.trim();
 
-    const password =
-        document.getElementById("signupPassword").value;
+        const password =
+            document.getElementById(
+                "signupPassword"
+            ).value;
 
-    signupMessage.textContent = "Creating account...";
+        signupMessage.textContent =
+            "Creating account...";
 
-    try {
+        try {
 
-        const { data, error } =
-            await supabaseClient.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        username
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            username
+                        }
                     }
-                }
-            });
+                });
 
-        if (error) {
-            throw error;
-        }
-
-        /*
-         * Create profile only when we receive a user.
-         */
-
-        if (data.user) {
-
-            const { error: profileError } =
-                await supabaseClient
-                    .from("profiles")
-                    .upsert({
-                        id: data.user.id,
-                        username: username,
-                        role: "user"
-                    });
-
-            if (profileError) {
-                console.error(
-                    "Profile creation error:",
-                    profileError
-                );
+            if (error) {
+                throw error;
             }
+
+
+            if (data.user) {
+
+                const {
+                    error: profileError
+                } =
+                    await supabaseClient
+                        .from("profiles")
+                        .upsert({
+                            id: data.user.id,
+                            username: username,
+                            role: "user"
+                        });
+
+                if (profileError) {
+
+                    console.error(
+                        "Profile error:",
+                        profileError
+                    );
+
+                }
+
+            }
+
+
+            signupMessage.textContent =
+                "Account created successfully!";
+
+            signupForm.reset();
+
+
+        } catch (error) {
+
+            console.error(
+                "Signup error:",
+                error
+            );
+
+            signupMessage.textContent =
+                "Sign up failed: " +
+                error.message;
+
         }
-
-        signupMessage.textContent =
-            "Account created successfully.";
-
-        signupForm.reset();
-
-    } catch (error) {
-
-        console.error("Signup error:", error);
-
-        signupMessage.textContent =
-            "Sign up failed: " + error.message;
 
     }
-
-});
+);
 
 
 /* ==========================================
    LOGIN
    ========================================== */
 
-loginForm?.addEventListener("submit", async (event) => {
+loginForm?.addEventListener(
+    "submit",
+    async (event) => {
 
-    event.preventDefault();
+        event.preventDefault();
 
-    const email =
-        document.getElementById("loginEmail").value.trim();
+        const email =
+            document.getElementById(
+                "loginEmail"
+            ).value.trim();
 
-    const password =
-        document.getElementById("loginPassword").value;
+        const password =
+            document.getElementById(
+                "loginPassword"
+            ).value;
 
-    loginMessage.textContent = "Logging in...";
+        loginMessage.textContent =
+            "Logging in...";
 
-    try {
+        try {
 
-        const { data, error } =
-            await supabaseClient.auth.signInWithPassword({
-                email,
-                password
-            });
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth
+                    .signInWithPassword({
+                        email,
+                        password
+                    });
 
-        if (error) {
-            throw error;
+            if (error) {
+                throw error;
+            }
+
+            loginForm.reset();
+
+            await loadUser();
+
+
+        } catch (error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+            loginMessage.textContent =
+                "Login failed: " +
+                error.message;
+
         }
 
-        loginMessage.textContent =
-            "Login successful!";
-
-        loginForm.reset();
-
-        await loadUser();
-
-    } catch (error) {
-
-        console.error("Login error:", error);
-
-        loginMessage.textContent =
-            "Login failed: " + error.message;
-
     }
-
-});
-
-
-/* ==========================================
-   LOGOUT
-   ========================================== */
-
-logoutBtn?.addEventListener("click", async () => {
-
-    const { error } =
-        await supabaseClient.auth.signOut();
-
-    if (error) {
-
-        console.error(error);
-        return;
-
-    }
-
-    cart = [];
-
-    showLoggedOut();
-
-});
-
-const forgotPasswordBtn =
-    document.getElementById("forgotPasswordBtn");
-
-const resetPasswordSection =
-    document.getElementById("resetPasswordSection");
-
-const resetPasswordForm =
-    document.getElementById("resetPasswordForm");
-
-const resetPasswordMessage =
-    document.getElementById("resetPasswordMessage");
+);
 
 
 /* ==========================================
    FORGOT PASSWORD
    ========================================== */
 
-forgotPasswordBtn?.addEventListener("click", async () => {
+forgotPasswordBtn?.addEventListener(
+    "click",
+    async () => {
 
-    const email =
-        document.getElementById("loginEmail").value.trim();
+        const email =
+            document.getElementById(
+                "loginEmail"
+            ).value.trim();
 
-    if (!email) {
-        loginMessage.textContent =
-            "Enter your email first.";
-        return;
-    }
+        if (!email) {
 
-    loginMessage.textContent =
-        "Sending password reset email...";
+            loginMessage.textContent =
+                "Enter your email first.";
 
-    try {
+            return;
 
-        const redirectUrl =
-            window.location.origin +
-            window.location.pathname;
-
-        const { error } =
-            await supabaseClient.auth
-                .resetPasswordForEmail(
-                    email,
-                    {
-                        redirectTo: redirectUrl
-                    }
-                );
-
-        if (error) {
-            throw error;
         }
 
         loginMessage.textContent =
-            "Password reset email sent. Check your email.";
+            "Sending password reset email...";
 
-    } catch (error) {
+        try {
 
-        console.error(
-            "Password reset error:",
-            error
-        );
+            const redirectUrl =
+                window.location.origin +
+                window.location.pathname;
 
-        loginMessage.textContent =
-            "Password reset failed: " +
-            error.message;
+            const {
+                error
+            } =
+                await supabaseClient.auth
+                    .resetPasswordForEmail(
+                        email,
+                        {
+                            redirectTo:
+                                redirectUrl
+                        }
+                    );
+
+            if (error) {
+                throw error;
+            }
+
+            loginMessage.textContent =
+                "Password reset email sent. Check your email.";
+
+
+        } catch (error) {
+
+            console.error(
+                "Password reset error:",
+                error
+            );
+
+            loginMessage.textContent =
+                "Password reset failed: " +
+                error.message;
+
+        }
+
     }
-
-});
+);
 
 
 /* ==========================================
@@ -344,16 +410,33 @@ supabaseClient.auth.onAuthStateChange(
 
         if (event === "PASSWORD_RECOVERY") {
 
-            homeSection.classList.add("hidden");
-            authSection.classList.add("hidden");
-            userSection.classList.add("hidden");
-            productsSection.classList.add("hidden");
-            cartSection.classList.add("hidden");
-            adminSection.classList.add("hidden");
-
-            resetPasswordSection.classList.remove(
+            homeSection?.classList.add(
                 "hidden"
             );
+
+            authSection?.classList.add(
+                "hidden"
+            );
+
+            userSection?.classList.add(
+                "hidden"
+            );
+
+            productsSection?.classList.add(
+                "hidden"
+            );
+
+            cartSection?.classList.add(
+                "hidden"
+            );
+
+            adminSection?.classList.add(
+                "hidden"
+            );
+
+            resetPasswordSection?.classList
+                .remove("hidden");
+
         }
 
     }
@@ -386,55 +469,107 @@ resetPasswordForm?.addEventListener(
                 "Passwords do not match.";
 
             return;
+
+        }
+
+        if (password.length < 6) {
+
+            resetPasswordMessage.textContent =
+                "Password must be at least 6 characters.";
+
+            return;
+
         }
 
         resetPasswordMessage.textContent =
             "Updating password...";
 
-        const { error } =
-            await supabaseClient.auth.updateUser({
-                password: password
-            });
+        try {
 
-        if (error) {
+            const {
+                error
+            } =
+                await supabaseClient.auth
+                    .updateUser({
+                        password
+                    });
+
+            if (error) {
+                throw error;
+            }
+
+            resetPasswordMessage.textContent =
+                "Password changed successfully!";
+
+            resetPasswordForm.reset();
+
+
+            setTimeout(() => {
+
+                resetPasswordSection?.classList
+                    .add("hidden");
+
+                authSection?.classList
+                    .remove("hidden");
+
+                loginBox?.classList
+                    .remove("hidden");
+
+                signupBox?.classList
+                    .add("hidden");
+
+                loginMessage.textContent =
+                    "You can now login with your new password.";
+
+            }, 2000);
+
+
+        } catch (error) {
+
+            console.error(
+                "Password update error:",
+                error
+            );
 
             resetPasswordMessage.textContent =
                 "Password update failed: " +
                 error.message;
 
-            return;
         }
-
-        resetPasswordMessage.textContent =
-            "Password changed successfully!";
-
-        resetPasswordForm.reset();
-
-        setTimeout(() => {
-
-            resetPasswordSection.classList.add(
-                "hidden"
-            );
-
-            authSection.classList.remove(
-                "hidden"
-            );
-
-            loginBox.classList.remove(
-                "hidden"
-            );
-
-            signupBox.classList.add(
-                "hidden"
-            );
-
-            loginMessage.textContent =
-                "You can now login with your new password.";
-
-        }, 2000);
 
     }
 );
+
+
+/* ==========================================
+   LOGOUT
+   ========================================== */
+
+logoutBtn?.addEventListener(
+    "click",
+    async () => {
+
+        const {
+            error
+        } =
+            await supabaseClient.auth.signOut();
+
+        if (error) {
+
+            console.error(error);
+
+            return;
+
+        }
+
+        cart = [];
+
+        showLoggedOut();
+
+    }
+);
+
+
 /* ==========================================
    LOAD USER
    ========================================== */
@@ -442,24 +577,31 @@ resetPasswordForm?.addEventListener(
 async function loadUser() {
 
     const {
-        data: { user }
-    } = await supabaseClient.auth.getUser();
+        data: {
+            user
+        }
+    } =
+        await supabaseClient.auth.getUser();
 
     if (!user) {
 
         showLoggedOut();
+
         return;
 
     }
 
+
     const {
         data: profile,
         error
-    } = await supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle();
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .maybeSingle();
+
 
     if (error) {
 
@@ -469,14 +611,11 @@ async function loadUser() {
         );
 
         showLoggedOut();
+
         return;
 
     }
 
-    /*
-     * If profile does not exist,
-     * create a normal user profile.
-     */
 
     if (!profile) {
 
@@ -485,27 +624,45 @@ async function loadUser() {
             user.email?.split("@")[0] ||
             "User";
 
-        const { data: newProfile } =
+
+        const {
+            data: newProfile,
+            error: createError
+        } =
             await supabaseClient
                 .from("profiles")
                 .insert({
                     id: user.id,
-                    username: username,
+                    username,
                     role: "user"
                 })
                 .select()
                 .single();
 
-        showLoggedIn(
-            newProfile || {
+
+        if (createError) {
+
+            console.error(
+                "Create profile error:",
+                createError
+            );
+
+            showLoggedIn({
                 username,
                 role: "user"
-            }
-        );
+            });
+
+            return;
+
+        }
+
+
+        showLoggedIn(newProfile);
 
         return;
 
     }
+
 
     showLoggedIn(profile);
 
@@ -518,19 +675,45 @@ async function loadUser() {
 
 function showLoggedOut() {
 
-    homeSection.classList.remove("hidden");
+    homeSection?.classList.remove(
+        "hidden"
+    );
 
-    authSection.classList.add("hidden");
-    userSection.classList.add("hidden");
-    adminSection.classList.add("hidden");
+    authSection?.classList.add(
+        "hidden"
+    );
 
-    productsSection.classList.add("hidden");
-    cartSection.classList.add("hidden");
+    userSection?.classList.add(
+        "hidden"
+    );
 
-    showLoginBtn.classList.remove("hidden");
-    showSignupBtn.classList.remove("hidden");
+    adminSection?.classList.add(
+        "hidden"
+    );
 
-    productsContainer.innerHTML = "";
+    productsSection?.classList.add(
+        "hidden"
+    );
+
+    cartSection?.classList.add(
+        "hidden"
+    );
+
+    resetPasswordSection?.classList.add(
+        "hidden"
+    );
+
+    showLoginBtn?.classList.remove(
+        "hidden"
+    );
+
+    showSignupBtn?.classList.remove(
+        "hidden"
+    );
+
+    if (productsContainer) {
+        productsContainer.innerHTML = "";
+    }
 
     renderCart();
 
@@ -543,56 +726,97 @@ function showLoggedOut() {
 
 function showLoggedIn(profile) {
 
-    homeSection.classList.add("hidden");
-    authSection.classList.add("hidden");
+    homeSection?.classList.add(
+        "hidden"
+    );
 
-    userSection.classList.remove("hidden");
+    authSection?.classList.add(
+        "hidden"
+    );
 
-    productsSection.classList.remove("hidden");
-    cartSection.classList.remove("hidden");
+    userSection?.classList.remove(
+        "hidden"
+    );
 
-    showLoginBtn.classList.add("hidden");
-    showSignupBtn.classList.add("hidden");
+    productsSection?.classList.remove(
+        "hidden"
+    );
 
-    usernameDisplay.textContent =
-        profile.username || "User";
+    cartSection?.classList.remove(
+        "hidden"
+    );
+
+    showLoginBtn?.classList.add(
+        "hidden"
+    );
+
+    showSignupBtn?.classList.add(
+        "hidden"
+    );
+
+
+    if (usernameDisplay) {
+
+        usernameDisplay.textContent =
+            profile.username || "User";
+
+    }
+
 
     if (profile.role === "admin") {
 
-        adminSection.classList.remove("hidden");
+        adminSection?.classList.remove(
+            "hidden"
+        );
 
         loadAdminProducts();
 
     } else {
 
-        adminSection.classList.add("hidden");
+        adminSection?.classList.add(
+            "hidden"
+        );
 
     }
 
-    loadProducts();
+
+    loadProducts(selectedRegion);
+
     renderCart();
 
 }
 
 
 /* ==========================================
-   LOAD PRODUCTS
+   LOAD PRODUCTS BY REGION
    ========================================== */
 
-async function loadProducts() {
+async function loadProducts(
+    region = selectedRegion
+) {
+
+    selectedRegion = region;
+
+    if (!productsContainer) {
+        return;
+    }
 
     productsContainer.innerHTML =
         "<p>Loading products...</p>";
 
+
     const {
         data: products,
         error
-    } = await supabaseClient
-        .from("products")
-        .select("*")
-        .order("id", {
-            ascending: false
-        });
+    } =
+        await supabaseClient
+            .from("products")
+            .select("*")
+            .eq("region", region)
+            .order("id", {
+                ascending: false
+            });
+
 
     if (error) {
 
@@ -608,27 +832,56 @@ async function loadProducts() {
 
     }
 
+
+    if (productsTitle) {
+
+        productsTitle.textContent =
+            region + " Products";
+
+    }
+
+
+    if (selectedRegionText) {
+
+        selectedRegionText.textContent =
+            "Showing " +
+            region +
+            " products";
+
+    }
+
+
+    productsContainer.innerHTML = "";
+
+
     if (!products || products.length === 0) {
 
-        productsContainer.innerHTML =
-            "<p>No products available.</p>";
+        productsContainer.innerHTML = `
+            <p class="no-products">
+                No products available in
+                ${escapeHTML(region)}
+                yet.
+            </p>
+        `;
 
         return;
 
     }
 
-    productsContainer.innerHTML = "";
 
     products.forEach(product => {
 
         const card =
             document.createElement("div");
 
-        card.className = "product-card";
+        card.className =
+            "product-card";
+
 
         const image =
             product.image ||
             "https://via.placeholder.com/500x300?text=Product";
+
 
         card.innerHTML = `
 
@@ -644,17 +897,27 @@ async function loadProducts() {
                 </h3>
 
                 <p class="product-price">
-                    ₱${Number(product.price).toLocaleString(
+
+                    ₱${Number(
+                        product.price
+                    ).toLocaleString(
                         "en-PH",
                         {
                             minimumFractionDigits: 2
                         }
                     )}
+
                 </p>
 
                 <p>
                     ${escapeHTML(
                         product.description || ""
+                    )}
+                </p>
+
+                <p class="product-region">
+                    📍 ${escapeHTML(
+                        product.region || region
                     )}
                 </p>
 
@@ -668,9 +931,466 @@ async function loadProducts() {
             </div>
         `;
 
+
         productsContainer.appendChild(card);
 
     });
+
+}
+
+
+/* ==========================================
+   REGION BUTTONS
+   ========================================== */
+
+const regionCards =
+    document.querySelectorAll(
+        ".region-card"
+    );
+
+
+regionCards.forEach(card => {
+
+    card.addEventListener(
+        "click",
+        () => {
+
+            regionCards.forEach(item => {
+
+                item.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            card.classList.add(
+                "active"
+            );
+
+
+            const region =
+                card.dataset.region;
+
+
+            loadProducts(region);
+
+
+            productsSection?.scrollIntoView({
+                behavior: "smooth"
+            });
+
+        }
+    );
+
+});
+
+
+/* ==========================================
+   ADD PRODUCT - ADMIN
+   ========================================== */
+
+productForm?.addEventListener(
+    "submit",
+    async (event) => {
+
+        event.preventDefault();
+
+
+        const name =
+            document.getElementById(
+                "productName"
+            ).value.trim();
+
+
+        const price =
+            Number(
+                document.getElementById(
+                    "productPrice"
+                ).value
+            );
+
+
+        const region =
+            document.getElementById(
+                "productRegion"
+            ).value;
+
+
+        const image =
+            document.getElementById(
+                "productImage"
+            ).value.trim();
+
+
+        const description =
+            document.getElementById(
+                "productDescription"
+            ).value.trim();
+
+
+        if (!name) {
+
+            productMessage.textContent =
+                "Enter product name.";
+
+            return;
+
+        }
+
+
+        if (price < 0 || Number.isNaN(price)) {
+
+            productMessage.textContent =
+                "Enter a valid price.";
+
+            return;
+
+        }
+
+
+        productMessage.textContent =
+            "Adding product...";
+
+
+        try {
+
+            const {
+                error
+            } =
+                await supabaseClient
+                    .from("products")
+                    .insert({
+                        name,
+                        price,
+                        region,
+                        image,
+                        description
+                    });
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            productMessage.textContent =
+                "Product added successfully!";
+
+
+            productForm.reset();
+
+
+            await loadProducts(
+                selectedRegion
+            );
+
+            await loadAdminProducts();
+
+
+        } catch (error) {
+
+            console.error(
+                "Add product error:",
+                error
+            );
+
+            productMessage.textContent =
+                "Failed: " +
+                error.message;
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   ADMIN PRODUCTS
+   ========================================== */
+
+async function loadAdminProducts() {
+
+    if (!adminProductsContainer) {
+        return;
+    }
+
+
+    const {
+        data: products,
+        error
+    } =
+        await supabaseClient
+            .from("products")
+            .select("*")
+            .order("id", {
+                ascending: false
+            });
+
+
+    if (error) {
+
+        console.error(
+            "Admin products error:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    adminProductsContainer.innerHTML = "";
+
+
+    if (!products || products.length === 0) {
+
+        adminProductsContainer.innerHTML =
+            "<p>No products yet.</p>";
+
+        return;
+
+    }
+
+
+    products.forEach(product => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "admin-product-item";
+
+
+        item.innerHTML = `
+
+            <div>
+
+                <strong>
+                    ${escapeHTML(product.name)}
+                </strong>
+
+                <p>
+                    ₱${Number(
+                        product.price
+                    ).toLocaleString(
+                        "en-PH",
+                        {
+                            minimumFractionDigits: 2
+                        }
+                    )}
+                </p>
+
+                <small>
+                    📍 ${escapeHTML(
+                        product.region || "Luzon"
+                    )}
+                </small>
+
+            </div>
+
+            <div class="admin-product-actions">
+
+                <button
+                    class="btn edit-btn"
+                    onclick="editProduct(
+                        ${product.id}
+                    )"
+                >
+                    Edit
+                </button>
+
+                <button
+                    class="btn delete-btn"
+                    onclick="deleteProduct(
+                        ${product.id}
+                    )"
+                >
+                    Delete
+                </button>
+
+            </div>
+
+        `;
+
+
+        adminProductsContainer.appendChild(item);
+
+    });
+
+}
+
+
+/* ==========================================
+   EDIT PRODUCT
+   ========================================== */
+
+async function editProduct(id) {
+
+    const {
+        data: product,
+        error: getError
+    } =
+        await supabaseClient
+            .from("products")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+
+    if (getError || !product) {
+
+        alert(
+            "Product not found."
+        );
+
+        return;
+
+    }
+
+
+    const name =
+        prompt(
+            "Product name:",
+            product.name
+        );
+
+
+    if (name === null) {
+        return;
+    }
+
+
+    const price =
+        prompt(
+            "Product price:",
+            product.price
+        );
+
+
+    if (price === null) {
+        return;
+    }
+
+
+    const region =
+        prompt(
+            "Region (Luzon, Visayas, Mindanao):",
+            product.region || "Luzon"
+        );
+
+
+    if (region === null) {
+        return;
+    }
+
+
+    const description =
+        prompt(
+            "Description:",
+            product.description || ""
+        );
+
+
+    if (description === null) {
+        return;
+    }
+
+
+    const validRegions = [
+        "Luzon",
+        "Visayas",
+        "Mindanao"
+    ];
+
+
+    if (!validRegions.includes(region)) {
+
+        alert(
+            "Region must be Luzon, Visayas, or Mindanao."
+        );
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("products")
+            .update({
+                name,
+                price: Number(price),
+                region,
+                description
+            })
+            .eq("id", id);
+
+
+    if (error) {
+
+        alert(
+            "Update failed: " +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await loadProducts(
+        selectedRegion
+    );
+
+    await loadAdminProducts();
+
+}
+
+
+/* ==========================================
+   DELETE PRODUCT
+   ========================================== */
+
+async function deleteProduct(id) {
+
+    if (
+        !confirm(
+            "Delete this product?"
+        )
+    ) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("products")
+            .delete()
+            .eq("id", id);
+
+
+    if (error) {
+
+        alert(
+            "Delete failed: " +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await loadProducts(
+        selectedRegion
+    );
+
+    await loadAdminProducts();
 
 }
 
@@ -684,24 +1404,31 @@ async function addToCart(productId) {
     const {
         data: product,
         error
-    } = await supabaseClient
-        .from("products")
-        .select("*")
-        .eq("id", productId)
-        .single();
+    } =
+        await supabaseClient
+            .from("products")
+            .select("*")
+            .eq("id", productId)
+            .single();
+
 
     if (error || !product) {
 
-        alert("Unable to add product.");
+        alert(
+            "Unable to add product."
+        );
 
         return;
 
     }
 
+
     const existing =
-        cart.find(item =>
-            item.id === product.id
+        cart.find(
+            item =>
+                item.id === product.id
         );
+
 
     if (existing) {
 
@@ -718,11 +1445,16 @@ async function addToCart(productId) {
 
     }
 
+
     renderCart();
 
-    cartSection.classList.remove("hidden");
 
-    cartSection.scrollIntoView({
+    cartSection?.classList.remove(
+        "hidden"
+    );
+
+
+    cartSection?.scrollIntoView({
         behavior: "smooth"
     });
 
@@ -730,15 +1462,17 @@ async function addToCart(productId) {
 
 
 /* ==========================================
-   REMOVE
+   REMOVE FROM CART
    ========================================== */
 
 function removeFromCart(productId) {
 
     cart =
-        cart.filter(item =>
-            item.id !== productId
+        cart.filter(
+            item =>
+                item.id !== productId
         );
+
 
     renderCart();
 
@@ -746,28 +1480,37 @@ function removeFromCart(productId) {
 
 
 /* ==========================================
-   QUANTITY
+   CHANGE QUANTITY
    ========================================== */
 
-function changeQuantity(productId, amount) {
+function changeQuantity(
+    productId,
+    amount
+) {
 
     const item =
-        cart.find(item =>
-            item.id === productId
+        cart.find(
+            item =>
+                item.id === productId
         );
+
 
     if (!item) {
         return;
     }
 
+
     item.quantity += amount;
+
 
     if (item.quantity <= 0) {
 
         removeFromCart(productId);
+
         return;
 
     }
+
 
     renderCart();
 
@@ -784,6 +1527,7 @@ function renderCart() {
         return;
     }
 
+
     if (cart.length === 0) {
 
         cartItems.innerHTML =
@@ -796,21 +1540,29 @@ function renderCart() {
 
     }
 
+
     cartItems.innerHTML = "";
 
+
     let total = 0;
+
 
     cart.forEach(item => {
 
         const subtotal =
-            item.price * item.quantity;
+            item.price *
+            item.quantity;
+
 
         total += subtotal;
+
 
         const div =
             document.createElement("div");
 
-        div.className = "cart-item";
+        div.className =
+            "cart-item";
+
 
         div.innerHTML = `
 
@@ -820,7 +1572,7 @@ function renderCart() {
                     ${escapeHTML(item.name)}
                 </h3>
 
-                <p class="cart-item-price">
+                <p>
                     ₱${item.price.toLocaleString(
                         "en-PH",
                         {
@@ -876,11 +1628,14 @@ function renderCart() {
             >
                 Remove
             </button>
+
         `;
+
 
         cartItems.appendChild(div);
 
     });
+
 
     cartTotal.textContent =
         "₱" +
@@ -895,7 +1650,7 @@ function renderCart() {
 
 
 /* ==========================================
-   CHECKOUT / SAVE ORDER
+   CHECKOUT
    ========================================== */
 
 checkoutForm?.addEventListener(
@@ -904,7 +1659,9 @@ checkoutForm?.addEventListener(
 
         event.preventDefault();
 
+
         checkoutMessage.textContent = "";
+
 
         if (cart.length === 0) {
 
@@ -915,9 +1672,14 @@ checkoutForm?.addEventListener(
 
         }
 
+
         const {
-            data: { user }
-        } = await supabaseClient.auth.getUser();
+            data: {
+                user
+            }
+        } =
+            await supabaseClient.auth.getUser();
+
 
         if (!user) {
 
@@ -928,25 +1690,30 @@ checkoutForm?.addEventListener(
 
         }
 
+
         const customerName =
             document.getElementById(
                 "customerName"
             ).value.trim();
+
 
         const customerAddress =
             document.getElementById(
                 "customerAddress"
             ).value.trim();
 
+
         const customerPhone =
             document.getElementById(
                 "customerPhone"
             ).value.trim();
 
+
         const paymentMethod =
             document.getElementById(
                 "paymentMethod"
             ).value;
+
 
         const total =
             cart.reduce(
@@ -957,53 +1724,46 @@ checkoutForm?.addEventListener(
                 0
             );
 
+
         checkoutMessage.textContent =
             "Saving order...";
 
-        try {
 
-            /* CREATE ORDER */
+        try {
 
             const {
                 data: order,
                 error: orderError
-            } = await supabaseClient
-                .from("orders")
-                .insert({
-                    user_id: user.id,
+            } =
+                await supabaseClient
+                    .from("orders")
+                    .insert({
+                        user_id: user.id,
+                        customer_name:
+                            customerName,
+                        customer_address:
+                            customerAddress,
+                        customer_phone:
+                            customerPhone,
+                        payment_method:
+                            paymentMethod,
+                        gcash_number:
+                            paymentMethod === "GCash"
+                                ? "09090661615"
+                                : null,
+                        total_amount:
+                            total,
+                        status:
+                            "Pending"
+                    })
+                    .select()
+                    .single();
 
-                    customer_name:
-                        customerName,
-
-                    customer_address:
-                        customerAddress,
-
-                    customer_phone:
-                        customerPhone,
-
-                    payment_method:
-                        paymentMethod,
-
-                    gcash_number:
-                        paymentMethod === "GCash"
-                            ? "09090661615"
-                            : null,
-
-                    total_amount:
-                        total,
-
-                    status:
-                        "Pending"
-                })
-                .select()
-                .single();
 
             if (orderError) {
                 throw orderError;
             }
 
-
-            /* CREATE ORDER ITEMS */
 
             const orderItems =
                 cart.map(item => ({
@@ -1032,15 +1792,13 @@ checkoutForm?.addEventListener(
 
             const {
                 error: itemsError
-            } = await supabaseClient
-                .from("order_items")
-                .insert(orderItems);
+            } =
+                await supabaseClient
+                    .from("order_items")
+                    .insert(orderItems);
+
 
             if (itemsError) {
-
-                /*
-                 * Remove order if items failed.
-                 */
 
                 await supabaseClient
                     .from("orders")
@@ -1052,15 +1810,16 @@ checkoutForm?.addEventListener(
             }
 
 
-            /* SUCCESS */
-
             let message =
-                "Order placed successfully! ";
+                "Order placed successfully!";
 
-            if (paymentMethod === "GCash") {
+
+            if (
+                paymentMethod === "GCash"
+            ) {
 
                 message +=
-                    "Please send ₱" +
+                    " Send ₱" +
                     total.toLocaleString(
                         "en-PH",
                         {
@@ -1069,24 +1828,30 @@ checkoutForm?.addEventListener(
                     ) +
                     " to GCash 09090661615.";
 
-            } else if (
+            }
+
+
+            if (
                 paymentMethod ===
                 "Cash on Delivery"
             ) {
 
                 message +=
-                    "Payment will be collected upon delivery.";
+                    " Payment will be collected upon delivery.";
 
             }
 
+
             checkoutMessage.textContent =
                 message;
+
 
             cart = [];
 
             renderCart();
 
             checkoutForm.reset();
+
 
         } catch (error) {
 
@@ -1106,287 +1871,38 @@ checkoutForm?.addEventListener(
 
 
 /* ==========================================
-   ADMIN - ADD PRODUCT
-   ========================================== */
-
-productForm?.addEventListener(
-    "submit",
-    async (event) => {
-
-        event.preventDefault();
-
-        const name =
-            document.getElementById(
-                "productName"
-            ).value.trim();
-
-        const price =
-            Number(
-                document.getElementById(
-                    "productPrice"
-                ).value
-            );
-
-        const image =
-            document.getElementById(
-                "productImage"
-            ).value.trim();
-
-        const description =
-            document.getElementById(
-                "productDescription"
-            ).value.trim();
-
-        productMessage.textContent =
-            "Adding product...";
-
-        const { error } =
-            await supabaseClient
-                .from("products")
-                .insert({
-                    name,
-                    price,
-                    image,
-                    description
-                });
-
-        if (error) {
-
-            productMessage.textContent =
-                "Failed: " +
-                error.message;
-
-            return;
-
-        }
-
-        productMessage.textContent =
-            "Product added successfully!";
-
-        productForm.reset();
-
-        await loadProducts();
-        await loadAdminProducts();
-
-    }
-);
-
-
-/* ==========================================
-   ADMIN PRODUCTS
-   ========================================== */
-
-async function loadAdminProducts() {
-
-    const {
-        data: products,
-        error
-    } = await supabaseClient
-        .from("products")
-        .select("*")
-        .order("id", {
-            ascending: false
-        });
-
-    if (error) {
-
-        console.error(error);
-
-        return;
-
-    }
-
-    adminProductsContainer.innerHTML = "";
-
-    products.forEach(product => {
-
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "admin-product-item";
-
-        item.innerHTML = `
-
-            <div>
-
-                <strong>
-                    ${escapeHTML(product.name)}
-                </strong>
-
-                <p>
-                    ₱${Number(
-                        product.price
-                    ).toLocaleString(
-                        "en-PH",
-                        {
-                            minimumFractionDigits: 2
-                        }
-                    )}
-                </p>
-
-            </div>
-
-            <div class="admin-product-actions">
-
-                <button
-                    class="btn edit-btn"
-                    onclick="editProduct(
-                        ${product.id}
-                    )"
-                >
-                    Edit
-                </button>
-
-                <button
-                    class="btn delete-btn"
-                    onclick="deleteProduct(
-                        ${product.id}
-                    )"
-                >
-                    Delete
-                </button>
-
-            </div>
-        `;
-
-        adminProductsContainer.appendChild(item);
-
-    });
-
-}
-
-
-/* ==========================================
-   EDIT PRODUCT
-   ========================================== */
-
-async function editProduct(id) {
-
-    const name =
-        prompt("New product name:");
-
-    if (name === null) {
-        return;
-    }
-
-    const price =
-        prompt("New price:");
-
-    if (price === null) {
-        return;
-    }
-
-    const description =
-        prompt("New description:");
-
-    if (description === null) {
-        return;
-    }
-
-    const { error } =
-        await supabaseClient
-            .from("products")
-            .update({
-                name,
-                price: Number(price),
-                description
-            })
-            .eq("id", id);
-
-    if (error) {
-
-        alert(
-            "Update failed: " +
-            error.message
-        );
-
-        return;
-
-    }
-
-    await loadProducts();
-    await loadAdminProducts();
-
-}
-
-
-/* ==========================================
-   DELETE PRODUCT
-   ========================================== */
-
-async function deleteProduct(id) {
-
-    if (
-        !confirm(
-            "Delete this product?"
-        )
-    ) {
-        return;
-    }
-
-    const { error } =
-        await supabaseClient
-            .from("products")
-            .delete()
-            .eq("id", id);
-
-    if (error) {
-
-        alert(
-            "Delete failed: " +
-            error.message
-        );
-
-        return;
-
-    }
-
-    await loadProducts();
-    await loadAdminProducts();
-
-}
-
-
-/* ==========================================
    ESCAPE HTML
    ========================================== */
 
 function escapeHTML(value) {
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
 
 /* ==========================================
-   AUTH STATE
-   ========================================== */
-
-supabaseClient.auth.onAuthStateChange(
-    async (event, session) => {
-
-        if (session) {
-
-            await loadUser();
-
-        } else {
-
-            showLoggedOut();
-
-        }
-
-    }
-);
-
-
-/* ==========================================
-   START
+   START WEBSITE
    ========================================== */
 
 loadUser();
