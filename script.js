@@ -1,6 +1,8 @@
 /* ==========================================
    BULACAN BUSINESS - SUPABASE CONNECTION
    ========================================== */
+const productsSection =
+    document.getElementById("productsSection");
 
 const SUPABASE_URL =
     "https://clnsyeilgralccihuodd.supabase.co";
@@ -348,19 +350,17 @@ function showLoggedOut() {
     homeSection.classList.remove("hidden");
 
     authSection.classList.add("hidden");
-
     userSection.classList.add("hidden");
-
     adminSection.classList.add("hidden");
 
+    productsSection.classList.add("hidden");
     cartSection.classList.add("hidden");
 
     showLoginBtn.classList.remove("hidden");
-
     showSignupBtn.classList.remove("hidden");
 
-    loadProducts();
-
+    cart = [];
+    renderCart();
 }
 
 
@@ -371,36 +371,27 @@ function showLoggedOut() {
 function showLoggedIn(profile) {
 
     homeSection.classList.add("hidden");
-
     authSection.classList.add("hidden");
 
     userSection.classList.remove("hidden");
+    productsSection.classList.remove("hidden");
+    cartSection.classList.remove("hidden");
 
     showLoginBtn.classList.add("hidden");
-
     showSignupBtn.classList.add("hidden");
 
     usernameDisplay.textContent =
         profile.username || "User";
 
     if (profile.role === "admin") {
-
         adminSection.classList.remove("hidden");
-
         loadAdminProducts();
-
     } else {
-
         adminSection.classList.add("hidden");
-
     }
 
     loadProducts();
-
-    cartSection.classList.remove("hidden");
-
     renderCart();
-
 }
 
 
