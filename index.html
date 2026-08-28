@@ -174,16 +174,67 @@
 
     </section>
 
-    <!-- PRODUCTS -->
-   <section id="productsSection" class="products-section hidden">
+    <!-- REGIONS -->
+<section id="regionsSection" class="regions-section">
 
-        <h2>Our Products</h2>
+    <h2>Shop by Region</h2>
 
-        <div id="productsContainer" class="products-grid">
-            <!-- Products load here -->
-        </div>
+    <div class="regions-grid">
 
-    </section>
+        <button
+            class="region-card active"
+            data-region="Luzon"
+        >
+            <span>🇵🇭</span>
+            <strong>Luzon</strong>
+            <small>View Luzon Products</small>
+        </button>
+
+        <button
+            class="region-card"
+            data-region="Visayas"
+        >
+            <span>🇵🇭</span>
+            <strong>Visayas</strong>
+            <small>View Visayas Products</small>
+        </button>
+
+        <button
+            class="region-card"
+            data-region="Mindanao"
+        >
+            <span>🇵🇭</span>
+            <strong>Mindanao</strong>
+            <small>View Mindanao Products</small>
+        </button>
+
+    </div>
+
+    <p id="selectedRegion">
+        Showing Luzon products
+    </p>
+
+</section>
+
+
+<!-- PRODUCTS -->
+<section
+    id="productsSection"
+    class="products-section"
+>
+
+    <h2 id="productsTitle">
+        Luzon Products
+    </h2>
+
+    <div
+        id="productsContainer"
+        class="products-grid"
+    >
+        <!-- Products will load here -->
+    </div>
+
+</section>
 
     <!-- SHOPPING CART -->
     <section id="cartSection" class="cart-section hidden">
@@ -271,38 +322,54 @@
 
             <h3>Add Product</h3>
 
-            <form id="productForm">
+           <form id="productForm">
 
-                <input
-                    type="text"
-                    id="productName"
-                    placeholder="Product name"
-                    required
-                >
+    <input
+        type="text"
+        id="productName"
+        placeholder="Product name"
+        required
+    >
 
-                <input
-                    type="number"
-                    id="productPrice"
-                    placeholder="Price"
-                    min="0"
-                    step="0.01"
-                    required
-                >
+    <input
+        type="number"
+        id="productPrice"
+        placeholder="Price"
+        min="0"
+        step="0.01"
+        required
+    >
 
-                <input
-                    type="text"
-                    id="productImage"
-                    placeholder="Image URL"
-                >
+    <select id="productRegion" required>
 
-                <textarea
-                    id="productDescription"
-                    placeholder="Product description"
-                ></textarea>
+        <option value="Luzon">
+            Luzon
+        </option>
 
-                <button type="submit" class="btn">
-                    Add Product
-                </button>
+        <option value="Visayas">
+            Visayas
+        </option>
+
+        <option value="Mindanao">
+            Mindanao
+        </option>
+
+    </select>
+
+    <input
+        type="text"
+        id="productImage"
+        placeholder="Image URL"
+    >
+
+    <textarea
+        id="productDescription"
+        placeholder="Product description"
+    ></textarea>
+
+    <button type="submit" class="btn">
+        Add Product
+    </button>
 
             </form>
 
