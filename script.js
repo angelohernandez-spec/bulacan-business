@@ -2,6 +2,8 @@
    BULACAN BUSINESS
    SUPABASE
    ========================================== */
+const forgotPasswordBtn =
+    document.getElementById("forgotPasswordBtn");
 
 const SUPABASE_URL =
     "https://clnsyeilgralccihuodd.supabase.co";
@@ -241,7 +243,53 @@ loginForm?.addEventListener("submit", async (event) => {
     }
 
 });
+/* ==========================================
+   FORGOT PASSWORD
+   ========================================== */
 
+forgotPasswordBtn?.addEventListener("click", async () => {
+
+    const email =
+        document.getElementById("loginEmail").value.trim();
+
+    if (!email) {
+        loginMessage.textContent =
+            "Enter your email first.";
+        return;
+    }
+
+    loginMessage.textContent =
+        "Sending password reset email...";
+
+    try {
+
+        const { error } =
+            await supabaseClient.auth.resetPasswordForEmail(
+                email,
+                {
+                    redirectTo:
+                        window.location.origin
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        loginMessage.textContent =
+            "Password reset email sent. Check your email.";
+
+    } catch (error) {
+
+        console.error("Password reset error:", error);
+
+        loginMessage.textContent =
+            "Password reset failed: " +
+            error.message;
+
+    }
+
+});
 
 /* ==========================================
    LOGOUT
