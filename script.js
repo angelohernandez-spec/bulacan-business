@@ -2,7 +2,8 @@
    BULACAN BUSINESS - SUPABASE CONNECTION
    ========================================== */
 
-const SUPABASE_URL = "https://clnsyeilgralccihuodd.supabase.co";
+const SUPABASE_URL =
+    "https://clnsyeilgralccihuodd.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
     "sb_publishable_JQmMkq37U8OsNPo1AGG-mg_7PcEdiVp";
@@ -37,13 +38,20 @@ const signupForm = document.getElementById("signupForm");
 
 const logoutBtn = document.getElementById("logoutBtn");
 
-const usernameDisplay = document.getElementById("usernameDisplay");
+const usernameDisplay =
+    document.getElementById("usernameDisplay");
 
-const loginMessage = document.getElementById("loginMessage");
-const signupMessage = document.getElementById("signupMessage");
+const loginMessage =
+    document.getElementById("loginMessage");
 
-const productForm = document.getElementById("productForm");
-const productMessage = document.getElementById("productMessage");
+const signupMessage =
+    document.getElementById("signupMessage");
+
+const productForm =
+    document.getElementById("productForm");
+
+const productMessage =
+    document.getElementById("productMessage");
 
 const productsContainer =
     document.getElementById("productsContainer");
@@ -51,12 +59,35 @@ const productsContainer =
 const adminProductsContainer =
     document.getElementById("adminProductsContainer");
 
+const cartSection =
+    document.getElementById("cartSection");
+
+const cartItems =
+    document.getElementById("cartItems");
+
+const cartTotal =
+    document.getElementById("cartTotal");
+
+const checkoutForm =
+    document.getElementById("checkoutForm");
+
+const checkoutMessage =
+    document.getElementById("checkoutMessage");
+
+
+/* ==========================================
+   CART
+   ========================================== */
+
+let cart = [];
+
 
 /* ==========================================
    SHOW LOGIN
    ========================================== */
 
 if (showLoginBtn) {
+
     showLoginBtn.addEventListener("click", () => {
 
         authSection.classList.remove("hidden");
@@ -70,7 +101,9 @@ if (showLoginBtn) {
             top: 0,
             behavior: "smooth"
         });
+
     });
+
 }
 
 
@@ -79,6 +112,7 @@ if (showLoginBtn) {
    ========================================== */
 
 if (showSignupBtn) {
+
     showSignupBtn.addEventListener("click", () => {
 
         authSection.classList.remove("hidden");
@@ -92,7 +126,9 @@ if (showSignupBtn) {
             top: 0,
             behavior: "smooth"
         });
+
     });
+
 }
 
 
@@ -101,24 +137,30 @@ if (showSignupBtn) {
    ========================================== */
 
 if (switchToSignup) {
+
     switchToSignup.addEventListener("click", () => {
 
         loginBox.classList.add("hidden");
         signupBox.classList.remove("hidden");
 
         loginMessage.textContent = "";
+
     });
+
 }
 
 
 if (switchToLogin) {
+
     switchToLogin.addEventListener("click", () => {
 
         signupBox.classList.add("hidden");
         loginBox.classList.remove("hidden");
 
         signupMessage.textContent = "";
+
     });
+
 }
 
 
@@ -127,6 +169,7 @@ if (switchToLogin) {
    ========================================== */
 
 if (signupForm) {
+
     signupForm.addEventListener("submit", async (event) => {
 
         event.preventDefault();
@@ -140,7 +183,8 @@ if (signupForm) {
         const password =
             document.getElementById("signupPassword").value;
 
-        signupMessage.textContent = "Creating account...";
+        signupMessage.textContent =
+            "Creating account...";
 
         try {
 
@@ -170,8 +214,11 @@ if (signupForm) {
 
             signupMessage.textContent =
                 "Sign up failed: " + error.message;
+
         }
+
     });
+
 }
 
 
@@ -180,6 +227,7 @@ if (signupForm) {
    ========================================== */
 
 if (loginForm) {
+
     loginForm.addEventListener("submit", async (event) => {
 
         event.preventDefault();
@@ -190,7 +238,8 @@ if (loginForm) {
         const password =
             document.getElementById("loginPassword").value;
 
-        loginMessage.textContent = "Logging in...";
+        loginMessage.textContent =
+            "Logging in...";
 
         try {
 
@@ -217,8 +266,11 @@ if (loginForm) {
 
             loginMessage.textContent =
                 "Login failed: " + error.message;
+
         }
+
     });
+
 }
 
 
@@ -227,6 +279,7 @@ if (loginForm) {
    ========================================== */
 
 if (logoutBtn) {
+
     logoutBtn.addEventListener("click", async () => {
 
         const { error } =
@@ -239,8 +292,12 @@ if (logoutBtn) {
             return;
         }
 
+        cart = [];
+
         location.reload();
+
     });
+
 }
 
 
@@ -278,6 +335,7 @@ async function loadUser() {
     }
 
     showLoggedIn(profile);
+
 }
 
 
@@ -295,11 +353,14 @@ function showLoggedOut() {
 
     adminSection.classList.add("hidden");
 
+    cartSection.classList.add("hidden");
+
     showLoginBtn.classList.remove("hidden");
 
     showSignupBtn.classList.remove("hidden");
 
     loadProducts();
+
 }
 
 
@@ -331,9 +392,15 @@ function showLoggedIn(profile) {
     } else {
 
         adminSection.classList.add("hidden");
+
     }
 
     loadProducts();
+
+    cartSection.classList.remove("hidden");
+
+    renderCart();
+
 }
 
 
@@ -383,8 +450,9 @@ async function loadProducts() {
             "https://via.placeholder.com/500x300?text=Product";
 
         card.innerHTML = `
+
             <img
-                src="${image}"
+                src="${escapeHTML(image)}"
                 alt="${escapeHTML(product.name)}"
             >
 
@@ -407,11 +475,308 @@ async function loadProducts() {
                     ${escapeHTML(product.description || "")}
                 </p>
 
+                <button
+                    class="btn full"
+                    onclick="addToCart(${product.id})"
+                >
+                    🛒 Add to Cart
+                </button>
+
             </div>
         `;
 
         productsContainer.appendChild(card);
+
     });
+
+}
+
+
+/* ==========================================
+   ADD TO CART
+   ========================================== */
+
+async function addToCart(productId) {
+
+    const {
+        data: product,
+        error
+    } = await supabaseClient
+        .from("products")
+        .select("*")
+        .eq("id", productId)
+        .single();
+
+    if (error || !product) {
+
+        alert("Unable to add product to cart.");
+
+        return;
+    }
+
+    const existingItem =
+        cart.find(item => item.id === product.id);
+
+    if (existingItem) {
+
+        existingItem.quantity += 1;
+
+    } else {
+
+        cart.push({
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            quantity: 1
+        });
+
+    }
+
+    renderCart();
+
+    cartSection.classList.remove("hidden");
+
+    cartSection.scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+
+/* ==========================================
+   REMOVE FROM CART
+   ========================================== */
+
+function removeFromCart(productId) {
+
+    cart =
+        cart.filter(item => item.id !== productId);
+
+    renderCart();
+
+}
+
+
+/* ==========================================
+   CHANGE QUANTITY
+   ========================================== */
+
+function changeQuantity(productId, amount) {
+
+    const item =
+        cart.find(item => item.id === productId);
+
+    if (!item) {
+        return;
+    }
+
+    item.quantity += amount;
+
+    if (item.quantity <= 0) {
+
+        removeFromCart(productId);
+
+        return;
+    }
+
+    renderCart();
+
+}
+
+
+/* ==========================================
+   RENDER CART
+   ========================================== */
+
+function renderCart() {
+
+    if (!cartItems || !cartTotal) {
+        return;
+    }
+
+    if (cart.length === 0) {
+
+        cartItems.innerHTML =
+            "<p>Your cart is empty.</p>";
+
+        cartTotal.textContent =
+            "₱0.00";
+
+        return;
+    }
+
+    cartItems.innerHTML = "";
+
+    let total = 0;
+
+    cart.forEach(item => {
+
+        const subtotal =
+            item.price * item.quantity;
+
+        total += subtotal;
+
+        const div =
+            document.createElement("div");
+
+        div.className = "cart-item";
+
+        div.innerHTML = `
+
+            <div class="cart-item-info">
+
+                <h3>
+                    ${escapeHTML(item.name)}
+                </h3>
+
+                <p class="cart-item-price">
+                    ₱${item.price.toLocaleString(
+                        "en-PH",
+                        {
+                            minimumFractionDigits: 2
+                        }
+                    )}
+                    each
+                </p>
+
+            </div>
+
+            <div class="cart-quantity">
+
+                <button
+                    class="quantity-btn"
+                    onclick="changeQuantity(${item.id}, -1)"
+                >
+                    −
+                </button>
+
+                <strong>
+                    ${item.quantity}
+                </strong>
+
+                <button
+                    class="quantity-btn"
+                    onclick="changeQuantity(${item.id}, 1)"
+                >
+                    +
+                </button>
+
+            </div>
+
+            <strong>
+                ₱${subtotal.toLocaleString(
+                    "en-PH",
+                    {
+                        minimumFractionDigits: 2
+                    }
+                )}
+            </strong>
+
+            <button
+                class="btn remove-cart-btn"
+                onclick="removeFromCart(${item.id})"
+            >
+                Remove
+            </button>
+
+        `;
+
+        cartItems.appendChild(div);
+
+    });
+
+    cartTotal.textContent =
+        "₱" +
+        total.toLocaleString(
+            "en-PH",
+            {
+                minimumFractionDigits: 2
+            }
+        );
+
+}
+
+
+/* ==========================================
+   CHECKOUT
+   ========================================== */
+
+if (checkoutForm) {
+
+    checkoutForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+            if (cart.length === 0) {
+
+                checkoutMessage.textContent =
+                    "Your cart is empty.";
+
+                return;
+            }
+
+            const customerName =
+                document.getElementById(
+                    "customerName"
+                ).value.trim();
+
+            const customerAddress =
+                document.getElementById(
+                    "customerAddress"
+                ).value.trim();
+
+            const customerPhone =
+                document.getElementById(
+                    "customerPhone"
+                ).value.trim();
+
+            const paymentMethod =
+                document.getElementById(
+                    "paymentMethod"
+                ).value;
+
+            const total =
+                cart.reduce(
+                    (sum, item) =>
+                        sum + (item.price * item.quantity),
+                    0
+                );
+
+            checkoutMessage.textContent =
+                "Processing order...";
+
+            /*
+               IMPORTANT:
+               This part only prepares the order.
+               It will be connected to an orders table
+               once that table is created in Supabase.
+            */
+
+            console.log({
+                customerName,
+                customerAddress,
+                customerPhone,
+                paymentMethod,
+                items: cart,
+                total
+            });
+
+            checkoutMessage.textContent =
+                "Order details ready! Payment method: " +
+                paymentMethod +
+                ". Total: ₱" +
+                total.toLocaleString(
+                    "en-PH",
+                    {
+                        minimumFractionDigits: 2
+                    }
+                );
+
+        }
+    );
+
 }
 
 
@@ -420,53 +785,73 @@ async function loadProducts() {
    ========================================== */
 
 if (productForm) {
-    productForm.addEventListener("submit", async (event) => {
 
-        event.preventDefault();
+    productForm.addEventListener(
+        "submit",
+        async (event) => {
 
-        const name =
-            document.getElementById("productName").value.trim();
+            event.preventDefault();
 
-        const price =
-            Number(document.getElementById("productPrice").value);
+            const name =
+                document.getElementById(
+                    "productName"
+                ).value.trim();
 
-        const image =
-            document.getElementById("productImage").value.trim();
+            const price =
+                Number(
+                    document.getElementById(
+                        "productPrice"
+                    ).value
+                );
 
-        const description =
-            document.getElementById("productDescription").value.trim();
+            const image =
+                document.getElementById(
+                    "productImage"
+                ).value.trim();
 
-        productMessage.textContent =
-            "Adding product...";
-
-        const { error } =
-            await supabaseClient
-                .from("products")
-                .insert([{
-                    name: name,
-                    price: price,
-                    image: image,
-                    description: description
-                }]);
-
-        if (error) {
-
-            console.error("Add product error:", error);
+            const description =
+                document.getElementById(
+                    "productDescription"
+                ).value.trim();
 
             productMessage.textContent =
-                "Failed to add product: " + error.message;
+                "Adding product...";
 
-            return;
+            const { error } =
+                await supabaseClient
+                    .from("products")
+                    .insert([{
+                        name: name,
+                        price: price,
+                        image: image,
+                        description: description
+                    }]);
+
+            if (error) {
+
+                console.error(
+                    "Add product error:",
+                    error
+                );
+
+                productMessage.textContent =
+                    "Failed to add product: " +
+                    error.message;
+
+                return;
+            }
+
+            productMessage.textContent =
+                "Product added successfully!";
+
+            productForm.reset();
+
+            await loadProducts();
+            await loadAdminProducts();
+
         }
+    );
 
-        productMessage.textContent =
-            "Product added successfully!";
-
-        productForm.reset();
-
-        await loadProducts();
-        await loadAdminProducts();
-    });
 }
 
 
@@ -490,7 +875,10 @@ async function loadAdminProducts() {
 
     if (error) {
 
-        console.error("Admin products error:", error);
+        console.error(
+            "Admin products error:",
+            error
+        );
 
         adminProductsContainer.innerHTML =
             "<p>Unable to load products.</p>";
@@ -517,7 +905,9 @@ async function loadAdminProducts() {
             "admin-product-item";
 
         item.innerHTML = `
+
             <div>
+
                 <strong>
                     ${escapeHTML(product.name)}
                 </strong>
@@ -530,6 +920,7 @@ async function loadAdminProducts() {
                         }
                     )}
                 </p>
+
             </div>
 
             <div class="admin-product-actions">
@@ -552,7 +943,9 @@ async function loadAdminProducts() {
         `;
 
         adminProductsContainer.appendChild(item);
+
     });
+
 }
 
 
@@ -603,10 +996,13 @@ async function editProduct(id) {
         return;
     }
 
-    alert("Product updated successfully!");
+    alert(
+        "Product updated successfully!"
+    );
 
     await loadProducts();
     await loadAdminProducts();
+
 }
 
 
@@ -641,10 +1037,13 @@ async function deleteProduct(id) {
         return;
     }
 
-    alert("Product deleted successfully!");
+    alert(
+        "Product deleted successfully!"
+    );
 
     await loadProducts();
     await loadAdminProducts();
+
 }
 
 
@@ -660,6 +1059,7 @@ function escapeHTML(value) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+
 }
 
 
@@ -677,7 +1077,9 @@ supabaseClient.auth.onAuthStateChange(
         } else {
 
             showLoggedOut();
+
         }
+
     }
 );
 
@@ -686,4 +1088,5 @@ supabaseClient.auth.onAuthStateChange(
    START WEBSITE
    ========================================== */
 
+loadUser();
 loadUser();
