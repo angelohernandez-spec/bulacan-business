@@ -23,7 +23,54 @@
 </header>
 
 <main>
+<main>
 
+    <!-- RESET PASSWORD -->
+    <section id="resetPasswordSection" class="auth-container hidden">
+
+        <div class="auth-box">
+
+            <h2>Reset Password</h2>
+
+            <form id="resetPasswordForm">
+
+                <input
+                    type="password"
+                    id="newPassword"
+                    placeholder="New Password"
+                    minlength="6"
+                    required
+                >
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm New Password"
+                    minlength="6"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="btn full"
+                >
+                    Change Password
+                </button>
+
+            </form>
+
+            <p
+                id="resetPasswordMessage"
+                class="message"
+            ></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- HOME -->
+    <section id="homeSection" class="hero">
     <!-- HOME -->
     <section id="homeSection" class="hero">
         <h1>Welcome to Bulacan Business</h1>
