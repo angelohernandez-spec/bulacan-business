@@ -13,24 +13,23 @@
 
     <link rel="stylesheet" href="style.css">
 
-    <!-- SUPABASE -->
+    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
-
 <body>
 
-<!-- =====================================================
+<!-- ==========================================
      NAVBAR
-     ===================================================== -->
+     ========================================== -->
 
 <header class="navbar">
 
     <div class="logo">
-        🛍️ Bulacan Business
+        Bulacan Business
     </div>
 
-    <div id="userArea" class="user-area">
+    <div class="user-area">
 
         <button
             id="showLoginBtn"
@@ -48,24 +47,13 @@
             Sign Up
         </button>
 
-        <div
-            id="loggedUserArea"
-            class="logged-user-area hidden"
+        <button
+            id="navLogoutBtn"
+            class="btn nav-btn logout-nav hidden"
+            type="button"
         >
-
-            <span>
-                👤 <strong id="navUsername"></strong>
-            </span>
-
-            <button
-                id="navLogoutBtn"
-                class="btn logout-small"
-                type="button"
-            >
-                Logout
-            </button>
-
-        </div>
+            Logout
+        </button>
 
     </div>
 
@@ -74,69 +62,55 @@
 
 <main>
 
-
-<!-- =====================================================
+<!-- ==========================================
      HOME
-     ===================================================== -->
+     ========================================== -->
 
 <section
     id="homeSection"
     class="hero"
 >
 
-    <div class="hero-overlay">
+    <div class="hero-overlay"></div>
 
-        <div class="hero-content">
+    <div class="hero-content">
 
-            <div class="hero-badge">
-                🇵🇭 Local Business Marketplace
-            </div>
+        <span class="hero-badge">
+            🇵🇭 Local Online Marketplace
+        </span>
 
-            <h1>
-                Welcome to Bulacan Business
-            </h1>
+        <h1>
+            Welcome to Bulacan Business
+        </h1>
 
-            <p>
-                Discover products from businesses
-                across Luzon, Visayas and Mindanao.
-            </p>
+        <p>
+            Discover products and businesses
+            from Luzon, Visayas and Mindanao.
+        </p>
 
-            <div class="hero-buttons">
-
-                <button
-                    id="heroLoginBtn"
-                    class="btn hero-btn"
-                    type="button"
-                >
-                    🔐 Login to Shop
-                </button>
-
-                <button
-                    id="heroSignupBtn"
-                    class="btn hero-btn-outline"
-                    type="button"
-                >
-                    📝 Create Account
-                </button>
-
-            </div>
-
-        </div>
+        <button
+            id="shopNowBtn"
+            class="btn shop-btn"
+            type="button"
+        >
+            🛍️ Shop Now
+        </button>
 
     </div>
 
 </section>
 
 
-
-<!-- =====================================================
-     AUTH SECTION
-     ===================================================== -->
+<!-- ==========================================
+     AUTH
+     ========================================== -->
 
 <section
     id="authSection"
     class="auth-container hidden"
 >
+
+    <div class="auth-background"></div>
 
     <!-- LOGIN -->
 
@@ -150,13 +124,12 @@
         </div>
 
         <h2>
-            Login
+            Welcome Back
         </h2>
 
         <p class="auth-subtitle">
-            Login to your Bulacan Business account
+            Login to start shopping
         </p>
-
 
         <form id="loginForm">
 
@@ -168,45 +141,28 @@
                 type="email"
                 id="loginEmail"
                 placeholder="Enter your email"
-                autocomplete="email"
                 required
             >
-
 
             <label for="loginPassword">
                 Password
             </label>
 
-            <div class="password-wrapper">
-
-                <input
-                    type="password"
-                    id="loginPassword"
-                    placeholder="Enter your password"
-                    autocomplete="current-password"
-                    required
-                >
-
-                <button
-                    type="button"
-                    class="password-toggle"
-                    data-target="loginPassword"
-                >
-                    👁️
-                </button>
-
-            </div>
-
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Enter your password"
+                required
+            >
 
             <button
                 type="submit"
-                class="btn full auth-submit"
+                class="btn full"
             >
                 Login
             </button>
 
         </form>
-
 
         <button
             id="forgotPasswordBtn"
@@ -216,9 +172,7 @@
             Forgot Password?
         </button>
 
-
-        <p class="auth-switch">
-
+        <p>
             Don't have an account?
 
             <button
@@ -228,9 +182,7 @@
             >
                 Sign Up
             </button>
-
         </p>
-
 
         <p
             id="loginMessage"
@@ -238,7 +190,6 @@
         ></p>
 
     </div>
-
 
 
     <!-- SIGN UP -->
@@ -249,7 +200,7 @@
     >
 
         <div class="auth-icon">
-            📝
+            👤
         </div>
 
         <h2>
@@ -257,9 +208,8 @@
         </h2>
 
         <p class="auth-subtitle">
-            Create your Bulacan Business account
+            Join Bulacan Business
         </p>
-
 
         <form id="signupForm">
 
@@ -271,10 +221,8 @@
                 type="text"
                 id="signupUsername"
                 placeholder="Choose a username"
-                autocomplete="username"
                 required
             >
-
 
             <label for="signupEmail">
                 Email
@@ -284,74 +232,31 @@
                 type="email"
                 id="signupEmail"
                 placeholder="Enter your email"
-                autocomplete="email"
                 required
             >
-
 
             <label for="signupPassword">
                 Password
             </label>
 
-            <div class="password-wrapper">
-
-                <input
-                    type="password"
-                    id="signupPassword"
-                    placeholder="At least 6 characters"
-                    minlength="6"
-                    autocomplete="new-password"
-                    required
-                >
-
-                <button
-                    type="button"
-                    class="password-toggle"
-                    data-target="signupPassword"
-                >
-                    👁️
-                </button>
-
-            </div>
-
-
-            <label for="signupConfirmPassword">
-                Confirm Password
-            </label>
-
-            <div class="password-wrapper">
-
-                <input
-                    type="password"
-                    id="signupConfirmPassword"
-                    placeholder="Confirm password"
-                    minlength="6"
-                    required
-                >
-
-                <button
-                    type="button"
-                    class="password-toggle"
-                    data-target="signupConfirmPassword"
-                >
-                    👁️
-                </button>
-
-            </div>
-
+            <input
+                type="password"
+                id="signupPassword"
+                placeholder="Minimum 6 characters"
+                minlength="6"
+                required
+            >
 
             <button
                 type="submit"
-                class="btn full auth-submit"
+                class="btn full"
             >
                 Create Account
             </button>
 
         </form>
 
-
-        <p class="auth-switch">
-
+        <p>
             Already have an account?
 
             <button
@@ -361,9 +266,7 @@
             >
                 Login
             </button>
-
         </p>
-
 
         <p
             id="signupMessage"
@@ -375,10 +278,9 @@
 </section>
 
 
-
-<!-- =====================================================
+<!-- ==========================================
      RESET PASSWORD
-     ===================================================== -->
+     ========================================== -->
 
 <section
     id="resetPasswordSection"
@@ -396,9 +298,8 @@
         </h2>
 
         <p class="auth-subtitle">
-            Create a new password for your account.
+            Create your new password
         </p>
-
 
         <form id="resetPasswordForm">
 
@@ -406,51 +307,25 @@
                 New Password
             </label>
 
-            <div class="password-wrapper">
-
-                <input
-                    type="password"
-                    id="newPassword"
-                    placeholder="New password"
-                    minlength="6"
-                    required
-                >
-
-                <button
-                    type="button"
-                    class="password-toggle"
-                    data-target="newPassword"
-                >
-                    👁️
-                </button>
-
-            </div>
-
+            <input
+                type="password"
+                id="newPassword"
+                placeholder="New password"
+                minlength="6"
+                required
+            >
 
             <label for="confirmPassword">
                 Confirm Password
             </label>
 
-            <div class="password-wrapper">
-
-                <input
-                    type="password"
-                    id="confirmPassword"
-                    placeholder="Confirm password"
-                    minlength="6"
-                    required
-                >
-
-                <button
-                    type="button"
-                    class="password-toggle"
-                    data-target="confirmPassword"
-                >
-                    👁️
-                </button>
-
-            </div>
-
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm password"
+                minlength="6"
+                required
+            >
 
             <button
                 type="submit"
@@ -460,7 +335,6 @@
             </button>
 
         </form>
-
 
         <p
             id="resetPasswordMessage"
@@ -472,38 +346,65 @@
 </section>
 
 
+<!-- ==========================================
+     SHOP DASHBOARD
+     ========================================== -->
 
-<!-- =====================================================
+<section
+    id="shopDashboard"
+    class="shop-dashboard hidden"
+>
+
+    <div class="dashboard-overlay"></div>
+
+    <div class="dashboard-content">
+
+        <span class="dashboard-badge">
+            🛍️ Bulacan Business Marketplace
+        </span>
+
+        <h1>
+            Find What You Need
+        </h1>
+
+        <p>
+            Choose a region to see available products.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
      USER DASHBOARD
-     ===================================================== -->
+     ========================================== -->
 
 <section
     id="userSection"
     class="dashboard hidden"
 >
 
-    <div class="dashboard-icon">
-        👤
-    </div>
+    <div class="dashboard-card">
 
-    <h2>
-        Welcome,
-        <span id="usernameDisplay"></span>!
-    </h2>
+        <div class="user-avatar">
+            👤
+        </div>
 
-    <p>
-        You are logged in and can now shop.
-    </p>
+        <div>
 
-    <div class="dashboard-actions">
+            <h2>
+                User Dashboard
+            </h2>
 
-        <button
-            id="shopNowBtn"
-            class="btn"
-            type="button"
-        >
-            🛍️ Shop Now
-        </button>
+            <p>
+                Welcome,
+                <strong id="usernameDisplay">
+                    User
+                </strong>
+            </p>
+
+        </div>
 
         <button
             id="logoutBtn"
@@ -518,10 +419,9 @@
 </section>
 
 
-
-<!-- =====================================================
+<!-- ==========================================
      REGION SELECTION
-     ===================================================== -->
+     ========================================== -->
 
 <section
     id="regionSection"
@@ -530,8 +430,8 @@
 
     <div class="section-heading">
 
-        <span class="section-label">
-            EXPLORE
+        <span>
+            📍 Browse by Location
         </span>
 
         <h2>
@@ -539,7 +439,7 @@
         </h2>
 
         <p>
-            Select a region to view available products.
+            Select a region to view its products.
         </p>
 
     </div>
@@ -549,42 +449,25 @@
 
         <button
             class="region-card"
-            data-region="All"
-            type="button"
-        >
-
-            <span class="region-icon">
-                🇵🇭
-            </span>
-
-            <span>
-                All Products
-            </span>
-
-            <small>
-                View everything
-            </small>
-
-        </button>
-
-
-        <button
-            class="region-card"
             data-region="Luzon"
             type="button"
         >
 
-            <span class="region-icon">
+            <div class="region-icon">
                 🏙️
-            </span>
+            </div>
 
-            <span>
+            <h3>
                 Luzon
-            </span>
+            </h3>
 
-            <small>
-                Products from Luzon
-            </small>
+            <p>
+                View Luzon products
+            </p>
+
+            <span class="region-arrow">
+                →
+            </span>
 
         </button>
 
@@ -595,17 +478,21 @@
             type="button"
         >
 
-            <span class="region-icon">
+            <div class="region-icon">
                 🌴
-            </span>
+            </div>
 
-            <span>
+            <h3>
                 Visayas
-            </span>
+            </h3>
 
-            <small>
-                Products from Visayas
-            </small>
+            <p>
+                View Visayas products
+            </p>
+
+            <span class="region-arrow">
+                →
+            </span>
 
         </button>
 
@@ -616,17 +503,21 @@
             type="button"
         >
 
-            <span class="region-icon">
+            <div class="region-icon">
                 🌄
-            </span>
+            </div>
 
-            <span>
+            <h3>
                 Mindanao
-            </span>
+            </h3>
 
-            <small>
-                Products from Mindanao
-            </small>
+            <p>
+                View Mindanao products
+            </p>
+
+            <span class="region-arrow">
+                →
+            </span>
 
         </button>
 
@@ -635,10 +526,9 @@
 </section>
 
 
-
-<!-- =====================================================
+<!-- ==========================================
      PRODUCTS
-     ===================================================== -->
+     ========================================== -->
 
 <section
     id="productsSection"
@@ -647,8 +537,8 @@
 
     <div class="section-heading">
 
-        <span class="section-label">
-            SHOP
+        <span>
+            🛒 Marketplace
         </span>
 
         <h2>
@@ -656,62 +546,34 @@
         </h2>
 
         <p id="selectedRegion">
-            All Products
+            Select a region above.
         </p>
 
     </div>
+
+
+    <button
+        id="backToRegionsBtn"
+        class="btn back-region-btn"
+        type="button"
+    >
+        ← Back to Regions
+    </button>
 
 
     <div
         id="productsContainer"
         class="products-grid"
     >
-        <!-- Products loaded by JavaScript -->
+
     </div>
 
 </section>
 
 
-
-<!-- =====================================================
-     PRODUCT DETAILS MODAL
-     ===================================================== -->
-
-<div
-    id="productModal"
-    class="modal hidden"
->
-
-    <div
-        class="modal-overlay"
-        id="productModalOverlay"
-    ></div>
-
-
-    <div class="product-modal">
-
-        <button
-            id="closeProductModal"
-            class="modal-close"
-            type="button"
-        >
-            ×
-        </button>
-
-
-        <div id="productModalContent">
-            <!-- Product details loaded here -->
-        </div>
-
-    </div>
-
-</div>
-
-
-
-<!-- =====================================================
+<!-- ==========================================
      CART
-     ===================================================== -->
+     ========================================== -->
 
 <section
     id="cartSection"
@@ -720,279 +582,151 @@
 
     <div class="section-heading">
 
-        <span class="section-label">
-            YOUR ORDER
+        <span>
+            🛒 Shopping Cart
         </span>
 
         <h2>
-            🛒 Shopping Cart
+            Your Cart
         </h2>
 
-        <p>
-            Review your products before checkout.
-        </p>
-
     </div>
 
 
     <div
-        id="cartEmpty"
-        class="cart-empty"
+        id="cartItems"
+        class="cart-items"
     >
 
-        <div>
-            🛒
+    </div>
+
+
+    <div class="cart-summary">
+
+        <div class="summary-row">
+
+            <span>
+                Total Payment
+            </span>
+
+            <strong id="cartTotal">
+                ₱0.00
+            </strong>
+
         </div>
+
+    </div>
+
+
+    <!-- ======================================
+         CHECKOUT
+         ====================================== -->
+
+    <div class="checkout-box">
 
         <h3>
-            Your cart is empty
+            Checkout
         </h3>
 
-        <p>
-            Add products to your cart to start shopping.
-        </p>
+        <form id="checkoutForm">
 
-        <button
-            id="cartShopBtn"
-            class="btn"
-            type="button"
-        >
-            Browse Products
-        </button>
+            <label for="customerName">
+                Full Name
+            </label>
 
-    </div>
-
-
-    <div
-        id="cartContent"
-        class="hidden"
-    >
-
-        <div id="cartItems">
-            <!-- Cart items -->
-        </div>
+            <input
+                type="text"
+                id="customerName"
+                placeholder="Enter your full name"
+                required
+            >
 
 
-        <div class="cart-summary">
+            <label for="customerAddress">
+                Delivery Address
+            </label>
 
-            <div class="summary-row">
-
-                <span>
-                    Subtotal
-                </span>
-
-                <strong id="cartSubtotal">
-                    ₱0.00
-                </strong>
-
-            </div>
+            <textarea
+                id="customerAddress"
+                placeholder="Enter your complete delivery address"
+                required
+            ></textarea>
 
 
-            <div class="summary-row">
+            <label for="paymentMethod">
+                Payment Method
+            </label>
 
-                <span>
-                    Delivery
-                </span>
+            <select
+                id="paymentMethod"
+                required
+            >
 
-                <strong id="deliveryFee">
-                    ₱0.00
-                </strong>
+                <option value="">
+                    Select Payment Method
+                </option>
 
-            </div>
+                <option value="GCash">
+                    GCash
+                </option>
 
+                <option value="Cash on Delivery">
+                    Cash on Delivery
+                </option>
 
-            <div class="summary-total">
-
-                <span>
-                    Total Payment
-                </span>
-
-                <strong id="cartTotal">
-                    ₱0.00
-                </strong>
-
-            </div>
-
-        </div>
+            </select>
 
 
+            <!-- GCASH -->
 
-        <!-- CHECKOUT -->
+            <div
+                id="gcashInfo"
+                class="gcash-info hidden"
+            >
 
-        <div class="checkout-box">
+                <h4>
+                    📱 GCash Payment
+                </h4>
 
-            <h3>
-                📦 Checkout
-            </h3>
+                <p>
+                    Send your payment to:
+                </p>
 
-
-            <form id="checkoutForm">
-
-                <label for="customerName">
-                    Full Name
-                </label>
-
-                <input
-                    type="text"
-                    id="customerName"
-                    placeholder="Enter your full name"
-                    required
-                >
-
-
-                <label for="customerPhone">
-                    Contact Number
-                </label>
-
-                <input
-                    type="tel"
-                    id="customerPhone"
-                    placeholder="09XXXXXXXXX"
-                    required
-                >
-
-
-                <label for="customerAddress">
-                    Delivery Address
-                </label>
-
-                <textarea
-                    id="customerAddress"
-                    placeholder="Enter your complete delivery address"
-                    required
-                ></textarea>
-
-
-                <label for="paymentMethod">
-                    Payment Method
-                </label>
-
-                <select
-                    id="paymentMethod"
-                    required
-                >
-
-                    <option value="">
-                        Select Payment Method
-                    </option>
-
-                    <option value="GCash">
-                        📱 GCash
-                    </option>
-
-                    <option value="Cash on Delivery">
-                        💵 Cash on Delivery
-                    </option>
-
-                </select>
-
-
-                <!-- GCASH -->
-
-                <div
-                    id="gcashInfo"
-                    class="gcash-info hidden"
-                >
-
-                    <div class="gcash-icon">
-                        📱
-                    </div>
-
-                    <h4>
-                        Pay using GCash
-                    </h4>
-
-                    <p>
-                        Send your payment to:
-                    </p>
-
-                    <div class="gcash-number">
-                        09090661615
-                    </div>
-
-                    <p>
-                        Send the exact total amount shown above.
-                    </p>
-
-                    <p class="gcash-note">
-                        After payment, click
-                        <strong>Place Order</strong>.
-                    </p>
-
+                <div class="gcash-number">
+                    09090661615
                 </div>
 
+                <p>
+                    After sending the payment,
+                    click Place Order.
+                </p>
 
-                <div
-                    id="checkoutTotalPreview"
-                    class="checkout-total-preview"
-                >
-                    Total: ₱0.00
-                </div>
-
-
-                <button
-                    type="submit"
-                    class="btn full place-order-btn"
-                >
-                    🛍️ Place Order
-                </button>
+            </div>
 
 
-                <p
-                    id="checkoutMessage"
-                    class="message"
-                ></p>
+            <button
+                type="submit"
+                class="btn full checkout-btn"
+            >
+                💳 Place Order
+            </button>
 
-            </form>
 
-        </div>
+            <p
+                id="checkoutMessage"
+                class="message"
+            ></p>
+
+        </form>
 
     </div>
 
 </section>
 
 
-
-<!-- =====================================================
-     ORDER SUCCESS
-     ===================================================== -->
-
-<section
-    id="orderSuccessSection"
-    class="success-section hidden"
->
-
-    <div class="success-icon">
-        ✓
-    </div>
-
-    <h2>
-        Order Placed Successfully!
-    </h2>
-
-    <p>
-        Thank you for shopping with Bulacan Business.
-    </p>
-
-    <p>
-        Your order has been submitted.
-    </p>
-
-    <button
-        id="continueShoppingBtn"
-        class="btn"
-        type="button"
-    >
-        Continue Shopping
-    </button>
-
-</section>
-
-
-
-<!-- =====================================================
+<!-- ==========================================
      ADMIN DASHBOARD
-     ===================================================== -->
+     ========================================== -->
 
 <section
     id="adminSection"
@@ -1003,8 +737,8 @@
 
         <div>
 
-            <span class="admin-badge">
-                ADMIN
+            <span>
+                🔐 Administrator
             </span>
 
             <h2>
@@ -1020,23 +754,15 @@
     </div>
 
 
-
-    <!-- ADD / EDIT PRODUCT -->
+    <!-- ADD PRODUCT -->
 
     <div class="admin-form">
 
-        <h3 id="productFormTitle">
+        <h3>
             ➕ Add Product
         </h3>
 
-
         <form id="productForm">
-
-            <input
-                type="hidden"
-                id="editingProductId"
-            >
-
 
             <label for="productName">
                 Product Name
@@ -1093,18 +819,18 @@
 
 
             <label for="productImage">
-                Product Image URL
+                Image URL
             </label>
 
             <input
-                type="url"
+                type="text"
                 id="productImage"
-                placeholder="https://example.com/image.jpg"
+                placeholder="Image URL"
             >
 
 
             <label for="productDescription">
-                Product Description
+                Description
             </label>
 
             <textarea
@@ -1113,26 +839,12 @@
             ></textarea>
 
 
-            <div class="admin-form-buttons">
-
-                <button
-                    id="productSubmitBtn"
-                    type="submit"
-                    class="btn"
-                >
-                    ➕ Add Product
-                </button>
-
-
-                <button
-                    id="cancelEditBtn"
-                    type="button"
-                    class="btn cancel-btn hidden"
-                >
-                    Cancel Edit
-                </button>
-
-            </div>
+            <button
+                type="submit"
+                class="btn"
+            >
+                Add Product
+            </button>
 
         </form>
 
@@ -1145,86 +857,57 @@
     </div>
 
 
-
     <!-- ADMIN PRODUCTS -->
 
     <div class="admin-products">
 
         <h3>
-            📋 Manage Products
+            📦 Manage Products
         </h3>
-
 
         <div
             id="adminProductsContainer"
-            class="admin-products-list"
         >
-            <!-- Admin products -->
+
         </div>
 
     </div>
 
 </section>
 
-
-
-<!-- =====================================================
-     TOAST
-     ===================================================== -->
-
-<div
-    id="toast"
-    class="toast hidden"
->
-    <span id="toastMessage"></span>
-</div>
-
-
 </main>
 
 
-
-<!-- =====================================================
+<!-- ==========================================
      FOOTER
-     ===================================================== -->
+     ========================================== -->
 
 <footer>
 
     <div class="footer-content">
 
-        <div>
+        <h3>
+            Bulacan Business
+        </h3>
 
-            <h3>
-                🛍️ Bulacan Business
-            </h3>
+        <p>
+            Connecting customers with local businesses.
+        </p>
 
-            <p>
-                Supporting local businesses
-                and products in the Philippines.
-            </p>
-
-        </div>
-
-        <div class="footer-copy">
-
-            <p>
-                © 2026 Bulacan Business
-            </p>
-
-        </div>
+        <p>
+            © 2026 Bulacan Business
+        </p>
 
     </div>
 
 </footer>
 
 
-
-<!-- =====================================================
+<!-- ==========================================
      JAVASCRIPT
-     ===================================================== -->
+     ========================================== -->
 
 <script src="script.js"></script>
 
 </body>
-
 </html>
