@@ -1,402 +1,764 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Bulacan Business</title>
 
     <link rel="stylesheet" href="style.css">
 
+    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
+
 <body>
 
+
+<!-- ==========================================
+     NAVBAR
+     ========================================== -->
+
 <header class="navbar">
-    <div class="logo">Bulacan Business</div>
+
+    <div class="logo">
+        Bulacan Business
+    </div>
 
     <div id="userArea" class="user-area">
-        <button id="showLoginBtn" class="btn">Login</button>
-        <button id="showSignupBtn" class="btn secondary">Sign Up</button>
+
+        <button
+            id="showLoginBtn"
+            class="btn"
+        >
+            Login
+        </button>
+
+        <button
+            id="showSignupBtn"
+            class="btn secondary"
+        >
+            Sign Up
+        </button>
+
     </div>
+
 </header>
 
+
+
 <main>
-<main>
-
-    <!-- RESET PASSWORD -->
-    <section id="resetPasswordSection" class="auth-container hidden">
-
-        <div class="auth-box">
-
-            <h2>Reset Password</h2>
-
-            <form id="resetPasswordForm">
-
-                <input
-                    type="password"
-                    id="newPassword"
-                    placeholder="New Password"
-                    minlength="6"
-                    required
-                >
-
-                <input
-                    type="password"
-                    id="confirmPassword"
-                    placeholder="Confirm New Password"
-                    minlength="6"
-                    required
-                >
-
-                <button
-                    type="submit"
-                    class="btn full"
-                >
-                    Change Password
-                </button>
-
-            </form>
-
-            <p
-                id="resetPasswordMessage"
-                class="message"
-            ></p>
-
-        </div>
-
-    </section>
 
 
-    <!-- HOME -->
-    <section id="homeSection" class="hero">
-    <!-- HOME -->
-    <section id="homeSection" class="hero">
-        <h1>Welcome to Bulacan Business</h1>
-        <p>Discover products and businesses in Bulacan.</p>
-    </section>
+<!-- ==========================================
+     HOME
+     ========================================== -->
 
-    <!-- AUTH -->
-    <section id="authSection" class="auth-container hidden">
+<section
+    id="homeSection"
+    class="hero"
+>
 
-        <div id="loginBox" class="auth-box">
-            <h2>Login</h2>
+    <h1>
+        Welcome to Bulacan Business
+    </h1>
 
-            <form id="loginForm">
-                <input type="email" id="loginEmail" placeholder="Email" required>
-
-                <input
-                    type="password"
-                    id="loginPassword"
-                    placeholder="Password"
-                    required
-                >
-
-                <button type="submit" class="btn full">
-                    Login
-                </button>
-            </form>
-
-            <p>
-                Don't have an account?
-                <button id="switchToSignup" class="link-btn">
-                    Sign Up
-                </button>
-            </p>
-
-            <p id="loginMessage" class="message"></p>
-            <div class="forgot-password">
-    <button id="forgotPasswordBtn" class="link-btn">
-        Forgot Password?
-    </button>
-</div>
-        </div>
-
-        <div id="signupBox" class="auth-box hidden">
-            <h2>Create Account</h2>
-
-            <form id="signupForm">
-
-                <input
-                    type="text"
-                    id="signupUsername"
-                    placeholder="Username"
-                    required
-                >
-
-                <input
-                    type="email"
-                    id="signupEmail"
-                    placeholder="Email"
-                    required
-                >
-
-                <input
-                    type="password"
-                    id="signupPassword"
-                    placeholder="Password"
-                    minlength="6"
-                    required
-                >
-
-                <button type="submit" class="btn full">
-                    Create Account
-                </button>
-
-            </form>
-
-            <p>
-                Already have an account?
-                <button id="switchToLogin" class="link-btn">
-                    Login
-                </button>
-            </p>
-
-            <p id="signupMessage" class="message"></p>
-        </div>
-
-    </section>
-
-    <!-- USER DASHBOARD -->
-    <section id="userSection" class="dashboard hidden">
-
-        <h2>User Dashboard</h2>
-
-        <p>
-            Welcome,
-            <strong id="usernameDisplay"></strong>
-        </p>
-
-        <button id="logoutBtn" class="btn">
-            Logout
-        </button>
-
-    </section>
-
-    <!-- REGIONS -->
-<section id="regionsSection" class="regions-section">
-
-    <h2>Shop by Region</h2>
-
-    <div class="regions-grid">
-
-        <button
-            class="region-card active"
-            data-region="Luzon"
-        >
-            <span>🇵🇭</span>
-            <strong>Luzon</strong>
-            <small>View Luzon Products</small>
-        </button>
-
-        <button
-            class="region-card"
-            data-region="Visayas"
-        >
-            <span>🇵🇭</span>
-            <strong>Visayas</strong>
-            <small>View Visayas Products</small>
-        </button>
-
-        <button
-            class="region-card"
-            data-region="Mindanao"
-        >
-            <span>🇵🇭</span>
-            <strong>Mindanao</strong>
-            <small>View Mindanao Products</small>
-        </button>
-
-    </div>
-
-    <p id="selectedRegion">
-        Showing Luzon products
+    <p>
+        Discover products and businesses
+        from different regions.
     </p>
 
 </section>
 
 
-<!-- PRODUCTS -->
+
+<!-- ==========================================
+     AUTH
+     ========================================== -->
+
 <section
-    id="productsSection"
-    class="products-section"
+    id="authSection"
+    class="auth-container hidden"
 >
 
-    <h2 id="productsTitle">
-        Luzon Products
+
+    <!-- LOGIN -->
+
+    <div
+        id="loginBox"
+        class="auth-box"
+    >
+
+        <h2>
+            Login
+        </h2>
+
+
+        <form id="loginForm">
+
+            <input
+                type="email"
+                id="loginEmail"
+                placeholder="Email"
+                required
+            >
+
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Password"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="btn full"
+            >
+                Login
+            </button>
+
+        </form>
+
+
+        <!-- FORGOT PASSWORD -->
+
+        <p>
+
+            <button
+                id="forgotPasswordBtn"
+                class="link-btn"
+                type="button"
+            >
+                Forgot Password?
+            </button>
+
+        </p>
+
+
+        <p>
+
+            Don't have an account?
+
+            <button
+                id="switchToSignup"
+                class="link-btn"
+                type="button"
+            >
+                Sign Up
+            </button>
+
+        </p>
+
+
+        <p
+            id="loginMessage"
+            class="message"
+        ></p>
+
+    </div>
+
+
+
+    <!-- SIGN UP -->
+
+    <div
+        id="signupBox"
+        class="auth-box hidden"
+    >
+
+        <h2>
+            Create Account
+        </h2>
+
+
+        <form id="signupForm">
+
+
+            <input
+                type="text"
+                id="signupUsername"
+                placeholder="Username"
+                required
+            >
+
+
+            <input
+                type="email"
+                id="signupEmail"
+                placeholder="Email"
+                required
+            >
+
+
+            <input
+                type="password"
+                id="signupPassword"
+                placeholder="Password"
+                minlength="6"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="btn full"
+            >
+                Create Account
+            </button>
+
+        </form>
+
+
+        <p>
+
+            Already have an account?
+
+            <button
+                id="switchToLogin"
+                class="link-btn"
+                type="button"
+            >
+                Login
+            </button>
+
+        </p>
+
+
+        <p
+            id="signupMessage"
+            class="message"
+        ></p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     RESET PASSWORD
+     ========================================== -->
+
+<section
+    id="resetPasswordSection"
+    class="auth-container hidden"
+>
+
+    <div class="auth-box">
+
+        <h2>
+            Reset Password
+        </h2>
+
+
+        <form id="resetPasswordForm">
+
+
+            <input
+                type="password"
+                id="newPassword"
+                placeholder="New Password"
+                minlength="6"
+                required
+            >
+
+
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm New Password"
+                minlength="6"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="btn full"
+            >
+                Change Password
+            </button>
+
+        </form>
+
+
+        <p
+            id="resetPasswordMessage"
+            class="message"
+        ></p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     USER DASHBOARD
+     ========================================== -->
+
+<section
+    id="userSection"
+    class="dashboard hidden"
+>
+
+    <h2>
+        User Dashboard
     </h2>
+
+
+    <p>
+        Welcome,
+        <strong id="usernameDisplay"></strong>
+    </p>
+
+
+    <br>
+
+
+    <button
+        id="logoutBtn"
+        class="btn"
+    >
+        Logout
+    </button>
+
+</section>
+
+
+
+<!-- ==========================================
+     REGION SELECTION
+     ========================================== -->
+
+<section
+    id="regionSection"
+    class="region-section hidden"
+>
+
+    <h2>
+        Choose a Region
+    </h2>
+
+
+    <div class="region-grid">
+
+
+        <button
+            class="region-card"
+            data-region="Luzon"
+            type="button"
+        >
+            🇵🇭 Luzon
+        </button>
+
+
+        <button
+            class="region-card"
+            data-region="Visayas"
+            type="button"
+        >
+            🌴 Visayas
+        </button>
+
+
+        <button
+            class="region-card"
+            data-region="Mindanao"
+            type="button"
+        >
+            🌄 Mindanao
+        </button>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     PRODUCTS
+     ========================================== -->
+
+<section
+    id="productsSection"
+    class="products-section hidden"
+>
+
+    <h2>
+        Our Products
+    </h2>
+
+
+    <p id="selectedRegion">
+        All Products
+    </p>
+
 
     <div
         id="productsContainer"
         class="products-grid"
     >
-        <!-- Products will load here -->
+
+        <!-- Products load here -->
+
     </div>
 
 </section>
 
-    <!-- SHOPPING CART -->
-    <section id="cartSection" class="cart-section hidden">
 
-        <h2>🛒 Your Cart</h2>
 
-        <div class="cart-container">
+<!-- ==========================================
+     CART
+     ========================================== -->
 
-            <div id="cartItems">
-                <p>Your cart is empty.</p>
-            </div>
+<section
+    id="cartSection"
+    class="hidden"
+>
 
-            <div class="cart-total">
-                Total Payment:
-                <span id="cartTotal">₱0.00</span>
-            </div>
+    <h2>
+        🛒 Your Cart
+    </h2>
 
-            <!-- CHECKOUT -->
-            <div class="checkout-section">
 
-                <h3>Checkout</h3>
+    <div id="cartItems">
 
-                <form id="checkoutForm">
+        <!-- Cart items load here -->
 
-                    <input
-                        type="text"
-                        id="customerName"
-                        placeholder="Full Name"
-                        required
-                    >
+    </div>
 
-                    <input
-                        type="text"
-                        id="customerAddress"
-                        placeholder="Delivery Address"
-                        required
-                    >
 
-                    <input
-                        type="tel"
-                        id="customerPhone"
-                        placeholder="Phone Number"
-                        required
-                    >
+    <strong id="cartTotal">
+        Total: ₱0.00
+    </strong>
 
-                    <select id="paymentMethod" required>
-                        <option value="">Select Payment Method</option>
-                        <option value="Cash on Delivery">
-                            Cash on Delivery
-                        </option>
-                        <option value="GCash">
-                            GCash
-                        </option>
-                        <option value="Bank Transfer">
-                            Bank Transfer
-                        </option>
-                    </select>
 
-                    <button
-                        type="submit"
-                        class="btn checkout-btn"
-                    >
-                        Place Order
-                    </button>
 
-                </form>
+    <!-- ======================================
+         CHECKOUT
+         ====================================== -->
 
-                <p id="checkoutMessage" class="message"></p>
+    <form id="checkoutForm">
 
-            </div>
 
-        </div>
+        <h3>
+            Checkout
+        </h3>
 
-    </section>
 
-    <!-- ADMIN DASHBOARD -->
-    <section id="adminSection" class="admin-dashboard hidden">
+        <label for="customerName">
+            Full Name
+        </label>
 
-        <h2>👑 Admin Dashboard</h2>
+        <input
+            type="text"
+            id="customerName"
+            placeholder="Enter your full name"
+            required
+        >
 
-        <p>Manage your products below.</p>
 
-        <!-- ADD PRODUCT -->
-        <div class="admin-form">
+        <label for="customerAddress">
+            Delivery Address
+        </label>
 
-            <h3>Add Product</h3>
+        <textarea
+            id="customerAddress"
+            placeholder="Enter your complete delivery address"
+            required
+        ></textarea>
 
-           <form id="productForm">
 
-    <input
-        type="text"
-        id="productName"
-        placeholder="Product name"
-        required
-    >
+        <label for="paymentMethod">
+            Payment Method
+        </label>
 
-    <input
-        type="number"
-        id="productPrice"
-        placeholder="Price"
-        min="0"
-        step="0.01"
-        required
-    >
 
-    <select id="productRegion" required>
+        <select
+            id="paymentMethod"
+            required
+        >
 
-        <option value="Luzon">
-            Luzon
-        </option>
+            <option value="">
+                Select Payment Method
+            </option>
 
-        <option value="Visayas">
-            Visayas
-        </option>
+            <option value="GCash">
+                GCash
+            </option>
 
-        <option value="Mindanao">
-            Mindanao
-        </option>
+            <option value="Cash on Delivery">
+                Cash on Delivery
+            </option>
 
-    </select>
+        </select>
 
-    <input
-        type="text"
-        id="productImage"
-        placeholder="Image URL"
-    >
 
-    <textarea
-        id="productDescription"
-        placeholder="Product description"
-    ></textarea>
 
-    <button type="submit" class="btn">
-        Add Product
-    </button>
+        <!-- GCASH INFO -->
 
-            </form>
+        <div
+            id="gcashInfo"
+            class="gcash-info hidden"
+        >
 
-            <p id="productMessage" class="message"></p>
+            <p>
+                📱 GCash Payment
+            </p>
+
+            <p>
+                Send payment to:
+            </p>
+
+            <p>
+                <strong>
+                    09090661615
+                </strong>
+            </p>
+
+            <p>
+                After sending payment,
+                place your order below.
+            </p>
 
         </div>
 
-        <!-- ADMIN PRODUCTS -->
-        <div class="admin-products">
 
-            <h3>Manage Products</h3>
 
-            <div id="adminProductsContainer">
-                <!-- Admin products load here -->
-            </div>
+        <button
+            type="submit"
+            class="btn full"
+        >
+            Place Order
+        </button>
+
+
+        <p
+            id="checkoutMessage"
+            class="message"
+        ></p>
+
+    </form>
+
+</section>
+
+
+
+<!-- ==========================================
+     ADMIN DASHBOARD
+     ========================================== -->
+
+<section
+    id="adminSection"
+    class="admin-dashboard hidden"
+>
+
+    <h2>
+        👑 Admin Dashboard
+    </h2>
+
+
+    <p>
+        Manage your products below.
+    </p>
+
+
+
+    <!-- ADD PRODUCT -->
+
+    <div class="admin-form">
+
+        <h3>
+            Add Product
+        </h3>
+
+
+        <form id="productForm">
+
+
+            <input
+                type="text"
+                id="productName"
+                placeholder="Product name"
+                required
+            >
+
+
+            <input
+                type="number"
+                id="productPrice"
+                placeholder="Price"
+                min="0"
+                step="0.01"
+                required
+            >
+
+
+            <!-- REGION -->
+
+            <select
+                id="productRegion"
+                required
+            >
+
+                <option value="">
+                    Select Region
+                </option>
+
+                <option value="Luzon">
+                    Luzon
+                </option>
+
+                <option value="Visayas">
+                    Visayas
+                </option>
+
+                <option value="Mindanao">
+                    Mindanao
+                </option>
+
+            </select>
+
+
+            <input
+                type="text"
+                id="productImage"
+                placeholder="Image URL"
+            >
+
+
+            <textarea
+                id="productDescription"
+                placeholder="Product description"
+            ></textarea>
+
+
+            <button
+                type="submit"
+                class="btn"
+            >
+                Add Product
+            </button>
+
+        </form>
+
+
+        <p
+            id="productMessage"
+            class="message"
+        ></p>
+
+    </div>
+
+
+
+    <!-- ADMIN PRODUCTS -->
+
+    <div class="admin-products">
+
+        <h3>
+            Manage Products
+        </h3>
+
+
+        <div
+            id="adminProductsContainer"
+        >
+
+            <!-- Admin products load here -->
 
         </div>
 
-    </section>
+    </div>
+
+</section>
+
 
 </main>
 
+
+
+<!-- ==========================================
+     FOOTER
+     ========================================== -->
+
 <footer>
-    <p>© 2026 Bulacan Business</p>
+
+    <p>
+        © 2026 Bulacan Business
+    </p>
+
 </footer>
+
+
+
+<!-- ==========================================
+     JAVASCRIPT
+     ========================================== -->
 
 <script src="script.js"></script>
 
+
+<!-- ==========================================
+     PAYMENT METHOD SCRIPT
+     ========================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const paymentMethod =
+            document.getElementById(
+                "paymentMethod"
+            );
+
+        const gcashInfo =
+            document.getElementById(
+                "gcashInfo"
+            );
+
+
+        paymentMethod?.addEventListener(
+            "change",
+            function () {
+
+                if (
+                    this.value === "GCash"
+                ) {
+
+                    gcashInfo.classList.remove(
+                        "hidden"
+                    );
+
+                } else {
+
+                    gcashInfo.classList.add(
+                        "hidden"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
 </body>
+
 </html>
