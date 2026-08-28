@@ -695,7 +695,386 @@ html {
     .auth-container {
         min-height: 600px;
         padding: 40px 15px;
+    }/* ==========================================
+   WEBSITE-WIDE ANIMATIONS
+   ========================================== */
+
+/* Smooth page appearance */
+main {
+    animation: pageFadeIn 0.7s ease both;
+}
+
+@keyframes pageFadeIn {
+    from {
+        opacity: 0;
     }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+/* ==========================================
+   HERO
+   ========================================== */
+
+.hero h1 {
+    animation: titleDrop 0.8s ease both;
+}
+
+.hero p {
+    animation: textFade 1s ease 0.2s both;
+}
+
+@keyframes titleDrop {
+    from {
+        opacity: 0;
+        transform: translateY(-25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes textFade {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ==========================================
+   PRODUCT CARDS
+   ========================================== */
+
+.product-card {
+    animation: productAppear 0.6s ease both;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.product-card:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.product-card:nth-child(2) {
+    animation-delay: 0.10s;
+}
+
+.product-card:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.product-card:nth-child(4) {
+    animation-delay: 0.20s;
+}
+
+.product-card:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.product-card:nth-child(6) {
+    animation-delay: 0.30s;
+}
+
+@keyframes productAppear {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.product-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow:
+        0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ==========================================
+   PRODUCT IMAGE
+   ========================================== */
+
+.product-card img {
+    transition:
+        transform 0.5s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.08);
+}
+
+
+/* ==========================================
+   BUTTONS
+   ========================================== */
+
+.btn {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 7px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: scale(0.94);
+}
+
+
+/* ==========================================
+   USER DASHBOARD
+   ========================================== */
+
+.dashboard {
+    animation: dashboardEnter 0.7s ease both;
+}
+
+@keyframes dashboardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ==========================================
+   CART
+   ========================================== */
+
+.cart-section {
+    animation: cartEnter 0.6s ease both;
+}
+
+.cart-item {
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.cart-item:hover {
+    transform: translateX(5px);
+}
+
+@keyframes cartEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ==========================================
+   CART QUANTITY BUTTON
+   ========================================== */
+
+.quantity-btn {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.quantity-btn:hover {
+    transform: scale(1.1);
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.quantity-btn:active {
+    transform: scale(0.9);
+}
+
+
+/* ==========================================
+   CHECKOUT
+   ========================================== */
+
+.checkout-section {
+    animation: checkoutEnter 0.7s ease both;
+}
+
+@keyframes checkoutEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ==========================================
+   INPUT ANIMATION
+   ========================================== */
+
+input,
+textarea,
+select {
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    transform: translateY(-2px);
+}
+
+
+/* ==========================================
+   ADMIN DASHBOARD
+   ========================================== */
+
+.admin-dashboard {
+    animation: adminEnter 0.7s ease both;
+}
+
+.admin-product-item {
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.admin-product-item:hover {
+    transform: translateX(5px);
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes adminEnter {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ==========================================
+   LOGO ANIMATION
+   ========================================== */
+
+.logo {
+    transition:
+        transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+
+/* ==========================================
+   NAVBAR BUTTONS
+   ========================================== */
+
+.navbar .btn {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.navbar .btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 5px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+
+footer {
+    animation: footerFade 1s ease both;
+}
+
+@keyframes footerFade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+/* ==========================================
+   LOADING EFFECT
+   ========================================== */
+
+.loading {
+    animation: loadingPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%,
+    100% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+
+/* ==========================================
+   MOBILE
+   ========================================== */
+
+@media (max-width: 600px) {
+
+    .product-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .cart-item:hover,
+    .admin-product-item:hover {
+        transform: none;
+    }
+
+}
 
     .auth-box {
         padding: 25px;
