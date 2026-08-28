@@ -1,23 +1,18 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Bulacan Business</title>
 
-```
-<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-```
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-```
 <header class="navbar">
     <div class="logo">Bulacan Business</div>
 
@@ -38,17 +33,11 @@
     <!-- AUTH -->
     <section id="authSection" class="auth-container hidden">
 
-        <!-- LOGIN -->
         <div id="loginBox" class="auth-box">
             <h2>Login</h2>
 
             <form id="loginForm">
-                <input
-                    type="email"
-                    id="loginEmail"
-                    placeholder="Email"
-                    required
-                >
+                <input type="email" id="loginEmail" placeholder="Email" required>
 
                 <input
                     type="password"
@@ -72,8 +61,6 @@
             <p id="loginMessage" class="message"></p>
         </div>
 
-
-        <!-- SIGN UP -->
         <div id="signupBox" class="auth-box hidden">
             <h2>Create Account</h2>
 
@@ -119,7 +106,6 @@
 
     </section>
 
-
     <!-- USER DASHBOARD -->
     <section id="userSection" class="dashboard hidden">
 
@@ -136,18 +122,90 @@
 
     </section>
 
-
     <!-- PRODUCTS -->
     <section id="productsSection" class="products-section">
 
         <h2>Our Products</h2>
 
         <div id="productsContainer" class="products-grid">
-            <!-- Products will load here -->
+            <!-- Products load here -->
         </div>
 
     </section>
 
+    <!-- SHOPPING CART -->
+    <section id="cartSection" class="cart-section hidden">
+
+        <h2>🛒 Your Cart</h2>
+
+        <div class="cart-container">
+
+            <div id="cartItems">
+                <p>Your cart is empty.</p>
+            </div>
+
+            <div class="cart-total">
+                Total Payment:
+                <span id="cartTotal">₱0.00</span>
+            </div>
+
+            <!-- CHECKOUT -->
+            <div class="checkout-section">
+
+                <h3>Checkout</h3>
+
+                <form id="checkoutForm">
+
+                    <input
+                        type="text"
+                        id="customerName"
+                        placeholder="Full Name"
+                        required
+                    >
+
+                    <input
+                        type="text"
+                        id="customerAddress"
+                        placeholder="Delivery Address"
+                        required
+                    >
+
+                    <input
+                        type="tel"
+                        id="customerPhone"
+                        placeholder="Phone Number"
+                        required
+                    >
+
+                    <select id="paymentMethod" required>
+                        <option value="">Select Payment Method</option>
+                        <option value="Cash on Delivery">
+                            Cash on Delivery
+                        </option>
+                        <option value="GCash">
+                            GCash
+                        </option>
+                        <option value="Bank Transfer">
+                            Bank Transfer
+                        </option>
+                    </select>
+
+                    <button
+                        type="submit"
+                        class="btn checkout-btn"
+                    >
+                        Place Order
+                    </button>
+
+                </form>
+
+                <p id="checkoutMessage" class="message"></p>
+
+            </div>
+
+        </div>
+
+    </section>
 
     <!-- ADMIN DASHBOARD -->
     <section id="adminSection" class="admin-dashboard hidden">
@@ -200,14 +258,13 @@
 
         </div>
 
-
         <!-- ADMIN PRODUCTS -->
         <div class="admin-products">
 
             <h3>Manage Products</h3>
 
             <div id="adminProductsContainer">
-                <!-- Admin products will load here -->
+                <!-- Admin products load here -->
             </div>
 
         </div>
@@ -220,10 +277,7 @@
     <p>© 2026 Bulacan Business</p>
 </footer>
 
-
-<!-- YOUR JAVASCRIPT -->
 <script src="script.js"></script>
-```
 
 </body>
 </html>
