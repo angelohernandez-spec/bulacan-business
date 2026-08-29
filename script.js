@@ -214,24 +214,20 @@ function initializeApp() {
     updateNavbar();
     updateCartCount();
 
-    /*
-       IMPORTANT:
-
-       Logged out:
-       Region hidden
-       Products hidden
-
-       Logged in:
-       Region visible
-       Products hidden
-       User must select region.
-    */
-
     if (currentUser) {
 
         selectedRegion = null;
 
         showLoggedInShopping();
+
+        // OPEN ADMIN PANEL AUTOMATICALLY
+        if (currentUser.role === "admin") {
+
+            setTimeout(() => {
+                showPage("admin");
+            }, 500);
+
+        }
 
     } else {
 
