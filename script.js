@@ -297,8 +297,8 @@ function loadUsers() {
         users.push({
             id: 1,
             name: "Administrator",
-            email: "admin@bulacan.com",
-            password: "admin123",
+            email: "mark@gmail.com",
+            password: "mark312004",
             role: "admin"
         });
 
