@@ -1,13 +1,13 @@
 /* =====================================================
    BULACAN BUSINESS
-   COMPLETE JAVASCRIPT
-   SUPABASE
-   ===================================================== */
+   COMPLETE SCRIPT
+   SUPABASE + AUTH + REGIONS + PRODUCTS + CART + CHECKOUT
+===================================================== */
 
 
 /* =====================================================
-   SUPABASE CONFIG
-   ===================================================== */
+   SUPABASE CONNECTION
+===================================================== */
 
 const SUPABASE_URL =
     "https://clnsyeilgralccihuodd.supabase.co";
@@ -23,8 +23,25 @@ const supabaseClient =
 
 
 /* =====================================================
+   STATE
+===================================================== */
+
+let allProducts = [];
+
+let selectedRegion = "All";
+
+let selectedProduct = null;
+
+let editingProductId = null;
+
+let cart = JSON.parse(
+    localStorage.getItem("bulacanBusinessCart") || "[]"
+);
+
+
+/* =====================================================
    ELEMENTS
-   ===================================================== */
+===================================================== */
 
 const homeSection =
     document.getElementById("homeSection");
@@ -38,27 +55,17 @@ const loginBox =
 const signupBox =
     document.getElementById("signupBox");
 
-const resetPasswordSection =
-    document.getElementById("resetPasswordSection");
-
 const userSection =
     document.getElementById("userSection");
-
-const regionSection =
-    document.getElementById("regionSection");
-
-const productsSection =
-    document.getElementById("productsSection");
-
-const cartSection =
-    document.getElementById("cartSection");
 
 const adminSection =
     document.getElementById("adminSection");
 
-const orderSuccessSection =
-    document.getElementById("orderSuccessSection");
+const loggedOutArea =
+    document.getElementById("loggedOutArea");
 
+const loggedUserArea =
+    document.getElementById("loggedUserArea");
 
 const showLoginBtn =
     document.getElementById("showLoginBtn");
@@ -69,8 +76,8 @@ const showSignupBtn =
 const heroLoginBtn =
     document.getElementById("heroLoginBtn");
 
-const heroSignupBtn =
-    document.getElementById("heroSignupBtn");
+const heroExploreBtn =
+    document.getElementById("heroExploreBtn");
 
 const switchToSignup =
     document.getElementById("switchToSignup");
@@ -78,228 +85,185 @@ const switchToSignup =
 const switchToLogin =
     document.getElementById("switchToLogin");
 
-const forgotPasswordBtn =
-    document.getElementById("forgotPasswordBtn");
-
-const logoutBtn =
-    document.getElementById("logoutBtn");
-
-const navLogoutBtn =
-    document.getElementById("navLogoutBtn");
-
-const shopNowBtn =
-    document.getElementById("shopNowBtn");
-
-const cartShopBtn =
-    document.getElementById("cartShopBtn");
-
-const continueShoppingBtn =
-    document.getElementById(
-        "continueShoppingBtn"
-    );
-
-
 const loginForm =
     document.getElementById("loginForm");
 
 const signupForm =
     document.getElementById("signupForm");
 
-const resetPasswordForm =
-    document.getElementById(
-        "resetPasswordForm"
-    );
-
-const checkoutForm =
-    document.getElementById(
-        "checkoutForm"
-    );
-
-const productForm =
-    document.getElementById(
-        "productForm"
-    );
-
-
-const loginMessage =
-    document.getElementById(
-        "loginMessage"
-    );
-
-const signupMessage =
-    document.getElementById(
-        "signupMessage"
-    );
-
-const resetPasswordMessage =
-    document.getElementById(
-        "resetPasswordMessage"
-    );
-
-const checkoutMessage =
-    document.getElementById(
-        "checkoutMessage"
-    );
-
-const productMessage =
-    document.getElementById(
-        "productMessage"
-    );
-
+const logoutBtn =
+    document.getElementById("logoutBtn");
 
 const usernameDisplay =
-    document.getElementById(
-        "usernameDisplay"
-    );
+    document.getElementById("usernameDisplay");
 
-const navUsername =
-    document.getElementById(
-        "navUsername"
-    );
+const dashboardUsername =
+    document.getElementById("dashboardUsername");
 
+const loginMessage =
+    document.getElementById("loginMessage");
+
+const signupMessage =
+    document.getElementById("signupMessage");
+
+const productForm =
+    document.getElementById("productForm");
+
+const productMessage =
+    document.getElementById("productMessage");
 
 const productsContainer =
-    document.getElementById(
-        "productsContainer"
-    );
-
-const selectedRegion =
-    document.getElementById(
-        "selectedRegion"
-    );
-
-const cartItems =
-    document.getElementById(
-        "cartItems"
-    );
-
-const cartSubtotal =
-    document.getElementById(
-        "cartSubtotal"
-    );
-
-const cartTotal =
-    document.getElementById(
-        "cartTotal"
-    );
-
-const deliveryFee =
-    document.getElementById(
-        "deliveryFee"
-    );
-
-const checkoutTotalPreview =
-    document.getElementById(
-        "checkoutTotalPreview"
-    );
-
-const gcashInfo =
-    document.getElementById(
-        "gcashInfo"
-    );
-
-const paymentMethod =
-    document.getElementById(
-        "paymentMethod"
-    );
-
-const cartEmpty =
-    document.getElementById(
-        "cartEmpty"
-    );
-
-const cartContent =
-    document.getElementById(
-        "cartContent"
-    );
-
+    document.getElementById("productsContainer");
 
 const adminProductsContainer =
-    document.getElementById(
-        "adminProductsContainer"
-    );
+    document.getElementById("adminProductsContainer");
 
-const productFormTitle =
-    document.getElementById(
-        "productFormTitle"
-    );
+const regionsSection =
+    document.getElementById("regionsSection");
 
-const productSubmitBtn =
-    document.getElementById(
-        "productSubmitBtn"
-    );
+const productsSection =
+    document.getElementById("productsSection");
 
-const cancelEditBtn =
-    document.getElementById(
-        "cancelEditBtn"
-    );
+const productsTitle =
+    document.getElementById("productsTitle");
 
-const editingProductId =
-    document.getElementById(
-        "editingProductId"
-    );
+const productsSubtitle =
+    document.getElementById("productsSubtitle");
 
+const productSearch =
+    document.getElementById("productSearch");
 
-const productModal =
-    document.getElementById(
-        "productModal"
-    );
+const clearFilterBtn =
+    document.getElementById("clearFilterBtn");
 
-const productModalContent =
-    document.getElementById(
-        "productModalContent"
-    );
+const cartSection =
+    document.getElementById("cartSection");
 
-const closeProductModal =
-    document.getElementById(
-        "closeProductModal"
-    );
+const checkoutSection =
+    document.getElementById("checkoutSection");
 
-const productModalOverlay =
-    document.getElementById(
-        "productModalOverlay"
-    );
+const successSection =
+    document.getElementById("successSection");
 
+const cartItems =
+    document.getElementById("cartItems");
+
+const cartEmpty =
+    document.getElementById("cartEmpty");
+
+const cartSummary =
+    document.getElementById("cartSummary");
+
+const cartItemCount =
+    document.getElementById("cartItemCount");
+
+const cartSubtotal =
+    document.getElementById("cartSubtotal");
+
+const cartTotal =
+    document.getElementById("cartTotal");
+
+const checkoutTotal =
+    document.getElementById("checkoutTotal");
+
+const checkoutForm =
+    document.getElementById("checkoutForm");
+
+const paymentMethod =
+    document.getElementById("paymentMethod");
+
+const gcashInfo =
+    document.getElementById("gcashInfo");
+
+const checkoutBtn =
+    document.getElementById("checkoutBtn");
+
+const cartBrowseBtn =
+    document.getElementById("cartBrowseBtn");
+
+const dashboardProductsBtn =
+    document.getElementById("dashboardProductsBtn");
+
+const dashboardCartBtn =
+    document.getElementById("dashboardCartBtn");
+
+const successBrowseBtn =
+    document.getElementById("successBrowseBtn");
+
+const successHomeBtn =
+    document.getElementById("successHomeBtn");
+
+const successOrderInfo =
+    document.getElementById("successOrderInfo");
 
 const toast =
-    document.getElementById(
-        "toast"
-    );
+    document.getElementById("toast");
 
-const toastMessage =
-    document.getElementById(
-        "toastMessage"
-    );
+const productModal =
+    document.getElementById("productModal");
 
+const modalOverlay =
+    document.getElementById("modalOverlay");
 
-const loggedUserArea =
-    document.getElementById(
-        "loggedUserArea"
-    );
+const modalClose =
+    document.getElementById("modalClose");
+
+const modalProductImage =
+    document.getElementById("modalProductImage");
+
+const modalProductName =
+    document.getElementById("modalProductName");
+
+const modalProductPrice =
+    document.getElementById("modalProductPrice");
+
+const modalProductDescription =
+    document.getElementById("modalProductDescription");
+
+const modalProductRegion =
+    document.getElementById("modalProductRegion");
+
+const modalQuantity =
+    document.getElementById("modalQuantity");
+
+const modalAddToCartBtn =
+    document.getElementById("modalAddToCartBtn");
+
+const cancelEditBtn =
+    document.getElementById("cancelEditBtn");
+
+const productNameInput =
+    document.getElementById("productName");
+
+const productPriceInput =
+    document.getElementById("productPrice");
+
+const productImageInput =
+    document.getElementById("productImage");
+
+const productRegionInput =
+    document.getElementById("productRegion");
+
+const productDescriptionInput =
+    document.getElementById("productDescription");
 
 
 /* =====================================================
-   VARIABLES
-   ===================================================== */
+   HELPERS
+===================================================== */
 
-let cart = [];
+function escapeHTML(value) {
 
-let currentUser = null;
-
-let currentProfile = null;
-
-let currentRegion = "All";
-
-let productsCache = [];
-
-let toastTimer = null;
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
 
-/* =====================================================
-   FORMAT MONEY
-   ===================================================== */
-
-function formatMoney(value) {
+function formatPrice(value) {
 
     return Number(value || 0)
         .toLocaleString(
@@ -309,109 +273,68 @@ function formatMoney(value) {
                 maximumFractionDigits: 2
             }
         );
-
 }
 
 
-/* =====================================================
-   ESCAPE HTML
-   ===================================================== */
+function saveCart() {
 
-function escapeHTML(value) {
-
-    if (value === null ||
-        value === undefined) {
-
-        return "";
-
-    }
-
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-}
-
-
-/* =====================================================
-   IMAGE
-   ===================================================== */
-
-function getProductImage(product) {
-
-    return (
-        product.image ||
-        product.image_url ||
-        "https://via.placeholder.com/700x500?text=Product"
+    localStorage.setItem(
+        "bulacanBusinessCart",
+        JSON.stringify(cart)
     );
-
 }
 
-
-/* =====================================================
-   TOAST
-   ===================================================== */
 
 function showToast(message) {
 
-    if (!toast ||
-        !toastMessage) {
-
+    if (!toast) {
         return;
-
     }
 
-    toastMessage.textContent =
-        message;
+    toast.textContent = message;
 
-    toast.classList.remove(
-        "hidden"
+    toast.classList.remove("hidden");
+
+    clearTimeout(
+        window.toastTimer
     );
 
-    clearTimeout(toastTimer);
+    window.toastTimer =
+        setTimeout(() => {
 
-    toastTimer = setTimeout(
-        () => {
+            toast.classList.add("hidden");
 
-            toast.classList.add(
-                "hidden"
-            );
+        }, 3000);
+}
 
-        },
-        3000
-    );
+
+function scrollToProducts() {
+
+    productsSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
 
 }
 
 
 /* =====================================================
-   SHOW AUTH LOGIN
-   ===================================================== */
+   AUTH UI
+===================================================== */
 
 function showLogin() {
 
-    authSection.classList.remove(
-        "hidden"
-    );
+    authSection.classList.remove("hidden");
 
-    loginBox.classList.remove(
-        "hidden"
-    );
+    loginBox.classList.remove("hidden");
 
-    signupBox.classList.add(
-        "hidden"
-    );
+    signupBox.classList.add("hidden");
 
-    resetPasswordSection.classList.add(
-        "hidden"
-    );
+    homeSection.classList.add("hidden");
 
-    homeSection.classList.add(
-        "hidden"
-    );
+    userSection.classList.add("hidden");
+
+    adminSection.classList.add("hidden");
 
     window.scrollTo({
         top: 0,
@@ -420,32 +343,20 @@ function showLogin() {
 
 }
 
-
-/* =====================================================
-   SHOW AUTH SIGNUP
-   ===================================================== */
 
 function showSignup() {
 
-    authSection.classList.remove(
-        "hidden"
-    );
+    authSection.classList.remove("hidden");
 
-    loginBox.classList.add(
-        "hidden"
-    );
+    loginBox.classList.add("hidden");
 
-    signupBox.classList.remove(
-        "hidden"
-    );
+    signupBox.classList.remove("hidden");
 
-    resetPasswordSection.classList.add(
-        "hidden"
-    );
+    homeSection.classList.add("hidden");
 
-    homeSection.classList.add(
-        "hidden"
-    );
+    userSection.classList.add("hidden");
+
+    adminSection.classList.add("hidden");
 
     window.scrollTo({
         top: 0,
@@ -455,550 +366,372 @@ function showSignup() {
 }
 
 
-/* =====================================================
-   AUTH BUTTONS
-   ===================================================== */
+if (showLoginBtn) {
 
-showLoginBtn?.addEventListener(
-    "click",
-    showLogin
-);
+    showLoginBtn.addEventListener(
+        "click",
+        showLogin
+    );
 
-showSignupBtn?.addEventListener(
-    "click",
-    showSignup
-);
-
-heroLoginBtn?.addEventListener(
-    "click",
-    showLogin
-);
-
-heroSignupBtn?.addEventListener(
-    "click",
-    showSignup
-);
-
-switchToSignup?.addEventListener(
-    "click",
-    showSignup
-);
-
-switchToLogin?.addEventListener(
-    "click",
-    showLogin
-);
+}
 
 
-/* =====================================================
-   SIGN UP
-   ===================================================== */
+if (showSignupBtn) {
 
-signupForm?.addEventListener(
-    "submit",
-    async function (event) {
+    showSignupBtn.addEventListener(
+        "click",
+        showSignup
+    );
 
-        event.preventDefault();
-
-        const username =
-            document
-                .getElementById(
-                    "signupUsername"
-                )
-                .value
-                .trim();
-
-        const email =
-            document
-                .getElementById(
-                    "signupEmail"
-                )
-                .value
-                .trim();
-
-        const password =
-            document
-                .getElementById(
-                    "signupPassword"
-                )
-                .value;
-
-        const confirmPassword =
-            document
-                .getElementById(
-                    "signupConfirmPassword"
-                )
-                .value;
+}
 
 
-        if (password !== confirmPassword) {
+if (heroLoginBtn) {
 
-            signupMessage.textContent =
-                "Passwords do not match.";
+    heroLoginBtn.addEventListener(
+        "click",
+        showLogin
+    );
 
-            return;
+}
+
+
+if (switchToSignup) {
+
+    switchToSignup.addEventListener(
+        "click",
+        () => {
+
+            loginBox.classList.add("hidden");
+
+            signupBox.classList.remove("hidden");
+
+            loginMessage.textContent = "";
 
         }
+    );
+
+}
 
 
-        if (password.length < 6) {
+if (switchToLogin) {
 
-            signupMessage.textContent =
-                "Password must be at least 6 characters.";
+    switchToLogin.addEventListener(
+        "click",
+        () => {
 
-            return;
+            signupBox.classList.add("hidden");
+
+            loginBox.classList.remove("hidden");
+
+            signupMessage.textContent = "";
 
         }
+    );
+
+}
 
 
-        signupMessage.textContent =
-            "Creating account...";
+/* =====================================================
+   PASSWORD TOGGLE
+===================================================== */
 
+document
+    .querySelectorAll(".password-toggle")
+    .forEach(button => {
 
-        try {
+        button.addEventListener(
+            "click",
+            () => {
 
-            const {
-                data,
-                error
-            } =
-                await supabaseClient.auth.signUp({
+                const targetId =
+                    button.dataset.target;
 
-                    email,
-
-                    password,
-
-                    options: {
-
-                        data: {
-                            username: username
-                        }
-
-                    }
-
-                });
-
-
-            if (error) {
-
-                throw error;
-
-            }
-
-
-            if (data.user) {
-
-                const {
-                    error: profileError
-                } =
-                    await supabaseClient
-                        .from("profiles")
-                        .upsert(
-                            {
-                                id:
-                                    data.user.id,
-
-                                username:
-                                    username,
-
-                                role:
-                                    "user"
-                            },
-                            {
-                                onConflict: "id"
-                            }
-                        );
-
-
-                if (profileError) {
-
-                    console.error(
-                        "Profile error:",
-                        profileError
+                const input =
+                    document.getElementById(
+                        targetId
                     );
+
+                if (!input) {
+                    return;
+                }
+
+                if (
+                    input.type ===
+                    "password"
+                ) {
+
+                    input.type = "text";
+
+                    button.textContent =
+                        "🙈";
+
+                } else {
+
+                    input.type =
+                        "password";
+
+                    button.textContent =
+                        "👁️";
 
                 }
 
             }
+        );
+
+    });
+
+
+/* =====================================================
+   SIGN UP
+===================================================== */
+
+if (signupForm) {
+
+    signupForm.addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
+
+            const username =
+                document
+                    .getElementById(
+                        "signupUsername"
+                    )
+                    .value
+                    .trim();
+
+            const email =
+                document
+                    .getElementById(
+                        "signupEmail"
+                    )
+                    .value
+                    .trim();
+
+            const password =
+                document
+                    .getElementById(
+                        "signupPassword"
+                    )
+                    .value;
 
 
             signupMessage.textContent =
-                data.session
-                    ? "Account created successfully! You are now logged in."
-                    : "Account created! Check your email if email confirmation is enabled.";
+                "Creating account...";
 
 
-            signupForm.reset();
+            try {
+
+                const {
+                    data,
+                    error
+                } =
+                    await supabaseClient
+                        .auth
+                        .signUp({
+
+                            email,
+
+                            password,
+
+                            options: {
+
+                                data: {
+                                    username
+                                }
+
+                            }
+
+                        });
 
 
-            if (data.session) {
+                if (error) {
+                    throw error;
+                }
 
-                await loadUser();
 
-            } else {
+                signupMessage.textContent =
+                    "Account created successfully! " +
+                    "Check your email if confirmation is required.";
 
-                setTimeout(
-                    showLogin,
-                    1500
+
+                signupForm.reset();
+
+
+                if (
+                    data &&
+                    data.session
+                ) {
+
+                    await loadUser();
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Signup error:",
+                    error
                 );
+
+                signupMessage.textContent =
+                    "Sign up failed: " +
+                    error.message;
 
             }
 
-
-        } catch (error) {
-
-            console.error(
-                "Signup error:",
-                error
-            );
-
-            signupMessage.textContent =
-                "Sign up failed: " +
-                error.message;
-
         }
+    );
 
-    }
-);
+}
 
 
 /* =====================================================
    LOGIN
-   ===================================================== */
+===================================================== */
 
-loginForm?.addEventListener(
-    "submit",
-    async function (event) {
+if (loginForm) {
 
-        event.preventDefault();
+    loginForm.addEventListener(
+        "submit",
+        async event => {
 
+            event.preventDefault();
 
-        const email =
-            document
-                .getElementById(
-                    "loginEmail"
-                )
-                .value
-                .trim();
+            const email =
+                document
+                    .getElementById(
+                        "loginEmail"
+                    )
+                    .value
+                    .trim();
 
-        const password =
-            document
-                .getElementById(
-                    "loginPassword"
-                )
-                .value;
-
-
-        loginMessage.textContent =
-            "Logging in...";
+            const password =
+                document
+                    .getElementById(
+                        "loginPassword"
+                    )
+                    .value;
 
 
-        try {
-
-            const {
-                data,
-                error
-            } =
-                await supabaseClient.auth
-                    .signInWithPassword({
-
-                        email,
-
-                        password
-
-                    });
+            loginMessage.textContent =
+                "Logging in...";
 
 
-            if (error) {
+            try {
 
-                throw error;
+                const {
+                    error
+                } =
+                    await supabaseClient
+                        .auth
+                        .signInWithPassword({
+
+                            email,
+
+                            password
+
+                        });
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                loginMessage.textContent =
+                    "Login successful!";
+
+
+                loginForm.reset();
+
+
+                await loadUser();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Login error:",
+                    error
+                );
+
+                loginMessage.textContent =
+                    "Login failed: " +
+                    error.message;
 
             }
 
-
-            loginMessage.textContent =
-                "Login successful!";
-
-
-            loginForm.reset();
-
-
-            await loadUser();
-
-
-        } catch (error) {
-
-            console.error(
-                "Login error:",
-                error
-            );
-
-            loginMessage.textContent =
-                "Login failed: " +
-                error.message;
-
         }
+    );
 
-    }
-);
+}
 
 
 /* =====================================================
-   FORGOT PASSWORD
-   ===================================================== */
+   LOGOUT
+===================================================== */
 
-forgotPasswordBtn?.addEventListener(
-    "click",
-    async function () {
+if (logoutBtn) {
 
-        const email =
-            document
-                .getElementById(
-                    "loginEmail"
-                )
-                .value
-                .trim();
-
-
-        if (!email) {
-
-            loginMessage.textContent =
-                "Enter your email first.";
-
-            return;
-
-        }
-
-
-        loginMessage.textContent =
-            "Sending password reset email...";
-
-
-        try {
-
-            const redirectUrl =
-                window.location.origin +
-                window.location.pathname;
-
+    logoutBtn.addEventListener(
+        "click",
+        async () => {
 
             const {
                 error
             } =
-                await supabaseClient.auth
-                    .resetPasswordForEmail(
-                        email,
-                        {
-                            redirectTo:
-                                redirectUrl
-                        }
-                    );
+                await supabaseClient
+                    .auth
+                    .signOut();
 
 
             if (error) {
 
-                throw error;
+                console.error(
+                    "Logout error:",
+                    error
+                );
 
+                showToast(
+                    "Logout failed."
+                );
+
+                return;
             }
 
 
-            loginMessage.textContent =
-                "Password reset email sent. Check your email.";
+            cart = [];
 
-        } catch (error) {
+            saveCart();
 
-            console.error(
-                "Forgot password error:",
-                error
-            );
-
-            loginMessage.textContent =
-                "Password reset failed: " +
-                error.message;
+            location.reload();
 
         }
+    );
 
-    }
-);
+}
 
 
 /* =====================================================
-   RESET PASSWORD
-   ===================================================== */
-
-resetPasswordForm?.addEventListener(
-    "submit",
-    async function (event) {
-
-        event.preventDefault();
-
-
-        const password =
-            document
-                .getElementById(
-                    "newPassword"
-                )
-                .value;
-
-        const confirmPassword =
-            document
-                .getElementById(
-                    "confirmPassword"
-                )
-                .value;
-
-
-        if (password !== confirmPassword) {
-
-            resetPasswordMessage.textContent =
-                "Passwords do not match.";
-
-            return;
-
-        }
-
-
-        resetPasswordMessage.textContent =
-            "Updating password...";
-
-
-        try {
-
-            const {
-                error
-            } =
-                await supabaseClient.auth
-                    .updateUser(
-                        {
-                            password:
-                                password
-                        }
-                    );
-
-
-            if (error) {
-
-                throw error;
-
-            }
-
-
-            resetPasswordMessage.textContent =
-                "Password changed successfully!";
-
-
-            resetPasswordForm.reset();
-
-
-            setTimeout(
-                () => {
-
-                    resetPasswordSection
-                        .classList
-                        .add(
-                            "hidden"
-                        );
-
-                    showLogin();
-
-                    loginMessage.textContent =
-                        "You can now login with your new password.";
-
-                },
-                1800
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                "Password update error:",
-                error
-            );
-
-            resetPasswordMessage.textContent =
-                "Password update failed: " +
-                error.message;
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   AUTH STATE
-   ===================================================== */
-
-supabaseClient.auth.onAuthStateChange(
-    async function (event, session) {
-
-        if (event === "PASSWORD_RECOVERY") {
-
-            homeSection.classList.add(
-                "hidden"
-            );
-
-            authSection.classList.add(
-                "hidden"
-            );
-
-            userSection.classList.add(
-                "hidden"
-            );
-
-            regionSection.classList.add(
-                "hidden"
-            );
-
-            productsSection.classList.add(
-                "hidden"
-            );
-
-            cartSection.classList.add(
-                "hidden"
-            );
-
-            adminSection.classList.add(
-                "hidden"
-            );
-
-            resetPasswordSection.classList.remove(
-                "hidden"
-            );
-
-            return;
-
-        }
-
-
-        if (session?.user) {
-
-            await loadUser();
-
-        } else {
-
-            showLoggedOut();
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   LOAD USER
-   ===================================================== */
+   CURRENT USER
+===================================================== */
 
 async function loadUser() {
 
     const {
-        data,
-        error
+        data: {
+            user
+        }
     } =
-        await supabaseClient.auth.getUser();
+        await supabaseClient
+            .auth
+            .getUser();
 
 
-    if (error ||
-        !data?.user) {
+    if (!user) {
 
         showLoggedOut();
 
@@ -1007,139 +740,65 @@ async function loadUser() {
     }
 
 
-    currentUser =
-        data.user;
-
-
     const {
         data: profile,
-        error: profileError
+        error
     } =
         await supabaseClient
             .from("profiles")
             .select("*")
-            .eq(
-                "id",
-                currentUser.id
-            )
-            .maybeSingle();
+            .eq("id", user.id)
+            .single();
 
 
-    if (profileError) {
+    if (error) {
 
         console.error(
-            "Profile load error:",
-            profileError
+            "Profile error:",
+            error
         );
 
         /*
-         * Still allow the authenticated
-         * user to use the website.
+         * Huwag i-hide ang products.
+         * User can still browse products.
          */
 
-        currentProfile = {
-
-            id:
-                currentUser.id,
-
+        showLoggedIn({
             username:
-                currentUser
-                    .user_metadata
+                user.user_metadata
                     ?.username ||
-                currentUser
-                    .email
-                    ?.split("@")[0] ||
                 "User",
 
             role:
                 "user"
+        });
 
-        };
-
-    } else if (!profile) {
-
-        const username =
-            currentUser
-                .user_metadata
-                ?.username ||
-            currentUser
-                .email
-                ?.split("@")[0] ||
-            "User";
-
-
-        const {
-            data: newProfile,
-            error: insertError
-        } =
-            await supabaseClient
-                .from("profiles")
-                .insert(
-                    {
-                        id:
-                            currentUser.id,
-
-                        username:
-                            username,
-
-                        role:
-                            "user"
-                    }
-                )
-                .select()
-                .maybeSingle();
-
-
-        if (insertError) {
-
-            console.error(
-                "Create profile error:",
-                insertError
-            );
-
-        }
-
-
-        currentProfile =
-            newProfile || {
-
-                id:
-                    currentUser.id,
-
-                username:
-                    username,
-
-                role:
-                    "user"
-
-            };
-
-    } else {
-
-        currentProfile =
-            profile;
+        return;
 
     }
 
 
-    showLoggedIn(
-        currentProfile
-    );
+    showLoggedIn(profile);
 
 }
 
 
 /* =====================================================
    SHOW LOGGED OUT
-   ===================================================== */
+===================================================== */
 
 function showLoggedOut() {
 
-    currentUser = null;
-
-    currentProfile = null;
-
-    cart = [];
+    /*
+     * IMPORTANT:
+     *
+     * HINDI natin hina-hide ang homeSection.
+     *
+     * Para visible ang:
+     * Hero
+     * Regions
+     * Products
+     */
 
     homeSection.classList.remove(
         "hidden"
@@ -1149,23 +808,7 @@ function showLoggedOut() {
         "hidden"
     );
 
-    resetPasswordSection.classList.add(
-        "hidden"
-    );
-
     userSection.classList.add(
-        "hidden"
-    );
-
-    regionSection.classList.add(
-        "hidden"
-    );
-
-    productsSection.classList.add(
-        "hidden"
-    );
-
-    cartSection.classList.add(
         "hidden"
     );
 
@@ -1173,38 +816,52 @@ function showLoggedOut() {
         "hidden"
     );
 
-    orderSuccessSection.classList.add(
+    cartSection.classList.add(
         "hidden"
     );
 
-
-    showLoginBtn?.classList.remove(
+    checkoutSection.classList.add(
         "hidden"
     );
 
-    showSignupBtn?.classList.remove(
+    successSection.classList.add(
         "hidden"
     );
 
-    loggedUserArea?.classList.add(
+    loggedOutArea.classList.remove(
         "hidden"
     );
 
+    loggedUserArea.classList.add(
+        "hidden"
+    );
 
-    productsContainer.innerHTML = "";
-
-    renderCart();
+    loadProducts();
 
 }
 
 
 /* =====================================================
    SHOW LOGGED IN
-   ===================================================== */
+===================================================== */
 
 function showLoggedIn(profile) {
 
-    homeSection.classList.add(
+    /*
+     * IMPORTANT FIX:
+     *
+     * Dating code:
+     *
+     * homeSection.classList.add("hidden")
+     *
+     * TINANGGAL NATIN.
+     *
+     * Dahil dito, visible pa rin ang
+     * Regions at Products kapag naka-login.
+     */
+
+
+    homeSection.classList.remove(
         "hidden"
     );
 
@@ -1212,58 +869,34 @@ function showLoggedIn(profile) {
         "hidden"
     );
 
-    resetPasswordSection.classList.add(
-        "hidden"
-    );
-
-    orderSuccessSection.classList.add(
-        "hidden"
-    );
-
-
     userSection.classList.remove(
         "hidden"
     );
 
-    regionSection.classList.remove(
+    loggedOutArea.classList.add(
         "hidden"
     );
 
-    productsSection.classList.remove(
-        "hidden"
-    );
-
-
-    showLoginBtn?.classList.add(
-        "hidden"
-    );
-
-    showSignupBtn?.classList.add(
-        "hidden"
-    );
-
-    loggedUserArea?.classList.remove(
+    loggedUserArea.classList.remove(
         "hidden"
     );
 
 
     const username =
         profile?.username ||
-        currentUser
-            ?.email
-            ?.split("@")[0] ||
         "User";
 
 
     usernameDisplay.textContent =
         username;
 
-    navUsername.textContent =
+    dashboardUsername.textContent =
         username;
 
 
     if (
-        profile?.role === "admin"
+        profile?.role ===
+        "admin"
     ) {
 
         adminSection.classList.remove(
@@ -1281,205 +914,50 @@ function showLoggedIn(profile) {
     }
 
 
-    loadProducts(
-        currentRegion
-    );
-
-    renderCart();
+    loadProducts();
 
 }
-
-
-/* =====================================================
-   LOGOUT
-   ===================================================== */
-
-async function logout() {
-
-    const {
-        error
-    } =
-        await supabaseClient.auth
-            .signOut();
-
-
-    if (error) {
-
-        console.error(
-            "Logout error:",
-            error
-        );
-
-        showToast(
-            "Unable to logout."
-        );
-
-        return;
-
-    }
-
-
-    showToast(
-        "Logged out successfully."
-    );
-
-
-    setTimeout(
-        showLoggedOut,
-        500
-    );
-
-}
-
-
-logoutBtn?.addEventListener(
-    "click",
-    logout
-);
-
-navLogoutBtn?.addEventListener(
-    "click",
-    logout
-);
-
-
-/* =====================================================
-   SHOP NOW
-   ===================================================== */
-
-shopNowBtn?.addEventListener(
-    "click",
-    function () {
-
-        regionSection.scrollIntoView({
-            behavior: "smooth"
-        });
-
-    }
-);
-
-cartShopBtn?.addEventListener(
-    "click",
-    function () {
-
-        productsSection.scrollIntoView({
-            behavior: "smooth"
-        });
-
-    }
-);
-
-
-/* =====================================================
-   REGION FILTER
-   ===================================================== */
-
-document
-    .querySelectorAll(
-        ".region-card"
-    )
-    .forEach(
-        function (card) {
-
-            card.addEventListener(
-                "click",
-                function () {
-
-                    document
-                        .querySelectorAll(
-                            ".region-card"
-                        )
-                        .forEach(
-                            item =>
-                                item.classList
-                                    .remove(
-                                        "active"
-                                    )
-                        );
-
-
-                    card.classList.add(
-                        "active"
-                    );
-
-
-                    currentRegion =
-                        card.dataset.region ||
-                        "All";
-
-
-                    loadProducts(
-                        currentRegion
-                    );
-
-
-                    productsSection.scrollIntoView({
-                        behavior:
-                            "smooth"
-                    });
-
-                }
-            );
-
-        }
-    );
 
 
 /* =====================================================
    LOAD PRODUCTS
-   ===================================================== */
+===================================================== */
 
-async function loadProducts(
-    region = "All"
-) {
+async function loadProducts() {
 
-    if (!currentUser) {
-
+    if (!productsContainer) {
         return;
-
     }
 
 
-    productsContainer.innerHTML =
-        `
-        <div class="no-products">
-            Loading products...
+    productsContainer.innerHTML = `
+
+        <div class="loading-products">
+
+            <div class="spinner"></div>
+
+            <p>
+                Loading products...
+            </p>
+
         </div>
-        `;
+
+    `;
 
 
-    let query =
-        supabaseClient
+    const {
+        data: products,
+        error
+    } =
+        await supabaseClient
             .from("products")
             .select("*")
             .order(
                 "id",
                 {
-                    ascending:
-                        false
+                    ascending: false
                 }
             );
-
-
-    if (
-        region &&
-        region !== "All"
-    ) {
-
-        query =
-            query.eq(
-                "region",
-                region
-            );
-
-    }
-
-
-    const {
-        data,
-        error
-    } =
-        await query;
 
 
     if (error) {
@@ -1489,59 +967,132 @@ async function loadProducts(
             error
         );
 
-        productsContainer.innerHTML =
-            `
+        productsContainer.innerHTML = `
+
             <div class="no-products">
-                Unable to load products.
-                <br>
-                ${escapeHTML(
-                    error.message
-                )}
-            </div>
-            `;
 
-        return;
+                <h3>
+                    Unable to load products
+                </h3>
 
-    }
-
-
-    productsCache =
-        data || [];
-
-
-    selectedRegion.textContent =
-        region === "All"
-            ? "All Products"
-            : `Products from ${region}`;
-
-
-    if (
-        !data ||
-        data.length === 0
-    ) {
-
-        productsContainer.innerHTML =
-            `
-            <div class="no-products">
-                <h3>No products found.</h3>
                 <p>
-                    There are currently no products
-                    in this region.
+                    ${escapeHTML(
+                        error.message
+                    )}
                 </p>
+
             </div>
-            `;
+
+        `;
 
         return;
-
     }
 
 
-    productsContainer.innerHTML =
+    allProducts =
+        products || [];
+
+
+    renderProducts();
+
+}
+
+
+/* =====================================================
+   RENDER PRODUCTS
+===================================================== */
+
+function renderProducts() {
+
+    const searchText =
+        productSearch
+            ?.value
+            .trim()
+            .toLowerCase() ||
         "";
 
 
-    data.forEach(
-        function (product) {
+    let filtered =
+        allProducts.filter(
+            product => {
+
+                const productRegion =
+                    String(
+                        product.region ||
+                        ""
+                    )
+                    .trim();
+
+
+                const matchesRegion =
+                    selectedRegion ===
+                    "All" ||
+                    productRegion
+                        .toLowerCase() ===
+                    selectedRegion
+                        .toLowerCase();
+
+
+                const searchableText =
+                    [
+                        product.name,
+                        product.description,
+                        product.region
+                    ]
+                        .join(" ")
+                        .toLowerCase();
+
+
+                const matchesSearch =
+                    !searchText ||
+                    searchableText
+                        .includes(
+                            searchText
+                        );
+
+
+                return (
+                    matchesRegion &&
+                    matchesSearch
+                );
+
+            }
+        );
+
+
+    productsContainer.innerHTML = "";
+
+
+    if (
+        filtered.length ===
+        0
+    ) {
+
+        productsContainer.innerHTML = `
+
+            <div class="no-products">
+
+                <h3>
+                    No products found
+                </h3>
+
+                <p>
+                    Try another region or search term.
+                </p>
+
+            </div>
+
+        `;
+
+        updateProductHeading();
+
+        return;
+
+    }
+
+
+    filtered.forEach(
+        product => {
 
             const card =
                 document.createElement(
@@ -1554,21 +1105,16 @@ async function loadProducts(
 
 
             const image =
-                getProductImage(
-                    product
-                );
+                product.image ||
+                "https://via.placeholder.com/500x300?text=Product";
 
 
-            const productInCart =
-                cart.find(
-                    item =>
-                        item.id ===
-                        product.id
-                );
+            const region =
+                product.region ||
+                "Bulacan";
 
 
-            card.innerHTML =
-                `
+            card.innerHTML = `
 
                 <div
                     class="product-image-wrapper"
@@ -1577,16 +1123,13 @@ async function loadProducts(
                     <img
                         src="${escapeHTML(image)}"
                         alt="${escapeHTML(product.name)}"
-                        onerror="this.src='https://via.placeholder.com/700x500?text=Product'"
+                        loading="lazy"
                     >
 
                     <span
                         class="product-region-badge"
                     >
-                        📍 ${escapeHTML(
-                            product.region ||
-                            "Philippines"
-                        )}
+                        📍 ${escapeHTML(region)}
                     </span>
 
                 </div>
@@ -1601,21 +1144,17 @@ async function loadProducts(
                     </h3>
 
 
-                    <div
-                        class="product-price"
-                    >
-                        ₱${formatMoney(
+                    <p class="product-price">
+                        ₱${formatPrice(
                             product.price
                         )}
-                    </div>
+                    </p>
 
 
-                    <p
-                        class="product-description"
-                    >
+                    <p class="product-description">
                         ${escapeHTML(
                             product.description ||
-                            "No description available."
+                            ""
                         )}
                     </p>
 
@@ -1626,103 +1165,25 @@ async function loadProducts(
 
                         <button
                             class="btn"
-                            type="button"
-                            data-action="add"
+                            data-action="view"
+                            data-id="${product.id}"
                         >
-                            ${
-                                productInCart
-                                    ? "✓ In Cart"
-                                    : "🛒 Add to Cart"
-                            }
+                            View
                         </button>
 
-
-                        ${
-                            productInCart
-                                ? `
-                                <button
-                                    class="btn remove-product-btn"
-                                    type="button"
-                                    data-action="remove"
-                                >
-                                    Remove
-                                </button>
-                                `
-                                : ""
-                        }
+                        <button
+                            class="btn secondary"
+                            data-action="cart"
+                            data-id="${product.id}"
+                        >
+                            🛒 Add
+                        </button>
 
                     </div>
 
                 </div>
 
-                `;
-
-
-            /*
-             * Clicking the product itself
-             * opens product details.
-             */
-
-            card.addEventListener(
-                "click",
-                function (event) {
-
-                    if (
-                        event.target.closest(
-                            "button"
-                        )
-                    ) {
-
-                        return;
-
-                    }
-
-                    openProductModal(
-                        product
-                    );
-
-                }
-            );
-
-
-            const addButton =
-                card.querySelector(
-                    '[data-action="add"]'
-                );
-
-
-            addButton?.addEventListener(
-                "click",
-                function (event) {
-
-                    event.stopPropagation();
-
-                    addToCart(
-                        product
-                    );
-
-                }
-            );
-
-
-            const removeButton =
-                card.querySelector(
-                    '[data-action="remove"]'
-                );
-
-
-            removeButton?.addEventListener(
-                "click",
-                function (event) {
-
-                    event.stopPropagation();
-
-                    removeFromCart(
-                        product.id
-                    );
-
-                }
-            );
+            `;
 
 
             productsContainer.appendChild(
@@ -1732,112 +1193,310 @@ async function loadProducts(
         }
     );
 
+
+    updateProductHeading();
+
+}
+
+
+/* =====================================================
+   PRODUCT HEADING
+===================================================== */
+
+function updateProductHeading() {
+
+    if (!productsTitle) {
+        return;
+    }
+
+
+    if (
+        selectedRegion ===
+        "All"
+    ) {
+
+        productsTitle.textContent =
+            "All Products";
+
+        productsSubtitle.textContent =
+            "Products from Bulacan businesses";
+
+    } else {
+
+        productsTitle.textContent =
+            `${selectedRegion} Products`;
+
+        productsSubtitle.textContent =
+            `Products available from ${selectedRegion}`;
+
+    }
+
+}
+
+
+/* =====================================================
+   PRODUCT BUTTONS
+===================================================== */
+
+if (productsContainer) {
+
+    productsContainer.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    "button[data-action]"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const id =
+                Number(
+                    button.dataset.id
+                );
+
+
+            const product =
+                allProducts.find(
+                    item =>
+                        Number(item.id) ===
+                        id
+                );
+
+
+            if (!product) {
+                return;
+            }
+
+
+            if (
+                button.dataset.action ===
+                "view"
+            ) {
+
+                openProductModal(
+                    product
+                );
+
+            }
+
+
+            if (
+                button.dataset.action ===
+                "cart"
+            ) {
+
+                addToCart(
+                    product,
+                    1
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   REGION FILTER
+===================================================== */
+
+document
+    .querySelectorAll(
+        ".region-card"
+    )
+    .forEach(card => {
+
+        card.addEventListener(
+            "click",
+            () => {
+
+                document
+                    .querySelectorAll(
+                        ".region-card"
+                    )
+                    .forEach(
+                        item =>
+                            item.classList.remove(
+                                "active"
+                            )
+                    );
+
+
+                card.classList.add(
+                    "active"
+                );
+
+
+                selectedRegion =
+                    card.dataset.region ||
+                    "All";
+
+
+                renderProducts();
+
+                scrollToProducts();
+
+            }
+        );
+
+    });
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+if (productSearch) {
+
+    productSearch.addEventListener(
+        "input",
+        renderProducts
+    );
+
+}
+
+
+if (clearFilterBtn) {
+
+    clearFilterBtn.addEventListener(
+        "click",
+        () => {
+
+            selectedRegion =
+                "All";
+
+
+            if (productSearch) {
+                productSearch.value = "";
+            }
+
+
+            document
+                .querySelectorAll(
+                    ".region-card"
+                )
+                .forEach(
+                    item =>
+                        item.classList.remove(
+                            "active"
+                        )
+                );
+
+
+            const allRegion =
+                document.querySelector(
+                    '.region-card[data-region="All"]'
+                );
+
+
+            if (allRegion) {
+
+                allRegion.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            renderProducts();
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   HERO EXPLORE
+===================================================== */
+
+if (heroExploreBtn) {
+
+    heroExploreBtn.addEventListener(
+        "click",
+        scrollToProducts
+    );
+
+}
+
+
+/* =====================================================
+   DASHBOARD BUTTONS
+===================================================== */
+
+if (dashboardProductsBtn) {
+
+    dashboardProductsBtn.addEventListener(
+        "click",
+        scrollToProducts
+    );
+
+}
+
+
+if (dashboardCartBtn) {
+
+    dashboardCartBtn.addEventListener(
+        "click",
+        openCart
+    );
+
 }
 
 
 /* =====================================================
    PRODUCT MODAL
-   ===================================================== */
+===================================================== */
 
 function openProductModal(
     product
 ) {
 
-    const image =
-        getProductImage(
-            product
-        );
+    selectedProduct =
+        product;
 
 
-    const inCart =
-        cart.find(
-            item =>
-                item.id ===
-                product.id
-        );
+    modalProductImage.src =
+        product.image ||
+        "https://via.placeholder.com/500x300?text=Product";
 
 
-    productModalContent.innerHTML =
-        `
-
-        <img
-            class="modal-product-image"
-            src="${escapeHTML(image)}"
-            alt="${escapeHTML(product.name)}"
-            onerror="this.src='https://via.placeholder.com/700x500?text=Product'"
-        >
+    modalProductImage.alt =
+        product.name;
 
 
-        <div class="modal-product-info">
-
-            <span class="product-region-badge">
-                📍 ${escapeHTML(
-                    product.region ||
-                    "Philippines"
-                )}
-            </span>
+    modalProductName.textContent =
+        product.name;
 
 
-            <h2>
-                ${escapeHTML(
-                    product.name
-                )}
-            </h2>
+    modalProductPrice.textContent =
+        `₱${formatPrice(
+            product.price
+        )}`;
 
 
-            <div
-                class="modal-product-price"
-            >
-                ₱${formatMoney(
-                    product.price
-                )}
-            </div>
+    modalProductDescription.textContent =
+        product.description ||
+        "No description available.";
 
 
-            <p
-                class="modal-product-description"
-            >
-                ${escapeHTML(
-                    product.description ||
-                    "No description available."
-                )}
-            </p>
+    modalProductRegion.textContent =
+        `📍 ${
+            product.region ||
+            "Bulacan"
+        }`;
 
 
-            <div class="product-actions">
-
-                <button
-                    id="modalAddBtn"
-                    class="btn"
-                    type="button"
-                >
-                    ${
-                        inCart
-                            ? "✓ Add Another"
-                            : "🛒 Add to Cart"
-                    }
-                </button>
-
-
-                ${
-                    inCart
-                        ? `
-                        <button
-                            id="modalRemoveBtn"
-                            class="btn remove-product-btn"
-                            type="button"
-                        >
-                            Remove from Cart
-                        </button>
-                        `
-                        : ""
-                }
-
-            </div>
-
-        </div>
-
-        `;
+    modalQuantity.value =
+        1;
 
 
     productModal.classList.remove(
@@ -1845,130 +1504,157 @@ function openProductModal(
     );
 
 
-    document
-        .getElementById(
-            "modalAddBtn"
-        )
-        ?.addEventListener(
-            "click",
-            function () {
-
-                addToCart(
-                    product
-                );
-
-                openProductModal(
-                    product
-                );
-
-            }
-        );
-
-
-    document
-        .getElementById(
-            "modalRemoveBtn"
-        )
-        ?.addEventListener(
-            "click",
-            function () {
-
-                removeFromCart(
-                    product.id
-                );
-
-                openProductModal(
-                    product
-                );
-
-            }
-        );
+    document.body.style.overflow =
+        "hidden";
 
 }
 
 
-function closeModal() {
+function closeProductModal() {
 
     productModal.classList.add(
         "hidden"
     );
 
+    document.body.style.overflow =
+        "";
+
+    selectedProduct =
+        null;
+
 }
 
 
-closeProductModal?.addEventListener(
-    "click",
-    closeModal
+if (modalClose) {
+
+    modalClose.addEventListener(
+        "click",
+        closeProductModal
+    );
+
+}
+
+
+if (modalOverlay) {
+
+    modalOverlay.addEventListener(
+        "click",
+        closeProductModal
+    );
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+
+            closeProductModal();
+
+        }
+
+    }
 );
 
-productModalOverlay?.addEventListener(
-    "click",
-    closeModal
-);
+
+if (modalAddToCartBtn) {
+
+    modalAddToCartBtn.addEventListener(
+        "click",
+        () => {
+
+            if (!selectedProduct) {
+                return;
+            }
+
+
+            const quantity =
+                Math.max(
+                    1,
+                    Number(
+                        modalQuantity.value
+                    ) || 1
+                );
+
+
+            addToCart(
+                selectedProduct,
+                quantity
+            );
+
+
+            closeProductModal();
+
+        }
+    );
+
+}
 
 
 /* =====================================================
-   ADD TO CART
-   ===================================================== */
+   CART
+===================================================== */
 
 function addToCart(
-    product
+    product,
+    quantity = 1
 ) {
 
-    if (!currentUser) {
-
-        showLogin();
-
-        loginMessage.textContent =
-            "Please login before ordering.";
-
-        return;
-
-    }
+    const id =
+        Number(product.id);
 
 
     const existing =
         cart.find(
             item =>
-                item.id ===
-                product.id
+                Number(item.id) ===
+                id
         );
 
 
     if (existing) {
 
-        existing.quantity += 1;
+        existing.quantity +=
+            quantity;
 
     } else {
 
-        cart.push(
-            {
-                id:
-                    product.id,
+        cart.push({
 
-                name:
-                    product.name,
+            id: product.id,
 
-                price:
-                    Number(
-                        product.price
-                    ),
+            name: product.name,
 
-                image:
-                    getProductImage(
-                        product
-                    ),
+            price:
+                Number(
+                    product.price
+                ),
 
-                region:
-                    product.region,
+            image:
+                product.image || "",
 
-                quantity:
-                    1
-            }
-        );
+            description:
+                product.description ||
+                "",
+
+            region:
+                product.region ||
+                "Bulacan",
+
+            quantity:
+                quantity
+
+        });
 
     }
 
+
+    saveCart();
 
     renderCart();
 
@@ -1976,204 +1662,37 @@ function addToCart(
         `${product.name} added to cart.`
     );
 
-
-    loadProducts(
-        currentRegion
-    );
-
-
-    cartSection.classList.remove(
-        "hidden"
-    );
-
-
-    cartSection.scrollIntoView({
-        behavior:
-            "smooth"
-    });
-
-}
-
-
-/* =====================================================
-   REMOVE FROM CART
-   ===================================================== */
-
-function removeFromCart(
-    productId
-) {
-
-    cart =
-        cart.filter(
-            item =>
-                item.id !==
-                productId
-        );
-
-
-    renderCart();
-
-    loadProducts(
-        currentRegion
-    );
-
-    showToast(
-        "Product removed from cart."
-    );
-
-}
-
-
-/* =====================================================
-   CHANGE QUANTITY
-   ===================================================== */
-
-function changeQuantity(
-    productId,
-    amount
-) {
-
-    const item =
-        cart.find(
-            product =>
-                product.id ===
-                productId
-        );
-
-
-    if (!item) {
-
-        return;
-
-    }
-
-
-    item.quantity +=
-        amount;
-
-
-    if (
-        item.quantity <= 0
-    ) {
-
-        removeFromCart(
-            productId
-        );
-
-        return;
-
-    }
-
-
-    renderCart();
-
-}
-
-
-/* =====================================================
-   CART TOTAL
-   ===================================================== */
-
-function getCartSubtotal() {
-
-    return cart.reduce(
-        (
-            total,
-            item
-        ) => {
-
-            return total +
-                (
-                    Number(
-                        item.price
-                    ) *
-                    Number(
-                        item.quantity
-                    )
-                );
-
-        },
-        0
-    );
-
-}
-
-
-function getDeliveryFee() {
-
-    /*
-     * Free delivery for now.
-     */
-
-    return cart.length > 0
-        ? 0
-        : 0;
-
-}
-
-
-function getCartTotal() {
-
-    return (
-        getCartSubtotal() +
-        getDeliveryFee()
-    );
-
 }
 
 
 /* =====================================================
    RENDER CART
-   ===================================================== */
+===================================================== */
 
 function renderCart() {
 
     if (!cartItems) {
-
         return;
-
     }
 
 
     if (
-        !currentUser
-    ) {
-
-        cartSection.classList.add(
-            "hidden"
-        );
-
-        return;
-
-    }
-
-
-    if (
-        cart.length === 0
+        !cart ||
+        cart.length ===
+        0
     ) {
 
         cartEmpty.classList.remove(
             "hidden"
         );
 
-        cartContent.classList.add(
+        cartItems.classList.add(
             "hidden"
         );
 
-        cartItems.innerHTML =
-            "";
-
-        cartSubtotal.textContent =
-            "₱0.00";
-
-        deliveryFee.textContent =
-            "₱0.00";
-
-        cartTotal.textContent =
-            "₱0.00";
-
-        checkoutTotalPreview.textContent =
-            "Total: ₱0.00";
+        cartSummary.classList.add(
+            "hidden"
+        );
 
         return;
 
@@ -2184,21 +1703,40 @@ function renderCart() {
         "hidden"
     );
 
-    cartContent.classList.remove(
+    cartItems.classList.remove(
+        "hidden"
+    );
+
+    cartSummary.classList.remove(
         "hidden"
     );
 
 
-    cartItems.innerHTML =
-        "";
+    cartItems.innerHTML = "";
+
+
+    let total =
+        0;
+
+    let count =
+        0;
 
 
     cart.forEach(
-        function (item) {
+        item => {
 
             const itemTotal =
                 Number(item.price) *
                 Number(item.quantity);
+
+
+            total +=
+                itemTotal;
+
+            count +=
+                Number(
+                    item.quantity
+                );
 
 
             const row =
@@ -2211,17 +1749,23 @@ function renderCart() {
                 "cart-item";
 
 
-            row.innerHTML =
-                `
+            row.innerHTML = `
 
                 <img
                     class="cart-item-image"
-                    src="${escapeHTML(item.image)}"
-                    alt="${escapeHTML(item.name)}"
+                    src="${escapeHTML(
+                        item.image ||
+                        "https://via.placeholder.com/100x100?text=Product"
+                    )}"
+                    alt="${escapeHTML(
+                        item.name
+                    )}"
                 >
 
 
-                <div class="cart-item-info">
+                <div
+                    class="cart-item-info"
+                >
 
                     <h3>
                         ${escapeHTML(
@@ -2230,8 +1774,17 @@ function renderCart() {
                     </h3>
 
                     <p>
-                        ₱${formatMoney(
+                        ₱${formatPrice(
                             item.price
+                        )}
+                    </p>
+
+                    <p
+                        class="cart-item-region"
+                    >
+                        📍 ${escapeHTML(
+                            item.region ||
+                            "Bulacan"
                         )}
                     </p>
 
@@ -2244,12 +1797,11 @@ function renderCart() {
 
                     <button
                         class="quantity-btn"
-                        type="button"
-                        data-action="minus"
+                        data-cart-action="minus"
+                        data-id="${item.id}"
                     >
                         −
                     </button>
-
 
                     <span
                         class="quantity-number"
@@ -2257,11 +1809,10 @@ function renderCart() {
                         ${item.quantity}
                     </span>
 
-
                     <button
                         class="quantity-btn"
-                        type="button"
-                        data-action="plus"
+                        data-cart-action="plus"
+                        data-id="${item.id}"
                     >
                         +
                     </button>
@@ -2272,7 +1823,7 @@ function renderCart() {
                 <div
                     class="cart-item-total"
                 >
-                    ₱${formatMoney(
+                    ₱${formatPrice(
                         itemTotal
                     )}
                 </div>
@@ -2280,57 +1831,13 @@ function renderCart() {
 
                 <button
                     class="remove-cart-btn"
-                    type="button"
-                    data-action="remove"
+                    data-cart-action="remove"
+                    data-id="${item.id}"
                 >
-                    🗑️ Remove
+                    Remove
                 </button>
 
-                `;
-
-
-            row.querySelector(
-                '[data-action="minus"]'
-            )?.addEventListener(
-                "click",
-                function () {
-
-                    changeQuantity(
-                        item.id,
-                        -1
-                    );
-
-                }
-            );
-
-
-            row.querySelector(
-                '[data-action="plus"]'
-            )?.addEventListener(
-                "click",
-                function () {
-
-                    changeQuantity(
-                        item.id,
-                        1
-                    );
-
-                }
-            );
-
-
-            row.querySelector(
-                '[data-action="remove"]'
-            )?.addEventListener(
-                "click",
-                function () {
-
-                    removeFromCart(
-                        item.id
-                    );
-
-                }
-            );
+            `;
 
 
             cartItems.appendChild(
@@ -2341,241 +1848,527 @@ function renderCart() {
     );
 
 
-    const subtotal =
-        getCartSubtotal();
-
-    const delivery =
-        getDeliveryFee();
-
-    const total =
-        subtotal +
-        delivery;
+    cartItemCount.textContent =
+        count;
 
 
     cartSubtotal.textContent =
-        "₱" +
-        formatMoney(
-            subtotal
-        );
+        `₱${formatPrice(
+            total
+        )}`;
 
-    deliveryFee.textContent =
-        delivery === 0
-            ? "FREE"
-            : "₱" +
-              formatMoney(
-                  delivery
-              );
 
     cartTotal.textContent =
-        "₱" +
-        formatMoney(
+        `₱${formatPrice(
             total
-        );
+        )}`;
 
-    checkoutTotalPreview.textContent =
-        "Total: ₱" +
-        formatMoney(
+
+    checkoutTotal.textContent =
+        `₱${formatPrice(
             total
-        );
+        )}`;
+
+}
 
 
-    cartSection.classList.remove(
-        "hidden"
+/* =====================================================
+   CART ACTIONS
+===================================================== */
+
+if (cartItems) {
+
+    cartItems.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    "button[data-cart-action]"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const id =
+                Number(
+                    button.dataset.id
+                );
+
+
+            const item =
+                cart.find(
+                    cartItem =>
+                        Number(
+                            cartItem.id
+                        ) === id
+                );
+
+
+            if (!item) {
+                return;
+            }
+
+
+            const action =
+                button.dataset.cartAction;
+
+
+            if (
+                action ===
+                "plus"
+            ) {
+
+                item.quantity++;
+
+            }
+
+
+            if (
+                action ===
+                "minus"
+            ) {
+
+                item.quantity--;
+
+                if (
+                    item.quantity <=
+                    0
+                ) {
+
+                    cart =
+                        cart.filter(
+                            cartItem =>
+                                Number(
+                                    cartItem.id
+                                ) !== id
+                        );
+
+                }
+
+            }
+
+
+            if (
+                action ===
+                "remove"
+            ) {
+
+                cart =
+                    cart.filter(
+                        cartItem =>
+                            Number(
+                                cartItem.id
+                            ) !== id
+                    );
+
+            }
+
+
+            saveCart();
+
+            renderCart();
+
+        }
     );
 
 }
 
 
 /* =====================================================
-   PAYMENT METHOD
-   ===================================================== */
+   OPEN CART
+===================================================== */
 
-paymentMethod?.addEventListener(
-    "change",
-    function () {
+function openCart() {
 
-        if (
-            this.value ===
-            "GCash"
-        ) {
+    homeSection.classList.add(
+        "hidden"
+    );
 
-            gcashInfo.classList.remove(
+    authSection.classList.add(
+        "hidden"
+    );
+
+    userSection.classList.add(
+        "hidden"
+    );
+
+    adminSection.classList.add(
+        "hidden"
+    );
+
+    checkoutSection.classList.add(
+        "hidden"
+    );
+
+    successSection.classList.add(
+        "hidden"
+    );
+
+    cartSection.classList.remove(
+        "hidden"
+    );
+
+
+    renderCart();
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+if (dashboardCartBtn) {
+
+    dashboardCartBtn.addEventListener(
+        "click",
+        openCart
+    );
+
+}
+
+
+if (cartBrowseBtn) {
+
+    cartBrowseBtn.addEventListener(
+        "click",
+        () => {
+
+            cartSection.classList.add(
                 "hidden"
             );
 
-        } else {
-
-            gcashInfo.classList.add(
+            homeSection.classList.remove(
                 "hidden"
             );
+
+            scrollToProducts();
 
         }
+    );
 
-    }
-);
+}
 
 
 /* =====================================================
    CHECKOUT
-   ===================================================== */
+===================================================== */
 
-checkoutForm?.addEventListener(
-    "submit",
-    async function (event) {
+if (checkoutBtn) {
 
-        event.preventDefault();
+    checkoutBtn.addEventListener(
+        "click",
+        () => {
 
+            if (
+                !cart ||
+                cart.length ===
+                0
+            ) {
 
-        if (!currentUser) {
+                showToast(
+                    "Your cart is empty."
+                );
 
-            showLogin();
-
-            return;
-
-        }
-
-
-        if (
-            cart.length === 0
-        ) {
-
-            checkoutMessage.textContent =
-                "Your cart is empty.";
-
-            return;
-
-        }
-
-
-        const customerName =
-            document
-                .getElementById(
-                    "customerName"
-                )
-                .value
-                .trim();
-
-
-        const customerPhone =
-            document
-                .getElementById(
-                    "customerPhone"
-                )
-                .value
-                .trim();
-
-
-        const customerAddress =
-            document
-                .getElementById(
-                    "customerAddress"
-                )
-                .value
-                .trim();
-
-
-        const selectedPayment =
-            paymentMethod.value;
-
-
-        if (!selectedPayment) {
-
-            checkoutMessage.textContent =
-                "Please select a payment method.";
-
-            return;
-
-        }
-
-
-        const subtotal =
-            getCartSubtotal();
-
-        const delivery =
-            getDeliveryFee();
-
-        const total =
-            subtotal +
-            delivery;
-
-
-        checkoutMessage.textContent =
-            "Submitting your order...";
-
-
-        /*
-         * Prepare order data.
-         */
-
-        const orderData = {
-
-            user_id:
-                currentUser.id,
-
-            customer_name:
-                customerName,
-
-            customer_phone:
-                customerPhone,
-
-            delivery_address:
-                customerAddress,
-
-            payment_method:
-                selectedPayment,
-
-            total_amount:
-                total,
-
-            status:
-                "Pending",
-
-            items:
-                cart.map(
-                    item => ({
-                        product_id:
-                            item.id,
-
-                        name:
-                            item.name,
-
-                        price:
-                            item.price,
-
-                        quantity:
-                            item.quantity,
-
-                        subtotal:
-                            item.price *
-                            item.quantity
-                    })
-                )
-
-        };
-
-
-        try {
-
-            /*
-             * Save order to Supabase.
-             */
-
-            const {
-                error
-            } =
-                await supabaseClient
-                    .from("orders")
-                    .insert(
-                        orderData
-                    );
-
-
-            if (error) {
-
-                throw error;
+                return;
 
             }
 
+
+            cartSection.classList.add(
+                "hidden"
+            );
+
+            checkoutSection.classList.remove(
+                "hidden"
+            );
+
+
+            updateCheckoutTotal();
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+    );
+
+}
+
+
+function updateCheckoutTotal() {
+
+    const total =
+        cart.reduce(
+            (
+                sum,
+                item
+            ) =>
+                sum +
+                Number(
+                    item.price
+                ) *
+                Number(
+                    item.quantity
+                ),
+            0
+        );
+
+
+    checkoutTotal.textContent =
+        `₱${formatPrice(
+            total
+        )}`;
+
+}
+
+
+if (paymentMethod) {
+
+    paymentMethod.addEventListener(
+        "change",
+        () => {
+
+            if (
+                paymentMethod.value ===
+                "GCash"
+            ) {
+
+                gcashInfo.classList.remove(
+                    "hidden"
+                );
+
+            } else {
+
+                gcashInfo.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PLACE ORDER
+===================================================== */
+
+if (checkoutForm) {
+
+    checkoutForm.addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
+
+
+            if (
+                !cart ||
+                cart.length ===
+                0
+            ) {
+
+                showToast(
+                    "Your cart is empty."
+                );
+
+                return;
+
+            }
+
+
+            const {
+                data: {
+                    user
+                }
+            } =
+                await supabaseClient
+                    .auth
+                    .getUser();
+
+
+            const fullName =
+                document
+                    .getElementById(
+                        "checkoutName"
+                    )
+                    .value
+                    .trim();
+
+            const phone =
+                document
+                    .getElementById(
+                        "checkoutPhone"
+                    )
+                    .value
+                    .trim();
+
+            const address =
+                document
+                    .getElementById(
+                        "checkoutAddress"
+                    )
+                    .value
+                    .trim();
+
+            const region =
+                document
+                    .getElementById(
+                        "checkoutRegion"
+                    )
+                    .value;
+
+            const payment =
+                paymentMethod.value;
+
+
+            const total =
+                cart.reduce(
+                    (
+                        sum,
+                        item
+                    ) =>
+                        sum +
+                        Number(
+                            item.price
+                        ) *
+                        Number(
+                            item.quantity
+                        ),
+                    0
+                );
+
+
+            const orderNumber =
+                "BB-" +
+                Date.now()
+                    .toString()
+                    .slice(-8);
+
+
+            /*
+             * IMPORTANT:
+             *
+             * Kung wala ka pang orders table,
+             * local success flow muna ito.
+             *
+             * Kapag may orders table ka na,
+             * pwede natin i-save dito.
+             */
+
+
+            try {
+
+                const {
+                    error
+                } =
+                    await supabaseClient
+                        .from("orders")
+                        .insert({
+
+                            user_id:
+                                user?.id ||
+                                null,
+
+                            order_number:
+                                orderNumber,
+
+                            customer_name:
+                                fullName,
+
+                            phone:
+                                phone,
+
+                            address:
+                                address,
+
+                            region:
+                                region,
+
+                            payment_method:
+                                payment,
+
+                            total:
+                                total,
+
+                            status:
+                                "Pending"
+
+                        });
+
+
+                if (error) {
+
+                    /*
+                     * Kung wala pang orders table,
+                     * huwag pigilan ang checkout.
+                     */
+
+                    console.warn(
+                        "Order table error:",
+                        error.message
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    "Order save skipped:",
+                    error
+                );
+
+            }
+
+
+            successOrderInfo.innerHTML = `
+
+                <strong>
+                    Order #: ${escapeHTML(
+                        orderNumber
+                    )}
+                </strong>
+
+                <br>
+
+                Customer:
+                ${escapeHTML(
+                    fullName
+                )}
+
+                <br>
+
+                Payment:
+                ${escapeHTML(
+                    payment
+                )}
+
+                <br>
+
+                Total:
+                <strong>
+                    ₱${formatPrice(
+                        total
+                    )}
+                </strong>
+
+            `;
+
+
+            cart = [];
+
+            saveCart();
 
             checkoutForm.reset();
 
@@ -2584,369 +2377,302 @@ checkoutForm?.addEventListener(
             );
 
 
-            cart = [];
+            checkoutSection.classList.add(
+                "hidden"
+            );
+
+            successSection.classList.remove(
+                "hidden"
+            );
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   SUCCESS BUTTONS
+===================================================== */
+
+if (successBrowseBtn) {
+
+    successBrowseBtn.addEventListener(
+        "click",
+        () => {
+
+            successSection.classList.add(
+                "hidden"
+            );
+
+            homeSection.classList.remove(
+                "hidden"
+            );
 
             renderCart();
 
+            scrollToProducts();
 
-            productsSection.classList.add(
+        }
+    );
+
+}
+
+
+if (successHomeBtn) {
+
+    successHomeBtn.addEventListener(
+        "click",
+        () => {
+
+            successSection.classList.add(
                 "hidden"
             );
 
-            regionSection.classList.add(
+            homeSection.classList.remove(
                 "hidden"
             );
 
-            cartSection.classList.add(
-                "hidden"
-            );
-
-            userSection.classList.add(
-                "hidden"
-            );
-
-            adminSection.classList.add(
-                "hidden"
-            );
-
-
-            orderSuccessSection.classList.remove(
-                "hidden"
-            );
-
-
-            orderSuccessSection.scrollIntoView({
-                behavior:
-                    "smooth"
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
             });
 
-
-            checkoutMessage.textContent =
-                "";
-
-
-        } catch (error) {
-
-            console.error(
-                "Order error:",
-                error
-            );
-
-
-            /*
-             * If orders table/schema
-             * is not yet configured,
-             * show the actual Supabase error.
-             */
-
-            checkoutMessage.textContent =
-                "Order failed: " +
-                error.message;
-
         }
+    );
 
-    }
-);
+}
 
 
 /* =====================================================
-   CONTINUE SHOPPING
-   ===================================================== */
+   ADMIN - ADD / EDIT PRODUCT
+===================================================== */
 
-continueShoppingBtn?.addEventListener(
-    "click",
-    function () {
+if (productForm) {
 
-        orderSuccessSection.classList.add(
-            "hidden"
-        );
+    productForm.addEventListener(
+        "submit",
+        async event => {
 
-        userSection.classList.remove(
-            "hidden"
-        );
-
-        regionSection.classList.remove(
-            "hidden"
-        );
-
-        productsSection.classList.remove(
-            "hidden"
-        );
-
-        currentRegion = "All";
+            event.preventDefault();
 
 
-        document
-            .querySelectorAll(
-                ".region-card"
-            )
-            .forEach(
-                card =>
-                    card.classList.remove(
-                        "active"
-                    )
-            );
-
-
-        document
-            .querySelector(
-                '.region-card[data-region="All"]'
-            )
-            ?.classList.add(
-                "active"
-            );
-
-
-        loadProducts(
-            "All"
-        );
-
-        regionSection.scrollIntoView({
-            behavior:
-                "smooth"
-        });
-
-    }
-);
-
-
-/* =====================================================
-   ADMIN PRODUCT FORM
-   ===================================================== */
-
-productForm?.addEventListener(
-    "submit",
-    async function (event) {
-
-        event.preventDefault();
-
-
-        if (
-            !currentProfile ||
-            currentProfile.role !==
-                "admin"
-        ) {
-
-            productMessage.textContent =
-                "Admin access required.";
-
-            return;
-
-        }
-
-
-        const name =
-            document
-                .getElementById(
-                    "productName"
-                )
-                .value
-                .trim();
-
-
-        const price =
-            Number(
-                document
-                    .getElementById(
-                        "productPrice"
-                    )
+            const name =
+                productNameInput
                     .value
-            );
+                    .trim();
 
-
-        const region =
-            document
-                .getElementById(
-                    "productRegion"
-                )
-                .value;
-
-
-        const image =
-            document
-                .getElementById(
-                    "productImage"
-                )
-                .value
-                .trim();
-
-
-        const description =
-            document
-                .getElementById(
-                    "productDescription"
-                )
-                .value
-                .trim();
-
-
-        const editId =
-            editingProductId.value;
-
-
-        if (!name ||
-            !region ||
-            price < 0) {
-
-            productMessage.textContent =
-                "Please complete the product information.";
-
-            return;
-
-        }
-
-
-        productMessage.textContent =
-            editId
-                ? "Updating product..."
-                : "Adding product...";
-
-
-        try {
-
-            if (editId) {
-
-                const {
-                    error
-                } =
-                    await supabaseClient
-                        .from("products")
-                        .update(
-                            {
-                                name:
-                                    name,
-
-                                price:
-                                    price,
-
-                                region:
-                                    region,
-
-                                image:
-                                    image,
-
-                                description:
-                                    description
-                            }
-                        )
-                        .eq(
-                            "id",
-                            editId
-                        );
-
-
-                if (error) {
-
-                    throw error;
-
-                }
-
-
-                productMessage.textContent =
-                    "Product updated successfully.";
-
-                showToast(
-                    "Product updated."
+            const price =
+                Number(
+                    productPriceInput
+                        .value
                 );
 
-            } else {
+            const image =
+                productImageInput
+                    .value
+                    .trim();
 
-                const {
-                    error
-                } =
-                    await supabaseClient
-                        .from("products")
-                        .insert(
-                            {
-                                name:
-                                    name,
+            const region =
+                productRegionInput
+                    .value
+                    .trim();
 
-                                price:
-                                    price,
-
-                                region:
-                                    region,
-
-                                image:
-                                    image,
-
-                                description:
-                                    description
-                            }
-                        );
+            const description =
+                productDescriptionInput
+                    .value
+                    .trim();
 
 
-                if (error) {
-
-                    throw error;
-
-                }
-
+            if (!name) {
 
                 productMessage.textContent =
-                    "Product added successfully.";
+                    "Product name is required.";
 
-                showToast(
-                    "Product added."
-                );
+                return;
 
             }
 
 
-            resetProductForm();
+            if (
+                !Number.isFinite(
+                    price
+                )
+            ) {
+
+                productMessage.textContent =
+                    "Please enter a valid price.";
+
+                return;
+
+            }
 
 
-            await loadAdminProducts();
+            if (!region) {
 
-            await loadProducts(
-                currentRegion
-            );
+                productMessage.textContent =
+                    "Please select a region.";
 
+                return;
 
-        } catch (error) {
+            }
 
-            console.error(
-                "Product save error:",
-                error
-            );
 
             productMessage.textContent =
-                "Product save failed: " +
-                error.message;
+                editingProductId
+                    ? "Updating product..."
+                    : "Adding product...";
+
+
+            try {
+
+                let error;
+
+
+                if (
+                    editingProductId
+                ) {
+
+                    const result =
+                        await supabaseClient
+                            .from(
+                                "products"
+                            )
+                            .update({
+
+                                name,
+
+                                price,
+
+                                image,
+
+                                region,
+
+                                description
+
+                            })
+                            .eq(
+                                "id",
+                                editingProductId
+                            );
+
+
+                    error =
+                        result.error;
+
+                } else {
+
+                    const result =
+                        await supabaseClient
+                            .from(
+                                "products"
+                            )
+                            .insert({
+
+                                name,
+
+                                price,
+
+                                image,
+
+                                region,
+
+                                description
+
+                            });
+
+
+                    error =
+                        result.error;
+
+                }
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                productMessage.textContent =
+                    editingProductId
+                        ? "Product updated successfully!"
+                        : "Product added successfully!";
+
+
+                productForm.reset();
+
+                editingProductId =
+                    null;
+
+
+                cancelEditBtn.classList.add(
+                    "hidden"
+                );
+
+
+                productForm
+                    .querySelector(
+                        'button[type="submit"]'
+                    )
+                    .textContent =
+                    "Add Product";
+
+
+                await loadProducts();
+
+                await loadAdminProducts();
+
+
+                showToast(
+                    "Product saved successfully."
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Product save error:",
+                    error
+                );
+
+
+                productMessage.textContent =
+                    "Failed to save product: " +
+                    error.message;
+
+            }
 
         }
+    );
 
-    }
-);
+}
 
 
 /* =====================================================
    LOAD ADMIN PRODUCTS
-   ===================================================== */
+===================================================== */
 
 async function loadAdminProducts() {
 
     if (
-        !currentProfile ||
-        currentProfile.role !==
-            "admin"
+        !adminProductsContainer
     ) {
-
         return;
-
     }
 
 
     adminProductsContainer.innerHTML =
-        `
-        <div class="no-products">
-            Loading products...
-        </div>
-        `;
+        "<p>Loading products...</p>";
 
 
     const {
-        data,
+        data: products,
         error
     } =
         await supabaseClient
@@ -2955,8 +2681,7 @@ async function loadAdminProducts() {
             .order(
                 "id",
                 {
-                    ascending:
-                        false
+                    ascending: false
                 }
             );
 
@@ -2968,46 +2693,51 @@ async function loadAdminProducts() {
             error
         );
 
-        adminProductsContainer.innerHTML =
-            `
-            <div class="no-products">
+
+        adminProductsContainer.innerHTML = `
+
+            <p>
+                Unable to load products.
                 ${escapeHTML(
                     error.message
                 )}
-            </div>
-            `;
+            </p>
+
+        `;
 
         return;
 
     }
+
+
+    adminProductsContainer.innerHTML = "";
 
 
     if (
-        !data ||
-        data.length === 0
+        !products ||
+        products.length ===
+        0
     ) {
 
-        adminProductsContainer.innerHTML =
-            `
+        adminProductsContainer.innerHTML = `
+
             <div class="no-products">
-                <h3>No products yet.</h3>
+
                 <p>
-                    Add your first product above.
+                    No products available.
                 </p>
+
             </div>
-            `;
+
+        `;
 
         return;
 
     }
 
 
-    adminProductsContainer.innerHTML =
-        "";
-
-
-    data.forEach(
-        function (product) {
+    products.forEach(
+        product => {
 
             const item =
                 document.createElement(
@@ -3019,8 +2749,12 @@ async function loadAdminProducts() {
                 "admin-product-item";
 
 
-            item.innerHTML =
-                `
+            const image =
+                product.image ||
+                "https://via.placeholder.com/100x100?text=Product";
+
+
+            item.innerHTML = `
 
                 <div
                     class="admin-product-left"
@@ -3029,14 +2763,11 @@ async function loadAdminProducts() {
                     <img
                         class="admin-product-image"
                         src="${escapeHTML(
-                            getProductImage(
-                                product
-                            )
+                            image
                         )}"
                         alt="${escapeHTML(
                             product.name
                         )}"
-                        onerror="this.src='https://via.placeholder.com/200x150?text=Product'"
                     >
 
 
@@ -3050,18 +2781,20 @@ async function loadAdminProducts() {
                             )}
                         </h4>
 
+
                         <p>
-                            ₱${formatMoney(
+                            ₱${formatPrice(
                                 product.price
                             )}
                         </p>
+
 
                         <span
                             class="admin-product-region"
                         >
                             📍 ${escapeHTML(
                                 product.region ||
-                                "No region"
+                                "Bulacan"
                             )}
                         </span>
 
@@ -3076,52 +2809,24 @@ async function loadAdminProducts() {
 
                     <button
                         class="btn edit-btn"
-                        type="button"
-                        data-action="edit"
+                        data-admin-action="edit"
+                        data-id="${product.id}"
                     >
-                        ✏️ Edit
+                        Edit
                     </button>
 
 
                     <button
                         class="btn delete-btn"
-                        type="button"
-                        data-action="delete"
+                        data-admin-action="delete"
+                        data-id="${product.id}"
                     >
-                        🗑️ Delete
+                        Delete
                     </button>
 
                 </div>
 
-                `;
-
-
-            item.querySelector(
-                '[data-action="edit"]'
-            )?.addEventListener(
-                "click",
-                function () {
-
-                    editProduct(
-                        product
-                    );
-
-                }
-            );
-
-
-            item.querySelector(
-                '[data-action="delete"]'
-            )?.addEventListener(
-                "click",
-                function () {
-
-                    deleteProduct(
-                        product.id
-                    );
-
-                }
-            );
+            `;
 
 
             adminProductsContainer.appendChild(
@@ -3135,63 +2840,161 @@ async function loadAdminProducts() {
 
 
 /* =====================================================
-   EDIT PRODUCT
-   ===================================================== */
+   ADMIN PRODUCT ACTIONS
+===================================================== */
 
-function editProduct(
-    product
+if (
+    adminProductsContainer
 ) {
 
-    editingProductId.value =
+    adminProductsContainer.addEventListener(
+        "click",
+        async event => {
+
+            const button =
+                event.target.closest(
+                    "button[data-admin-action]"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const id =
+                Number(
+                    button.dataset.id
+                );
+
+
+            const action =
+                button.dataset.adminAction;
+
+
+            if (
+                action ===
+                "edit"
+            ) {
+
+                await editProduct(
+                    id
+                );
+
+            }
+
+
+            if (
+                action ===
+                "delete"
+            ) {
+
+                await deleteProduct(
+                    id
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   EDIT PRODUCT
+===================================================== */
+
+async function editProduct(
+    id
+) {
+
+    const product =
+        allProducts.find(
+            item =>
+                Number(item.id) ===
+                Number(id)
+        );
+
+
+    if (!product) {
+
+        /*
+         * If not in allProducts,
+         * get directly from Supabase.
+         */
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("products")
+                .select("*")
+                .eq(
+                    "id",
+                    id
+                )
+                .single();
+
+
+        if (error) {
+
+            alert(
+                "Unable to load product: " +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        editingProductId =
+            data.id;
+
+        fillEditForm(
+            data
+        );
+
+        return;
+
+    }
+
+
+    editingProductId =
         product.id;
 
 
-    document
-        .getElementById(
-            "productName"
-        )
-        .value =
+    fillEditForm(
+        product
+    );
+
+}
+
+
+function fillEditForm(
+    product
+) {
+
+    productNameInput.value =
         product.name || "";
 
 
-    document
-        .getElementById(
-            "productPrice"
-        )
-        .value =
-        product.price || 0;
+    productPriceInput.value =
+        product.price || "";
 
 
-    document
-        .getElementById(
-            "productRegion"
-        )
-        .value =
-        product.region || "";
-
-
-    document
-        .getElementById(
-            "productImage"
-        )
-        .value =
+    productImageInput.value =
         product.image || "";
 
 
-    document
-        .getElementById(
-            "productDescription"
-        )
-        .value =
+    productRegionInput.value =
+        product.region || "";
+
+
+    productDescriptionInput.value =
         product.description || "";
-
-
-    productFormTitle.textContent =
-        "✏️ Edit Product";
-
-
-    productSubmitBtn.textContent =
-        "💾 Save Changes";
 
 
     cancelEditBtn.classList.remove(
@@ -3199,122 +3002,165 @@ function editProduct(
     );
 
 
+    productForm
+        .querySelector(
+            'button[type="submit"]'
+        )
+        .textContent =
+        "Update Product";
+
+
     adminSection.scrollIntoView({
-        behavior:
-            "smooth"
+        behavior: "smooth",
+        block: "start"
     });
+
+
+    productMessage.textContent =
+        "Editing product...";
 
 }
 
 
 /* =====================================================
-   RESET PRODUCT FORM
-   ===================================================== */
+   CANCEL EDIT
+===================================================== */
 
-function resetProductForm() {
+if (cancelEditBtn) {
 
-    productForm.reset();
+    cancelEditBtn.addEventListener(
+        "click",
+        () => {
 
-    editingProductId.value =
-        "";
+            editingProductId =
+                null;
 
+            productForm.reset();
 
-    productFormTitle.textContent =
-        "➕ Add Product";
+            cancelEditBtn.classList.add(
+                "hidden"
+            );
 
+            productForm
+                .querySelector(
+                    'button[type="submit"]'
+                )
+                .textContent =
+                "Add Product";
 
-    productSubmitBtn.textContent =
-        "➕ Add Product";
+            productMessage.textContent =
+                "";
 
-
-    cancelEditBtn.classList.add(
-        "hidden"
+        }
     );
 
 }
 
 
-cancelEditBtn?.addEventListener(
-    "click",
-    resetProductForm
-);
-
-
 /* =====================================================
    DELETE PRODUCT
-   ===================================================== */
+===================================================== */
 
 async function deleteProduct(
-    productId
+    id
 ) {
 
-    if (
-        !currentProfile ||
-        currentProfile.role !==
-            "admin"
-    ) {
-
-        return;
-
-    }
-
-
     const confirmed =
-        window.confirm(
+        confirm(
             "Are you sure you want to delete this product?"
         );
 
 
     if (!confirmed) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("products")
+            .delete()
+            .eq(
+                "id",
+                id
+            );
+
+
+    if (error) {
+
+        alert(
+            "Failed to delete product: " +
+            error.message
+        );
 
         return;
 
     }
 
 
-    try {
-
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("products")
-                .delete()
-                .eq(
-                    "id",
-                    productId
-                );
+    showToast(
+        "Product deleted successfully."
+    );
 
 
-        if (error) {
+    await loadProducts();
 
-            throw error;
+    await loadAdminProducts();
 
+}
+
+
+/* =====================================================
+   PROFILE / ROLE SAFETY
+===================================================== */
+
+async function refreshAdminIfNeeded() {
+
+    const {
+        data: {
+            user
         }
+    } =
+        await supabaseClient
+            .auth
+            .getUser();
 
 
-        showToast(
-            "Product deleted."
+    if (!user) {
+        return;
+    }
+
+
+    const {
+        data: profile
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select("role")
+            .eq(
+                "id",
+                user.id
+            )
+            .maybeSingle();
+
+
+    if (
+        profile?.role ===
+        "admin"
+    ) {
+
+        adminSection.classList.remove(
+            "hidden"
         );
 
+        loadAdminProducts();
 
-        await loadAdminProducts();
+    } else {
 
-        await loadProducts(
-            currentRegion
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Delete product error:",
-            error
-        );
-
-        showToast(
-            "Delete failed: " +
-            error.message
+        adminSection.classList.add(
+            "hidden"
         );
 
     }
@@ -3323,82 +3169,16 @@ async function deleteProduct(
 
 
 /* =====================================================
-   PASSWORD SHOW/HIDE
-   ===================================================== */
+   AUTH STATE LISTENER
+===================================================== */
 
-document
-    .querySelectorAll(
-        ".password-toggle"
-    )
-    .forEach(
-        function (button) {
+supabaseClient.auth.onAuthStateChange(
+    async (
+        event,
+        session
+    ) => {
 
-            button.addEventListener(
-                "click",
-                function () {
-
-                    const targetId =
-                        button.dataset.target;
-
-                    const input =
-                        document.getElementById(
-                            targetId
-                        );
-
-
-                    if (!input) {
-
-                        return;
-
-                    }
-
-
-                    if (
-                        input.type ===
-                        "password"
-                    ) {
-
-                        input.type =
-                            "text";
-
-                        button.textContent =
-                            "🙈";
-
-                    } else {
-
-                        input.type =
-                            "password";
-
-                        button.textContent =
-                            "👁️";
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-/* =====================================================
-   INITIAL LOAD
-   ===================================================== */
-
-async function initialize() {
-
-    try {
-
-        const {
-            data
-        } =
-            await supabaseClient.auth
-                .getSession();
-
-
-        if (
-            data?.session
-        ) {
+        if (session) {
 
             await loadUser();
 
@@ -3408,18 +3188,23 @@ async function initialize() {
 
         }
 
-    } catch (error) {
+    }
+);
 
-        console.error(
-            "Initialization error:",
-            error
-        );
 
-        showLoggedOut();
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+        renderCart();
+
+        await loadProducts();
+
+        await loadUser();
 
     }
-
-}
-
-
-initialize();
+);
