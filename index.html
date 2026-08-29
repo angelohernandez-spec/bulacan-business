@@ -10,1316 +10,1012 @@
 
     <title>Bulacan Business</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
-    <!-- SUPABASE -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-    ></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- =====================================================
-     NAVBAR
-===================================================== -->
+    <!-- =====================================================
+         NAVBAR
+         ===================================================== -->
 
-<nav class="navbar">
+    <nav class="navbar">
 
-    <div class="logo">
-        🌿 Bulacan Business
-    </div>
+        <div class="logo">
+            🌿 Bulacan Business
+        </div>
 
-    <!-- LOGGED OUT -->
-    <div
-        class="user-area"
-        id="loggedOutArea"
-    >
-        <button
-            class="btn nav-btn"
-            id="showLoginBtn"
+        <!-- NOT LOGGED IN -->
+        <div
+            id="guestArea"
+            class="user-area"
         >
-            Login
-        </button>
+            <button
+                class="btn nav-btn"
+                onclick="showPage('login')"
+            >
+                Login
+            </button>
 
-        <button
-            class="btn"
-            id="showSignupBtn"
+            <button
+                class="btn"
+                onclick="showPage('register')"
+            >
+                Register
+            </button>
+        </div>
+
+        <!-- LOGGED IN -->
+        <div
+            id="loggedUserArea"
+            class="logged-user-area hidden"
         >
-            Sign Up
-        </button>
-    </div>
+            <span id="welcomeUser">
+                Welcome!
+            </span>
 
-    <!-- LOGGED IN -->
-    <div
-        class="logged-user-area hidden"
-        id="loggedUserArea"
-    >
+            <button
+                class="btn"
+                onclick="showPage('cart')"
+            >
+                🛒 Cart
+                <span id="cartCount">0</span>
+            </button>
 
-        <span>
-            👋
-            <strong id="usernameDisplay">
-                User
-            </strong>
-        </span>
+            <button
+                class="btn logout-small"
+                onclick="logout()"
+            >
+                Logout
+            </button>
+        </div>
 
-        <button
-            class="btn logout-small"
-            id="logoutBtn"
-        >
-            Logout
-        </button>
-
-    </div>
-
-</nav>
+    </nav>
 
 
-<!-- =====================================================
-     HOME
-===================================================== -->
+    <!-- =====================================================
+         HOME / LANDING PAGE
+         ===================================================== -->
 
-<main id="homeSection">
+    <main id="homePage">
 
-    <!-- HERO -->
+        <section class="hero">
 
-    <section class="hero">
+            <div class="hero-overlay">
 
-        <div class="hero-overlay">
+                <div class="hero-content">
 
-            <div class="hero-content">
+                    <span class="hero-badge">
+                        🌿 SUPPORT LOCAL BUSINESSES
+                    </span>
 
-                <span class="hero-badge">
-                    🇵🇭 Local Products • Local Businesses
-                </span>
+                    <h1>
+                        Discover Products<br>
+                        From Bulacan
+                    </h1>
 
-                <h1>
-                    Discover Businesses<br>
-                    Across Bulacan
-                </h1>
+                    <p>
+                        Explore local products from different
+                        municipalities and cities of Bulacan.
+                        Login first to access regions and shop.
+                    </p>
 
-                <p>
-                    Support local entrepreneurs and discover
-                    products made and sold by businesses
-                    throughout Bulacan.
-                </p>
+                    <div class="hero-buttons">
 
-                <div class="hero-buttons">
+                        <button
+                            class="btn hero-btn"
+                            onclick="showPage('login')"
+                        >
+                            🔐 Login to Shop
+                        </button>
 
-                    <button
-                        class="btn hero-btn"
-                        id="heroExploreBtn"
-                    >
-                        Explore Products
-                    </button>
+                        <button
+                            class="btn hero-btn-outline"
+                            onclick="showPage('register')"
+                        >
+                            Create Account
+                        </button>
 
-                    <button
-                        class="btn hero-btn-outline"
-                        id="heroLoginBtn"
-                    >
-                        Login / Sign Up
-                    </button>
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
+        </section>
 
-    </section>
 
+        <!-- =================================================
+             REGIONS
 
-    <!-- =================================================
-         USER DASHBOARD
-    ================================================= -->
+             IMPORTANT:
+             HIDDEN UNTIL LOGIN
+             ================================================= -->
 
-    <section
-        class="dashboard hidden"
-        id="userSection"
-    >
-
-        <div class="dashboard-icon">
-            👋
-        </div>
-
-        <h2>
-            Welcome,
-            <span id="dashboardUsername">
-                User
-            </span>!
-        </h2>
-
-        <p>
-            You are logged in to Bulacan Business.
-        </p>
-
-        <div class="dashboard-actions">
-
-            <button
-                class="btn"
-                id="dashboardProductsBtn"
-            >
-                🛍️ Browse Products
-            </button>
-
-            <button
-                class="btn secondary"
-                id="dashboardCartBtn"
-            >
-                🛒 View Cart
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- =================================================
-         REGIONS
-    ================================================= -->
-
-    <section
-        class="region-section"
-        id="regionsSection"
-    >
-
-        <div class="section-heading">
-
-            <span class="section-label">
-                EXPLORE
-            </span>
-
-            <h2>
-                Browse by Region
-            </h2>
-
-            <p>
-                Find products from different areas of Bulacan.
-            </p>
-
-        </div>
-
-
-        <div class="region-grid">
-
-            <button
-                class="region-card active"
-                data-region="All"
-            >
-
-                <span class="region-icon">
-                    🌎
-                </span>
-
-                <span>
-                    All Regions
-                </span>
-
-                <small>
-                    View everything
-                </small>
-
-            </button>
-
-
-            <button
-                class="region-card"
-                data-region="Malolos"
-            >
-
-                <span class="region-icon">
-                    🏛️
-                </span>
-
-                <span>
-                    Malolos
-                </span>
-
-                <small>
-                    City of Malolos
-                </small>
-
-            </button>
-
-
-            <button
-                class="region-card"
-                data-region="Baliuag"
-            >
-
-                <span class="region-icon">
-                    🏘️
-                </span>
-
-                <span>
-                    Baliuag
-                </span>
-
-                <small>
-                    Baliwag area
-                </small>
-
-            </button>
-
-
-            <button
-                class="region-card"
-                data-region="Meycauayan"
-            >
-
-                <span class="region-icon">
-                    🏙️
-                </span>
-
-                <span>
-                    Meycauayan
-                </span>
-
-                <small>
-                    Meycauayan area
-                </small>
-
-            </button>
-
-
-            <button
-                class="region-card"
-                data-region="Marilao"
-            >
-
-                <span class="region-icon">
-                    🏢
-                </span>
-
-                <span>
-                    Marilao
-                </span>
-
-                <small>
-                    Marilao area
-                </small>
-
-            </button>
-
-
-            <button
-                class="region-card"
-                data-region="Bocaue"
-            >
-
-                <span class="region-icon">
-                    🏬
-                </span>
-
-                <span>
-                    Bocaue
-                </span>
-
-                <small>
-                    Bocaue area
-                </small>
-
-            </button>
-
-
-            <button
-                class="region-card"
-                data-region="Plaridel"
-            >
-
-                <span class="region-icon">
-                    🌾
-                </span>
-
-                <span>
-                    Plaridel
-                </span>
-
-                <small>
-                    Plaridel area
-                </small>
-
-            </button>
-
-
-            <button
-                class="region-card"
-                data-region="San Jose del Monte"
-            >
-
-                <span class="region-icon">
-                    🌆
-                </span>
-
-                <span>
-                    San Jose del Monte
-                </span>
-
-                <small>
-                    SJDM area
-                </small>
-
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- =================================================
-         PRODUCTS
-    ================================================= -->
-
-    <section
-        class="products-section"
-        id="productsSection"
-    >
-
-        <div class="section-heading">
-
-            <span class="section-label">
-                SHOP LOCAL
-            </span>
-
-            <h2 id="productsTitle">
-                All Products
-            </h2>
-
-            <p id="productsSubtitle">
-                Products from Bulacan businesses
-            </p>
-
-        </div>
-
-
-        <div class="product-tools">
-
-            <input
-                type="search"
-                id="productSearch"
-                placeholder="🔍 Search products..."
-            >
-
-            <button
-                class="btn secondary"
-                id="clearFilterBtn"
-            >
-                Show All
-            </button>
-
-        </div>
-
-
-        <div
-            class="products-grid"
-            id="productsContainer"
+        <section
+            id="regionSection"
+            class="region-section hidden"
         >
 
-            <div class="loading-products">
-                <div class="spinner"></div>
+            <div class="section-heading">
+
+                <span class="section-label">
+                    EXPLORE BULACAN
+                </span>
+
+                <h2>
+                    Choose a Region
+                </h2>
 
                 <p>
-                    Loading products...
+                    Select a region to see its available products.
                 </p>
-            </div>
-
-        </div>
-
-    </section>
-
-</main>
-
-
-<!-- =====================================================
-     AUTH
-===================================================== -->
-
-<section
-    class="auth-container hidden"
-    id="authSection"
->
-
-    <!-- LOGIN -->
-
-    <div
-        class="auth-box"
-        id="loginBox"
-    >
-
-        <div class="auth-icon">
-            🔐
-        </div>
-
-        <h2>
-            Welcome Back
-        </h2>
-
-        <p class="auth-subtitle">
-            Login to your Bulacan Business account.
-        </p>
-
-
-        <form id="loginForm">
-
-            <label for="loginEmail">
-                Email
-            </label>
-
-            <input
-                type="email"
-                id="loginEmail"
-                placeholder="Enter your email"
-                required
-            >
-
-
-            <label for="loginPassword">
-                Password
-            </label>
-
-            <div class="password-wrapper">
-
-                <input
-                    type="password"
-                    id="loginPassword"
-                    placeholder="Enter your password"
-                    required
-                >
-
-                <button
-                    type="button"
-                    class="password-toggle"
-                    data-target="loginPassword"
-                >
-                    👁️
-                </button>
 
             </div>
 
-
-            <button
-                type="submit"
-                class="btn full auth-submit"
-            >
-                Login
-            </button>
-
-        </form>
-
-
-        <p
-            class="message"
-            id="loginMessage"
-        ></p>
-
-
-        <p class="auth-switch">
-
-            Don't have an account?
-
-            <button
-                class="link-btn"
-                id="switchToSignup"
-            >
-                Sign Up
-            </button>
-
-        </p>
-
-    </div>
-
-
-    <!-- SIGN UP -->
-
-    <div
-        class="auth-box hidden"
-        id="signupBox"
-    >
-
-        <div class="auth-icon">
-            📝
-        </div>
-
-        <h2>
-            Create Account
-        </h2>
-
-        <p class="auth-subtitle">
-            Join Bulacan Business today.
-        </p>
-
-
-        <form id="signupForm">
-
-            <label for="signupUsername">
-                Username
-            </label>
-
-            <input
-                type="text"
-                id="signupUsername"
-                placeholder="Choose a username"
-                required
-            >
-
-
-            <label for="signupEmail">
-                Email
-            </label>
-
-            <input
-                type="email"
-                id="signupEmail"
-                placeholder="Enter your email"
-                required
-            >
-
-
-            <label for="signupPassword">
-                Password
-            </label>
-
-            <div class="password-wrapper">
-
-                <input
-                    type="password"
-                    id="signupPassword"
-                    placeholder="Create a password"
-                    minlength="6"
-                    required
-                >
-
-                <button
-                    type="button"
-                    class="password-toggle"
-                    data-target="signupPassword"
-                >
-                    👁️
-                </button>
-
-            </div>
-
-
-            <button
-                type="submit"
-                class="btn full auth-submit"
-            >
-                Create Account
-            </button>
-
-        </form>
-
-
-        <p
-            class="message"
-            id="signupMessage"
-        ></p>
-
-
-        <p class="auth-switch">
-
-            Already have an account?
-
-            <button
-                class="link-btn"
-                id="switchToLogin"
-            >
-                Login
-            </button>
-
-        </p>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     PRODUCT MODAL
-===================================================== -->
-
-<div
-    class="modal hidden"
-    id="productModal"
->
-
-    <div
-        class="modal-overlay"
-        id="modalOverlay"
-    ></div>
-
-
-    <div class="product-modal">
-
-        <button
-            class="modal-close"
-            id="modalClose"
-        >
-            ×
-        </button>
-
-
-        <img
-            class="modal-product-image"
-            id="modalProductImage"
-            src=""
-            alt="Product"
-        >
-
-
-        <div class="modal-product-info">
-
-            <span
-                class="product-region-badge modal-region"
-                id="modalProductRegion"
-            >
-                Region
-            </span>
-
-            <h2 id="modalProductName">
-                Product
-            </h2>
 
             <div
-                class="modal-product-price"
-                id="modalProductPrice"
+                id="regionGrid"
+                class="region-grid"
             >
-                ₱0.00
+
+                <!-- REGIONS CREATED BY JAVASCRIPT -->
+
             </div>
 
-            <p
-                class="modal-product-description"
-                id="modalProductDescription"
-            ></p>
+        </section>
 
 
-            <div class="modal-actions">
+        <!-- =================================================
+             PRODUCTS
 
-                <label for="modalQuantity">
-                    Quantity
-                </label>
+             IMPORTANT:
+             HIDDEN UNTIL A REGION IS SELECTED
+             ================================================= -->
 
-                <input
-                    type="number"
-                    id="modalQuantity"
-                    min="1"
-                    value="1"
+        <section
+            id="productsSection"
+            class="products-section hidden"
+        >
+
+            <div class="section-heading">
+
+                <span class="section-label">
+                    LOCAL PRODUCTS
+                </span>
+
+                <h2 id="productsTitle">
+                    Products
+                </h2>
+
+                <p id="productsSubtitle">
+                    Select a region to view products.
+                </p>
+
+            </div>
+
+
+            <div
+                id="productsGrid"
+                class="products-grid"
+            >
+
+                <!-- PRODUCTS CREATED BY JAVASCRIPT -->
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         LOGIN PAGE
+         ===================================================== -->
+
+    <main
+        id="loginPage"
+        class="page hidden"
+    >
+
+        <div class="auth-container">
+
+            <div class="auth-box">
+
+                <div class="auth-icon">
+                    🔐
+                </div>
+
+                <h2>
+                    Welcome Back
+                </h2>
+
+                <p class="auth-subtitle">
+                    Login to explore Bulacan products.
+                </p>
+
+
+                <form id="loginForm">
+
+                    <label for="loginEmail">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+
+                    <label for="loginPassword">
+                        Password
+                    </label>
+
+                    <div class="password-wrapper">
+
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('loginPassword', this)"
+                        >
+                            👁️
+                        </button>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn full auth-submit"
+                    >
+                        Login
+                    </button>
+
+                </form>
+
+
+                <button
+                    class="link-btn forgot-btn"
+                    onclick="forgotPassword()"
                 >
+                    Forgot Password?
+                </button>
+
+
+                <p class="auth-switch">
+
+                    Don't have an account?
+
+                    <button
+                        class="link-btn"
+                        onclick="showPage('register')"
+                    >
+                        Register
+                    </button>
+
+                </p>
+
+
+                <p
+                    id="loginMessage"
+                    class="message"
+                ></p>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         REGISTER PAGE
+         ===================================================== -->
+
+    <main
+        id="registerPage"
+        class="page hidden"
+    >
+
+        <div class="auth-container">
+
+            <div class="auth-box">
+
+                <div class="auth-icon">
+                    📝
+                </div>
+
+                <h2>
+                    Create Account
+                </h2>
+
+                <p class="auth-subtitle">
+                    Register to start shopping.
+                </p>
+
+
+                <form id="registerForm">
+
+                    <label for="registerName">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="registerName"
+                        placeholder="Enter your full name"
+                        required
+                    >
+
+
+                    <label for="registerEmail">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+
+                    <label for="registerPassword">
+                        Password
+                    </label>
+
+                    <div class="password-wrapper">
+
+                        <input
+                            type="password"
+                            id="registerPassword"
+                            placeholder="Create a password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('registerPassword', this)"
+                        >
+                            👁️
+                        </button>
+
+                    </div>
+
+
+                    <label for="registerConfirmPassword">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="registerConfirmPassword"
+                        placeholder="Confirm your password"
+                        required
+                    >
+
+
+                    <button
+                        type="submit"
+                        class="btn full"
+                    >
+                        Create Account
+                    </button>
+
+                </form>
+
+
+                <p
+                    id="registerMessage"
+                    class="message"
+                ></p>
+
+
+                <p class="auth-switch">
+
+                    Already have an account?
+
+                    <button
+                        class="link-btn"
+                        onclick="showPage('login')"
+                    >
+                        Login
+                    </button>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         CART PAGE
+         ===================================================== -->
+
+    <main
+        id="cartPage"
+        class="page hidden"
+    >
+
+        <section class="cart-section">
+
+            <div class="section-heading">
+
+                <span class="section-label">
+                    SHOPPING CART
+                </span>
+
+                <h2>
+                    Your Cart
+                </h2>
+
+                <p>
+                    Review your selected products.
+                </p>
+
+            </div>
+
+
+            <div
+                id="cartEmpty"
+                class="cart-empty"
+            >
+
+                <div>
+                    🛒
+                </div>
+
+                <h3>
+                    Your cart is empty
+                </h3>
+
+                <p>
+                    Choose a region and add some products.
+                </p>
+
+                <button
+                    class="btn"
+                    onclick="backToShopping()"
+                >
+                    Continue Shopping
+                </button>
+
+            </div>
+
+
+            <div
+                id="cartItems"
+                class="hidden"
+            >
+                <!-- CART ITEMS -->
+            </div>
+
+
+            <div
+                id="cartSummary"
+                class="cart-summary hidden"
+            >
+
+                <div class="summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <strong id="cartSubtotal">
+                        ₱0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <strong>
+                        ₱50.00
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="cartTotal">
+                        ₱0.00
+                    </strong>
+
+                </div>
 
 
                 <button
                     class="btn full"
-                    id="modalAddToCartBtn"
+                    onclick="openCheckout()"
                 >
-                    🛒 Add to Cart
+                    Proceed to Checkout
                 </button>
 
             </div>
 
-        </div>
+        </section>
 
-    </div>
-
-</div>
+    </main>
 
 
-<!-- =====================================================
-     CART
-===================================================== -->
+    <!-- =====================================================
+         CHECKOUT PAGE
+         ===================================================== -->
 
-<section
-    class="cart-section hidden"
-    id="cartSection"
->
+    <main
+        id="checkoutPage"
+        class="page hidden"
+    >
 
-    <div class="section-heading">
+        <section class="cart-section">
 
-        <span class="section-label">
-            YOUR SHOPPING CART
-        </span>
+            <div class="section-heading">
 
-        <h2>
-            🛒 My Cart
-        </h2>
+                <span class="section-label">
+                    CHECKOUT
+                </span>
 
-        <p>
-            Review your selected products before checkout.
-        </p>
+                <h2>
+                    Complete Your Order
+                </h2>
 
-    </div>
+                <p>
+                    Enter your delivery information.
+                </p>
 
-
-    <div id="cartContent">
-
-        <div
-            class="cart-empty"
-            id="cartEmpty"
-        >
-
-            <div>
-                🛒
             </div>
 
-            <h3>
-                Your cart is empty
-            </h3>
+
+            <div class="checkout-box">
+
+                <h3>
+                    Delivery Information
+                </h3>
+
+
+                <form id="checkoutForm">
+
+                    <label for="checkoutName">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="checkoutName"
+                        required
+                    >
+
+
+                    <label for="checkoutPhone">
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="checkoutPhone"
+                        placeholder="09XXXXXXXXX"
+                        required
+                    >
+
+
+                    <label for="checkoutAddress">
+                        Complete Address
+                    </label>
+
+                    <textarea
+                        id="checkoutAddress"
+                        placeholder="House number, street, barangay, municipality/city, Bulacan"
+                        required
+                    ></textarea>
+
+
+                    <label for="checkoutPayment">
+                        Payment Method
+                    </label>
+
+                    <select
+                        id="checkoutPayment"
+                        onchange="showPaymentInfo()"
+                        required
+                    >
+
+                        <option value="">
+                            Select payment method
+                        </option>
+
+                        <option value="GCash">
+                            GCash
+                        </option>
+
+                        <option value="Cash on Delivery">
+                            Cash on Delivery
+                        </option>
+
+                    </select>
+
+
+                    <div
+                        id="gcashInfo"
+                        class="gcash-info hidden"
+                    >
+
+                        <div class="gcash-icon">
+                            📱
+                        </div>
+
+                        <h4>
+                            GCash Payment
+                        </h4>
+
+                        <p>
+                            Send your payment to:
+                        </p>
+
+                        <div class="gcash-number">
+                            09XX-XXX-XXXX
+                        </div>
+
+                        <p class="gcash-note">
+                            Replace this number with your actual
+                            GCash business number.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        id="checkoutTotalPreview"
+                        class="checkout-total-preview"
+                    >
+                        Total: ₱0.00
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn full place-order-btn"
+                    >
+                        Place Order
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         SUCCESS PAGE
+         ===================================================== -->
+
+    <main
+        id="successPage"
+        class="page hidden"
+    >
+
+        <section class="success-section">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <h2>
+                Order Successfully Placed!
+            </h2>
 
             <p>
-                Add products from Bulacan businesses.
+                Thank you for supporting local Bulacan businesses.
             </p>
+
+            <p>
+                Your order has been received.
+            </p>
+
+            <br>
 
             <button
                 class="btn"
-                id="cartBrowseBtn"
+                onclick="backToShopping()"
             >
-                Browse Products
+                Continue Shopping
             </button>
 
-        </div>
+        </section>
 
+    </main>
+
+
+    <!-- =====================================================
+         ADMIN PAGE
+         ===================================================== -->
+
+    <main
+        id="adminPage"
+        class="page hidden"
+    >
+
+        <section class="admin-dashboard">
+
+            <div class="admin-header">
+
+                <span class="admin-badge">
+                    ADMIN PANEL
+                </span>
+
+                <h2>
+                    Product Management
+                </h2>
+
+                <p>
+                    Add, edit, and delete local products.
+                </p>
+
+            </div>
+
+
+            <div class="admin-form">
+
+                <h3 id="adminFormTitle">
+                    Add Product
+                </h3>
+
+
+                <form id="productForm">
+
+                    <input
+                        type="hidden"
+                        id="productId"
+                    >
+
+
+                    <label for="productName">
+                        Product Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="productName"
+                        placeholder="Example: Pastillas de Leche"
+                        required
+                    >
+
+
+                    <label for="productRegion">
+                        Region
+                    </label>
+
+                    <select
+                        id="productRegion"
+                        required
+                    >
+                        <!-- CREATED BY JAVASCRIPT -->
+                    </select>
+
+
+                    <label for="productPrice">
+                        Price
+                    </label>
+
+                    <input
+                        type="number"
+                        id="productPrice"
+                        min="1"
+                        step="0.01"
+                        placeholder="100"
+                        required
+                    >
+
+
+                    <label for="productImage">
+                        Image URL
+                    </label>
+
+                    <input
+                        type="url"
+                        id="productImage"
+                        placeholder="https://example.com/image.jpg"
+                        required
+                    >
+
+
+                    <label for="productDescription">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="productDescription"
+                        placeholder="Product description"
+                        required
+                    ></textarea>
+
+
+                    <div class="admin-form-buttons">
+
+                        <button
+                            type="submit"
+                            class="btn"
+                        >
+                            Save Product
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn cancel-btn"
+                            onclick="cancelProductEdit()"
+                        >
+                            Cancel
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <div class="admin-products">
+
+                <h3>
+                    Products
+                </h3>
+
+                <div id="adminProductsList">
+                    <!-- ADMIN PRODUCTS -->
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         PRODUCT MODAL
+         ===================================================== -->
+
+    <div
+        id="productModal"
+        class="modal hidden"
+    >
 
         <div
-            id="cartItems"
-            class="hidden"
+            class="modal-overlay"
+            onclick="closeProductModal()"
         ></div>
 
 
-        <div
-            class="cart-summary hidden"
-            id="cartSummary"
-        >
-
-            <div class="summary-row">
-
-                <span>
-                    Items
-                </span>
-
-                <strong id="cartItemCount">
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="summary-row">
-
-                <span>
-                    Subtotal
-                </span>
-
-                <strong id="cartSubtotal">
-                    ₱0.00
-                </strong>
-
-            </div>
-
-
-            <div class="summary-total">
-
-                <span>
-                    Total
-                </span>
-
-                <strong id="cartTotal">
-                    ₱0.00
-                </strong>
-
-            </div>
-
+        <div class="product-modal">
 
             <button
-                class="btn full"
-                id="checkoutBtn"
+                class="modal-close"
+                onclick="closeProductModal()"
             >
-                Proceed to Checkout
+                ×
             </button>
+
+
+            <img
+                id="modalProductImage"
+                class="modal-product-image"
+                src=""
+                alt="Product"
+            >
+
+
+            <div class="modal-product-info">
+
+                <h2 id="modalProductName">
+                    Product
+                </h2>
+
+                <p id="modalProductRegion">
+                    Region
+                </p>
+
+                <div
+                    id="modalProductPrice"
+                    class="modal-product-price"
+                >
+                    ₱0.00
+                </div>
+
+                <p
+                    id="modalProductDescription"
+                    class="modal-product-description"
+                >
+                    Description
+                </p>
+
+
+                <button
+                    id="modalAddButton"
+                    class="btn full"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-</section>
 
-
-<!-- =====================================================
-     CHECKOUT
-===================================================== -->
-
-<section
-    class="cart-section hidden"
-    id="checkoutSection"
->
-
-    <div class="section-heading">
-
-        <span class="section-label">
-            CHECKOUT
-        </span>
-
-        <h2>
-            Complete Your Order
-        </h2>
-
-        <p>
-            Enter your delivery information.
-        </p>
-
-    </div>
-
-
-    <div class="checkout-box">
-
-        <h3>
-            📦 Customer Information
-        </h3>
-
-
-        <form id="checkoutForm">
-
-            <label for="checkoutName">
-                Full Name
-            </label>
-
-            <input
-                type="text"
-                id="checkoutName"
-                required
-                placeholder="Your full name"
-            >
-
-
-            <label for="checkoutPhone">
-                Phone Number
-            </label>
-
-            <input
-                type="tel"
-                id="checkoutPhone"
-                required
-                placeholder="09XXXXXXXXX"
-            >
-
-
-            <label for="checkoutAddress">
-                Delivery Address
-            </label>
-
-            <textarea
-                id="checkoutAddress"
-                required
-                placeholder="Complete delivery address"
-            ></textarea>
-
-
-            <label for="checkoutRegion">
-                Region
-            </label>
-
-            <select
-                id="checkoutRegion"
-                required
-            >
-
-                <option value="">
-                    Select your area
-                </option>
-
-                <option>
-                    Malolos
-                </option>
-
-                <option>
-                    Baliuag
-                </option>
-
-                <option>
-                    Meycauayan
-                </option>
-
-                <option>
-                    Marilao
-                </option>
-
-                <option>
-                    Bocaue
-                </option>
-
-                <option>
-                    Plaridel
-                </option>
-
-                <option>
-                    San Jose del Monte
-                </option>
-
-                <option>
-                    Other Bulacan Area
-                </option>
-
-            </select>
-
-
-            <label for="paymentMethod">
-                Payment Method
-            </label>
-
-            <select
-                id="paymentMethod"
-                required
-            >
-
-                <option value="">
-                    Select payment method
-                </option>
-
-                <option value="GCash">
-                    GCash
-                </option>
-
-                <option value="Cash on Delivery">
-                    Cash on Delivery
-                </option>
-
-            </select>
-
-
-            <div
-                class="gcash-info hidden"
-                id="gcashInfo"
-            >
-
-                <div class="gcash-icon">
-                    📱
-                </div>
-
-                <h4>
-                    GCash Payment
-                </h4>
-
-                <p>
-                    Send your payment to:
-                </p>
-
-                <div class="gcash-number">
-                    09XX XXX XXXX
-                </div>
-
-                <p class="gcash-note">
-                    Replace the number above with your
-                    actual GCash number.
-                </p>
-
-            </div>
-
-
-            <div class="checkout-total-preview">
-
-                Order Total:
-
-                <span id="checkoutTotal">
-                    ₱0.00
-                </span>
-
-            </div>
-
-
-            <button
-                type="submit"
-                class="btn full place-order-btn"
-            >
-                Place Order
-            </button>
-
-        </form>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     SUCCESS
-===================================================== -->
-
-<section
-    class="success-section hidden"
-    id="successSection"
->
-
-    <div class="success-icon">
-        ✓
-    </div>
-
-    <h2>
-        Order Successful!
-    </h2>
-
-    <p>
-        Thank you for supporting local Bulacan businesses.
-    </p>
-
-    <p>
-        Your order has been received.
-    </p>
-
+    <!-- =====================================================
+         TOAST
+         ===================================================== -->
 
     <div
-        class="success-order-info"
-        id="successOrderInfo"
-    ></div>
-
-
-    <div class="dashboard-actions">
-
-        <button
-            class="btn"
-            id="successBrowseBtn"
-        >
-            Continue Shopping
-        </button>
-
-        <button
-            class="btn secondary"
-            id="successHomeBtn"
-        >
-            Back to Home
-        </button>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     ADMIN
-===================================================== -->
-
-<section
-    class="admin-dashboard hidden"
-    id="adminSection"
->
-
-    <div class="admin-header">
-
-        <span class="admin-badge">
-            🛡️ ADMIN
-        </span>
-
-        <h2>
-            Admin Dashboard
-        </h2>
-
-        <p>
-            Manage products listed on Bulacan Business.
-        </p>
-
+        id="toast"
+        class="toast hidden"
+    >
+        Message
     </div>
 
 
-    <!-- ADD PRODUCT -->
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
 
-    <div class="admin-form">
+    <footer>
 
-        <h3>
-            ➕ Add Product
-        </h3>
+        <div class="footer-content">
 
+            <div>
 
-        <form id="productForm">
+                <h3>
+                    🌿 Bulacan Business
+                </h3>
 
-            <label for="productName">
-                Product Name
-            </label>
-
-            <input
-                type="text"
-                id="productName"
-                placeholder="Product name"
-                required
-            >
-
-
-            <label for="productPrice">
-                Price
-            </label>
-
-            <input
-                type="number"
-                id="productPrice"
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-                required
-            >
-
-
-            <label for="productImage">
-                Image URL
-            </label>
-
-            <input
-                type="url"
-                id="productImage"
-                placeholder="https://..."
-            >
-
-
-            <label for="productRegion">
-                Region
-            </label>
-
-            <select
-                id="productRegion"
-                required
-            >
-
-                <option value="">
-                    Select product region
-                </option>
-
-                <option value="Malolos">
-                    Malolos
-                </option>
-
-                <option value="Baliuag">
-                    Baliuag
-                </option>
-
-                <option value="Meycauayan">
-                    Meycauayan
-                </option>
-
-                <option value="Marilao">
-                    Marilao
-                </option>
-
-                <option value="Bocaue">
-                    Bocaue
-                </option>
-
-                <option value="Plaridel">
-                    Plaridel
-                </option>
-
-                <option value="San Jose del Monte">
-                    San Jose del Monte
-                </option>
-
-            </select>
-
-
-            <label for="productDescription">
-                Description
-            </label>
-
-            <textarea
-                id="productDescription"
-                placeholder="Product description"
-                required
-            ></textarea>
-
-
-            <div class="admin-form-buttons">
-
-                <button
-                    type="submit"
-                    class="btn"
-                >
-                    Add Product
-                </button>
-
-                <button
-                    type="button"
-                    class="btn cancel-btn hidden"
-                    id="cancelEditBtn"
-                >
-                    Cancel Edit
-                </button>
+                <p>
+                    Supporting local businesses in Bulacan.
+                </p>
 
             </div>
 
 
-            <p
-                class="message"
-                id="productMessage"
-            ></p>
+            <div class="footer-copy">
 
-        </form>
+                <p>
+                    © 2026 Bulacan Business
+                </p>
 
-    </div>
-
-
-    <!-- ADMIN PRODUCT LIST -->
-
-    <div class="admin-products">
-
-        <h3>
-            📦 Manage Products
-        </h3>
-
-        <div id="adminProductsContainer">
-
-            <p>
-                Loading products...
-            </p>
+            </div>
 
         </div>
 
-    </div>
-
-</section>
+    </footer>
 
 
-<!-- =====================================================
-     TOAST
-===================================================== -->
-
-<div
-    class="toast hidden"
-    id="toast"
-></div>
-
-
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
-<footer>
-
-    <div class="footer-content">
-
-        <div>
-
-            <h3>
-                🌿 Bulacan Business
-            </h3>
-
-            <p>
-                Supporting local businesses and
-                entrepreneurs in Bulacan.
-            </p>
-
-        </div>
-
-
-        <div class="footer-copy">
-
-            <p>
-                © 2026 Bulacan Business
-            </p>
-
-        </div>
-
-    </div>
-
-</footer>
-
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 
 </body>
 </html>
