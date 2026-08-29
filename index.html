@@ -2,11 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Bulacan Business</title>
 
@@ -15,227 +11,352 @@
 
 <body>
 
-    <!-- =====================================================
-         NAVBAR
-         ===================================================== -->
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
 
-    <nav class="navbar">
+<header class="navbar">
 
-        <div class="logo">
-            🌿 Bulacan Business
-        </div>
+    <div class="nav-container">
 
-        <!-- NOT LOGGED IN -->
-        <div
-            id="guestArea"
-            class="user-area"
-        >
-            <button
-                class="btn nav-btn"
-                onclick="showPage('login')"
-            >
-                Login
-            </button>
+        <a href="#" class="logo" onclick="showPage('home')">
+            <span class="logo-icon">🏛️</span>
+            <span>Bulacan Business</span>
+        </a>
 
-            <button
-                class="btn"
-                onclick="showPage('register')"
-            >
-                Register
-            </button>
-        </div>
+        <nav>
 
-        <!-- LOGGED IN -->
-        <div
-            id="loggedUserArea"
-            class="logged-user-area hidden"
-        >
-            <span id="welcomeUser">
-                Welcome!
-            </span>
+            <div id="loggedOutArea" class="nav-actions">
 
-            <button
-                class="btn"
-                onclick="showPage('cart')"
-            >
-                🛒 Cart
-                <span id="cartCount">0</span>
-            </button>
+                <button
+                    type="button"
+                    id="showLoginBtn"
+                    class="nav-btn"
+                >
+                    Login
+                </button>
 
-            <button
-                class="btn logout-small"
-                onclick="logout()"
-            >
-                Logout
-            </button>
-        </div>
-
-    </nav>
-
-
-    <!-- =====================================================
-         HOME / LANDING PAGE
-         ===================================================== -->
-
-    <main id="homePage">
-
-        <section class="hero">
-
-            <div class="hero-overlay">
-
-                <div class="hero-content">
-
-                    <span class="hero-badge">
-                        🌿 SUPPORT LOCAL BUSINESSES
-                    </span>
-
-                    <h1>
-                        Discover Products<br>
-                        From Bulacan
-                    </h1>
-
-                    <p>
-                        Explore local products from different
-                        municipalities and cities of Bulacan.
-                        Login first to access regions and shop.
-                    </p>
-
-                    <div class="hero-buttons">
-
-                        <button
-                            class="btn hero-btn"
-                            onclick="showPage('login')"
-                        >
-                            🔐 Login to Shop
-                        </button>
-
-                        <button
-                            class="btn hero-btn-outline"
-                            onclick="showPage('register')"
-                        >
-                            Create Account
-                        </button>
-
-                    </div>
-
-                </div>
+                <button
+                    type="button"
+                    id="showSignupBtn"
+                    class="nav-btn primary"
+                >
+                    Sign Up
+                </button>
 
             </div>
 
-        </section>
+
+            <div
+                id="loggedUserArea"
+                class="nav-actions hidden"
+            >
+
+                <span class="welcome-user">
+                    Hello,
+                    <strong id="usernameDisplay">User</strong>
+                </span>
+
+                <button
+                    type="button"
+                    class="nav-btn"
+                    onclick="openCart()"
+                >
+                    🛒 Cart
+                    <span id="cartCount" class="cart-count">0</span>
+                </button>
+
+                <button
+                    type="button"
+                    class="nav-btn"
+                    onclick="logout()"
+                    id="logoutBtn"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+        </nav>
+
+    </div>
+
+</header>
 
 
-        <!-- =================================================
-             REGIONS
+<!-- =====================================================
+     MAIN
+===================================================== -->
 
-             IMPORTANT:
-             HIDDEN UNTIL LOGIN
-             ================================================= -->
+<main>
 
-        <section
-            id="regionSection"
-            class="region-section hidden"
-        >
+<!-- =====================================================
+     HOME
+===================================================== -->
+
+<section id="homeSection">
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <span class="hero-tag">
+                🇵🇭 SUPPORT LOCAL
+            </span>
+
+            <h1>
+                Discover the Best
+                <span>Bulacan Products</span>
+            </h1>
+
+            <p>
+                Explore authentic local products from different
+                cities and municipalities of Bulacan.
+            </p>
+
+            <div class="hero-buttons">
+
+                <button
+                    type="button"
+                    id="heroExploreBtn"
+                    class="btn btn-primary"
+                >
+                    Explore Products
+                </button>
+
+                <button
+                    type="button"
+                    id="heroLoginBtn"
+                    class="btn btn-outline"
+                >
+                    Login
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         USER DASHBOARD
+    ================================================= -->
+
+    <section
+        id="userSection"
+        class="dashboard-section hidden"
+    >
+
+        <div class="container">
 
             <div class="section-heading">
 
-                <span class="section-label">
+                <span class="eyebrow">
+                    MY ACCOUNT
+                </span>
+
+                <h2>
+                    Welcome to Bulacan Business
+                </h2>
+
+                <p>
+                    What would you like to do today?
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-grid">
+
+                <button
+                    type="button"
+                    id="dashboardProductsBtn"
+                    class="dashboard-card"
+                >
+
+                    <span class="dashboard-icon">
+                        🛍️
+                    </span>
+
+                    <strong>
+                        Browse Products
+                    </strong>
+
+                    <small>
+                        Explore products from Bulacan.
+                    </small>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="dashboardCartBtn"
+                    class="dashboard-card"
+                >
+
+                    <span class="dashboard-icon">
+                        🛒
+                    </span>
+
+                    <strong>
+                        My Cart
+                    </strong>
+
+                    <small>
+                        View your selected products.
+                    </small>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         REGIONS
+    ================================================= -->
+
+    <section
+        id="regionsSection"
+        class="regions-section hidden"
+    >
+
+        <div class="container">
+
+            <div class="section-heading">
+
+                <span class="eyebrow">
                     EXPLORE BULACAN
                 </span>
 
                 <h2>
-                    Choose a Region
+                    Choose a Location
                 </h2>
 
                 <p>
-                    Select a region to see its available products.
+                    Select a city or municipality to discover
+                    its local products.
                 </p>
 
             </div>
 
 
-            <div
-                id="regionGrid"
-                class="region-grid"
-            >
+            <div class="region-grid"></div>
 
-                <!-- REGIONS CREATED BY JAVASCRIPT -->
+        </div>
 
-            </div>
-
-        </section>
+    </section>
 
 
-        <!-- =================================================
-             PRODUCTS
+    <!-- =================================================
+         PRODUCTS
+    ================================================= -->
 
-             IMPORTANT:
-             HIDDEN UNTIL A REGION IS SELECTED
-             ================================================= -->
-
-        <section
-            id="productsSection"
-            class="products-section hidden"
-        >
-
-            <div class="section-heading">
-
-                <span class="section-label">
-                    LOCAL PRODUCTS
-                </span>
-
-                <h2 id="productsTitle">
-                    Products
-                </h2>
-
-                <p id="productsSubtitle">
-                    Select a region to view products.
-                </p>
-
-            </div>
-
-
-            <div
-                id="productsGrid"
-                class="products-grid"
-            >
-
-                <!-- PRODUCTS CREATED BY JAVASCRIPT -->
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- =====================================================
-         LOGIN PAGE
-         ===================================================== -->
-
-    <main
-        id="loginPage"
-        class="page hidden"
+    <section
+        id="productsSection"
+        class="products-section hidden"
     >
 
-        <div class="auth-container">
+        <div class="container">
 
-            <div class="auth-box">
+            <div class="products-header">
 
-                <div class="auth-icon">
-                    🔐
+                <div>
+
+                    <span class="eyebrow">
+                        LOCAL PRODUCTS
+                    </span>
+
+                    <h2 id="productsTitle">
+                        Products
+                    </h2>
+
+                    <p id="productsSubtitle">
+                        Products available from this location.
+                    </p>
+
                 </div>
 
-                <h2>
-                    Welcome Back
-                </h2>
 
-                <p class="auth-subtitle">
-                    Login to explore Bulacan products.
-                </p>
+                <div class="product-search">
+
+                    <input
+                        type="search"
+                        id="productSearch"
+                        placeholder="Search products..."
+                        autocomplete="off"
+                    >
+
+                    <button
+                        type="button"
+                        id="clearFilterBtn"
+                        title="Clear search"
+                    >
+                        ✕
+                    </button>
+
+                </div>
+
+            </div>
 
 
-                <form id="loginForm">
+            <div
+                id="productsContainer"
+                class="products-grid"
+            ></div>
+
+        </div>
+
+    </section>
+
+</section>
+
+
+<!-- =====================================================
+     AUTH SECTION
+===================================================== -->
+
+<section
+    id="authSection"
+    class="auth-section hidden"
+>
+
+    <div class="auth-container">
+
+
+        <!-- LOGIN -->
+
+        <div id="loginBox" class="auth-box">
+
+            <div class="auth-icon">
+                🔐
+            </div>
+
+            <span class="eyebrow">
+                WELCOME BACK
+            </span>
+
+            <h2>
+                Login
+            </h2>
+
+            <p class="auth-description">
+                Login to explore Bulacan local products.
+            </p>
+
+
+            <form id="loginForm">
+
+                <div class="form-group">
 
                     <label for="loginEmail">
                         Email
@@ -248,6 +369,10 @@
                         required
                     >
 
+                </div>
+
+
+                <div class="form-group">
 
                     <label for="loginPassword">
                         Password
@@ -265,111 +390,109 @@
                         <button
                             type="button"
                             class="password-toggle"
-                            onclick="togglePassword('loginPassword', this)"
+                            data-target="loginPassword"
                         >
                             👁️
                         </button>
 
                     </div>
 
-
-                    <button
-                        type="submit"
-                        class="btn full auth-submit"
-                    >
-                        Login
-                    </button>
-
-                </form>
+                </div>
 
 
                 <button
-                    class="link-btn forgot-btn"
-                    onclick="forgotPassword()"
+                    type="submit"
+                    class="btn btn-primary full-width"
                 >
-                    Forgot Password?
+                    Login
                 </button>
-
-
-                <p class="auth-switch">
-
-                    Don't have an account?
-
-                    <button
-                        class="link-btn"
-                        onclick="showPage('register')"
-                    >
-                        Register
-                    </button>
-
-                </p>
 
 
                 <p
                     id="loginMessage"
-                    class="message"
+                    class="form-message"
                 ></p>
+
+            </form>
+
+
+            <div class="auth-switch">
+
+                Don't have an account?
+
+                <button
+                    type="button"
+                    id="switchToSignup"
+                >
+                    Sign Up
+                </button>
 
             </div>
 
         </div>
 
-    </main>
+
+        <!-- SIGN UP -->
+
+        <div
+            id="signupBox"
+            class="auth-box hidden"
+        >
+
+            <div class="auth-icon">
+                👤
+            </div>
+
+            <span class="eyebrow">
+                JOIN US
+            </span>
+
+            <h2>
+                Create Account
+            </h2>
+
+            <p class="auth-description">
+                Create an account to start shopping.
+            </p>
 
 
-    <!-- =====================================================
-         REGISTER PAGE
-         ===================================================== -->
+            <form id="signupForm">
 
-    <main
-        id="registerPage"
-        class="page hidden"
-    >
+                <div class="form-group">
 
-        <div class="auth-container">
-
-            <div class="auth-box">
-
-                <div class="auth-icon">
-                    📝
-                </div>
-
-                <h2>
-                    Create Account
-                </h2>
-
-                <p class="auth-subtitle">
-                    Register to start shopping.
-                </p>
-
-
-                <form id="registerForm">
-
-                    <label for="registerName">
-                        Full Name
+                    <label for="signupUsername">
+                        Name
                     </label>
 
                     <input
                         type="text"
-                        id="registerName"
-                        placeholder="Enter your full name"
+                        id="signupUsername"
+                        placeholder="Enter your name"
                         required
                     >
 
+                </div>
 
-                    <label for="registerEmail">
+
+                <div class="form-group">
+
+                    <label for="signupEmail">
                         Email
                     </label>
 
                     <input
                         type="email"
-                        id="registerEmail"
+                        id="signupEmail"
                         placeholder="Enter your email"
                         required
                     >
 
+                </div>
 
-                    <label for="registerPassword">
+
+                <div class="form-group">
+
+                    <label for="signupPassword">
                         Password
                     </label>
 
@@ -377,230 +500,254 @@
 
                         <input
                             type="password"
-                            id="registerPassword"
-                            placeholder="Create a password"
+                            id="signupPassword"
+                            placeholder="Minimum 6 characters"
+                            minlength="6"
                             required
                         >
 
                         <button
                             type="button"
                             class="password-toggle"
-                            onclick="togglePassword('registerPassword', this)"
+                            data-target="signupPassword"
                         >
                             👁️
                         </button>
 
                     </div>
 
-
-                    <label for="registerConfirmPassword">
-                        Confirm Password
-                    </label>
-
-                    <input
-                        type="password"
-                        id="registerConfirmPassword"
-                        placeholder="Confirm your password"
-                        required
-                    >
+                </div>
 
 
-                    <button
-                        type="submit"
-                        class="btn full"
-                    >
-                        Create Account
-                    </button>
-
-                </form>
+                <button
+                    type="submit"
+                    class="btn btn-primary full-width"
+                >
+                    Create Account
+                </button>
 
 
                 <p
-                    id="registerMessage"
-                    class="message"
+                    id="signupMessage"
+                    class="form-message"
                 ></p>
 
+            </form>
 
-                <p class="auth-switch">
 
-                    Already have an account?
+            <div class="auth-switch">
 
-                    <button
-                        class="link-btn"
-                        onclick="showPage('login')"
-                    >
-                        Login
-                    </button>
+                Already have an account?
 
-                </p>
+                <button
+                    type="button"
+                    id="switchToLogin"
+                >
+                    Login
+                </button>
 
             </div>
 
         </div>
 
-    </main>
+    </div>
+
+</section>
 
 
-    <!-- =====================================================
-         CART PAGE
-         ===================================================== -->
+<!-- =====================================================
+     CART
+===================================================== -->
 
-    <main
-        id="cartPage"
-        class="page hidden"
-    >
+<section
+    id="cartSection"
+    class="page-section hidden"
+>
 
-        <section class="cart-section">
+    <div class="container">
 
-            <div class="section-heading">
+        <div class="page-header">
 
-                <span class="section-label">
-                    SHOPPING CART
+            <span class="eyebrow">
+                SHOPPING CART
+            </span>
+
+            <h2>
+                My Cart
+            </h2>
+
+            <p>
+                Review your selected products before checkout.
+            </p>
+
+        </div>
+
+
+        <!-- EMPTY CART -->
+
+        <div
+            id="cartEmpty"
+            class="empty-state"
+        >
+
+            <div class="empty-icon">
+                🛒
+            </div>
+
+            <h3>
+                Your cart is empty
+            </h3>
+
+            <p>
+                Add some local Bulacan products to your cart.
+            </p>
+
+            <button
+                type="button"
+                id="cartBrowseBtn"
+                class="btn btn-primary"
+            >
+                Browse Products
+            </button>
+
+        </div>
+
+
+        <!-- CART ITEMS -->
+
+        <div
+            id="cartItems"
+            class="cart-list hidden"
+        ></div>
+
+
+        <!-- CART SUMMARY -->
+
+        <div
+            id="cartSummary"
+            class="cart-summary hidden"
+        >
+
+            <div class="summary-row">
+
+                <span>
+                    Items
                 </span>
 
-                <h2>
-                    Your Cart
-                </h2>
-
-                <p>
-                    Review your selected products.
-                </p>
+                <strong id="cartItemCount">
+                    0
+                </strong>
 
             </div>
 
 
-            <div
-                id="cartEmpty"
-                class="cart-empty"
-            >
+            <div class="summary-row">
 
-                <div>
-                    🛒
-                </div>
-
-                <h3>
-                    Your cart is empty
-                </h3>
-
-                <p>
-                    Choose a region and add some products.
-                </p>
-
-                <button
-                    class="btn"
-                    onclick="backToShopping()"
-                >
-                    Continue Shopping
-                </button>
-
-            </div>
-
-
-            <div
-                id="cartItems"
-                class="hidden"
-            >
-                <!-- CART ITEMS -->
-            </div>
-
-
-            <div
-                id="cartSummary"
-                class="cart-summary hidden"
-            >
-
-                <div class="summary-row">
-
-                    <span>
-                        Subtotal
-                    </span>
-
-                    <strong id="cartSubtotal">
-                        ₱0.00
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-row">
-
-                    <span>
-                        Delivery
-                    </span>
-
-                    <strong>
-                        ₱50.00
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-total">
-
-                    <span>
-                        Total
-                    </span>
-
-                    <strong id="cartTotal">
-                        ₱0.00
-                    </strong>
-
-                </div>
-
-
-                <button
-                    class="btn full"
-                    onclick="openCheckout()"
-                >
-                    Proceed to Checkout
-                </button>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- =====================================================
-         CHECKOUT PAGE
-         ===================================================== -->
-
-    <main
-        id="checkoutPage"
-        class="page hidden"
-    >
-
-        <section class="cart-section">
-
-            <div class="section-heading">
-
-                <span class="section-label">
-                    CHECKOUT
+                <span>
+                    Subtotal
                 </span>
 
-                <h2>
-                    Complete Your Order
-                </h2>
-
-                <p>
-                    Enter your delivery information.
-                </p>
+                <strong id="cartSubtotal">
+                    ₱0.00
+                </strong>
 
             </div>
 
 
-            <div class="checkout-box">
+            <div class="summary-row">
+
+                <span>
+                    Delivery
+                </span>
+
+                <strong>
+                    ₱50.00
+                </strong>
+
+            </div>
+
+
+            <div class="summary-divider"></div>
+
+
+            <div class="summary-row total-row">
+
+                <span>
+                    Total
+                </span>
+
+                <strong id="cartTotal">
+                    ₱0.00
+                </strong>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="checkoutBtn"
+                class="btn btn-primary full-width"
+            >
+                Proceed to Checkout
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-light full-width"
+                onclick="backToShopping()"
+            >
+                Continue Shopping
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CHECKOUT
+===================================================== -->
+
+<section
+    id="checkoutSection"
+    class="page-section hidden"
+>
+
+    <div class="container checkout-container">
+
+        <div class="page-header">
+
+            <span class="eyebrow">
+                CHECKOUT
+            </span>
+
+            <h2>
+                Complete Your Order
+            </h2>
+
+            <p>
+                Enter your information and choose a payment method.
+            </p>
+
+        </div>
+
+
+        <form id="checkoutForm" class="checkout-form">
+
+            <div class="checkout-card">
 
                 <h3>
-                    Delivery Information
+                    Customer Information
                 </h3>
 
 
-                <form id="checkoutForm">
+                <div class="form-group">
 
                     <label for="checkoutName">
-                        Full Name
+                        Name
                     </label>
 
                     <input
@@ -609,9 +756,29 @@
                         required
                     >
 
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="checkoutAddress">
+                        Delivery Address
+                    </label>
+
+                    <textarea
+                        id="checkoutAddress"
+                        rows="4"
+                        placeholder="Enter your complete address"
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group">
 
                     <label for="checkoutPhone">
-                        Phone Number
+                        Contact Number
                     </label>
 
                     <input
@@ -621,25 +788,26 @@
                         required
                     >
 
+                </div>
 
-                    <label for="checkoutAddress">
-                        Complete Address
-                    </label>
-
-                    <textarea
-                        id="checkoutAddress"
-                        placeholder="House number, street, barangay, municipality/city, Bulacan"
-                        required
-                    ></textarea>
+            </div>
 
 
-                    <label for="checkoutPayment">
-                        Payment Method
+            <div class="checkout-card">
+
+                <h3>
+                    Payment Method
+                </h3>
+
+
+                <div class="form-group">
+
+                    <label for="paymentMethod">
+                        Select Payment
                     </label>
 
                     <select
-                        id="checkoutPayment"
-                        onchange="showPaymentInfo()"
+                        id="paymentMethod"
                         required
                     >
 
@@ -647,140 +815,170 @@
                             Select payment method
                         </option>
 
-                        <option value="GCash">
-                            GCash
-                        </option>
-
                         <option value="Cash on Delivery">
                             Cash on Delivery
                         </option>
 
+                        <option value="GCash">
+                            GCash
+                        </option>
+
                     </select>
 
-
-                    <div
-                        id="gcashInfo"
-                        class="gcash-info hidden"
-                    >
-
-                        <div class="gcash-icon">
-                            📱
-                        </div>
-
-                        <h4>
-                            GCash Payment
-                        </h4>
-
-                        <p>
-                            Send your payment to:
-                        </p>
-
-                        <div class="gcash-number">
-                            09XX-XXX-XXXX
-                        </div>
-
-                        <p class="gcash-note">
-                            Replace this number with your actual
-                            GCash business number.
-                        </p>
-
-                    </div>
+                </div>
 
 
-                    <div
-                        id="checkoutTotalPreview"
-                        class="checkout-total-preview"
-                    >
-                        Total: ₱0.00
-                    </div>
+                <div
+                    id="gcashInfo"
+                    class="payment-info hidden"
+                >
 
+                    <strong>
+                        📱 GCash Payment
+                    </strong>
 
-                    <button
-                        type="submit"
-                        class="btn full place-order-btn"
-                    >
-                        Place Order
-                    </button>
+                    <p>
+                        Please prepare your GCash payment.
+                    </p>
 
-                </form>
+                </div>
 
             </div>
 
-        </section>
 
-    </main>
+            <div class="checkout-card order-total-card">
+
+                <div class="checkout-total-row">
+
+                    <span>
+                        Order Total
+                    </span>
+
+                    <strong id="checkoutTotal">
+                        ₱0.00
+                    </strong>
+
+                </div>
 
 
-    <!-- =====================================================
-         SUCCESS PAGE
-         ===================================================== -->
+                <button
+                    type="submit"
+                    class="btn btn-primary full-width"
+                >
+                    Place Order
+                </button>
 
-    <main
-        id="successPage"
-        class="page hidden"
-    >
 
-        <section class="success-section">
+                <button
+                    type="button"
+                    class="btn btn-light full-width"
+                    onclick="showPage('cart')"
+                >
+                    Back to Cart
+                </button>
 
-            <div class="success-icon">
-                ✓
             </div>
 
-            <h2>
-                Order Successfully Placed!
-            </h2>
+        </form>
 
-            <p>
-                Thank you for supporting local Bulacan businesses.
-            </p>
+    </div>
 
-            <p>
-                Your order has been received.
-            </p>
+</section>
 
-            <br>
+
+<!-- =====================================================
+     SUCCESS
+===================================================== -->
+
+<section
+    id="successSection"
+    class="page-section hidden"
+>
+
+    <div class="success-container">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <span class="eyebrow">
+            ORDER COMPLETE
+        </span>
+
+        <h2>
+            Order Successfully Placed!
+        </h2>
+
+        <p>
+            Thank you for supporting local Bulacan businesses.
+        </p>
+
+
+        <div
+            id="successOrderInfo"
+            class="success-order-info"
+        ></div>
+
+
+        <div class="success-buttons">
 
             <button
-                class="btn"
-                onclick="backToShopping()"
+                type="button"
+                id="successBrowseBtn"
+                class="btn btn-primary"
             >
                 Continue Shopping
             </button>
 
-        </section>
+            <button
+                type="button"
+                id="successHomeBtn"
+                class="btn btn-light"
+            >
+                Home
+            </button>
 
-    </main>
+        </div>
 
+    </div>
 
-    <!-- =====================================================
-         ADMIN PAGE
-         ===================================================== -->
-
-    <main
-        id="adminPage"
-        class="page hidden"
-    >
-
-        <section class="admin-dashboard">
-
-            <div class="admin-header">
-
-                <span class="admin-badge">
-                    ADMIN PANEL
-                </span>
-
-                <h2>
-                    Product Management
-                </h2>
-
-                <p>
-                    Add, edit, and delete local products.
-                </p>
-
-            </div>
+</section>
 
 
-            <div class="admin-form">
+<!-- =====================================================
+     ADMIN
+===================================================== -->
+
+<section
+    id="adminSection"
+    class="page-section hidden"
+>
+
+    <div class="container">
+
+        <div class="page-header">
+
+            <span class="eyebrow">
+                ADMIN PANEL
+            </span>
+
+            <h2>
+                Manage Products
+            </h2>
+
+            <p>
+                Add, edit, or delete products.
+            </p>
+
+        </div>
+
+
+        <div class="admin-layout">
+
+
+            <!-- PRODUCT FORM -->
+
+            <div class="admin-card">
 
                 <h3 id="adminFormTitle">
                     Add Product
@@ -795,227 +993,265 @@
                     >
 
 
-                    <label for="productName">
-                        Product Name
-                    </label>
+                    <div class="form-group">
 
-                    <input
-                        type="text"
-                        id="productName"
-                        placeholder="Example: Pastillas de Leche"
-                        required
-                    >
+                        <label for="productName">
+                            Product Name
+                        </label>
 
-
-                    <label for="productRegion">
-                        Region
-                    </label>
-
-                    <select
-                        id="productRegion"
-                        required
-                    >
-                        <!-- CREATED BY JAVASCRIPT -->
-                    </select>
-
-
-                    <label for="productPrice">
-                        Price
-                    </label>
-
-                    <input
-                        type="number"
-                        id="productPrice"
-                        min="1"
-                        step="0.01"
-                        placeholder="100"
-                        required
-                    >
-
-
-                    <label for="productImage">
-                        Image URL
-                    </label>
-
-                    <input
-                        type="url"
-                        id="productImage"
-                        placeholder="https://example.com/image.jpg"
-                        required
-                    >
-
-
-                    <label for="productDescription">
-                        Description
-                    </label>
-
-                    <textarea
-                        id="productDescription"
-                        placeholder="Product description"
-                        required
-                    ></textarea>
-
-
-                    <div class="admin-form-buttons">
-
-                        <button
-                            type="submit"
-                            class="btn"
+                        <input
+                            type="text"
+                            id="productName"
+                            placeholder="Product name"
+                            required
                         >
-                            Save Product
-                        </button>
-
-                        <button
-                            type="button"
-                            class="btn cancel-btn"
-                            onclick="cancelProductEdit()"
-                        >
-                            Cancel
-                        </button>
 
                     </div>
+
+
+                    <div class="form-group">
+
+                        <label for="productPrice">
+                            Price
+                        </label>
+
+                        <input
+                            type="number"
+                            id="productPrice"
+                            min="1"
+                            step="0.01"
+                            placeholder="0.00"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="productImage">
+                            Image URL
+                        </label>
+
+                        <input
+                            type="url"
+                            id="productImage"
+                            placeholder="https://..."
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="productRegion">
+                            Region
+                        </label>
+
+                        <select
+                            id="productRegion"
+                            required
+                        ></select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="productDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="productDescription"
+                            rows="5"
+                            placeholder="Product description"
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary full-width"
+                    >
+                        Save Product
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="cancelEditBtn"
+                        class="btn btn-light full-width hidden"
+                    >
+                        Cancel Edit
+                    </button>
 
                 </form>
 
             </div>
 
 
-            <div class="admin-products">
+            <!-- PRODUCT LIST -->
+
+            <div class="admin-card">
 
                 <h3>
                     Products
                 </h3>
 
-                <div id="adminProductsList">
-                    <!-- ADMIN PRODUCTS -->
-                </div>
+                <div
+                    id="adminProductsContainer"
+                    class="admin-products-list"
+                ></div>
 
             </div>
 
-        </section>
+        </div>
 
-    </main>
+    </div>
+
+</section>
+
+</main>
 
 
-    <!-- =====================================================
-         PRODUCT MODAL
-         ===================================================== -->
+<!-- =====================================================
+     PRODUCT MODAL
+===================================================== -->
+
+<div
+    id="productModal"
+    class="modal-overlay hidden"
+>
 
     <div
-        id="productModal"
-        class="modal hidden"
+        class="product-modal"
+        onclick="event.stopPropagation()"
     >
 
-        <div
-            class="modal-overlay"
-            onclick="closeProductModal()"
-        ></div>
+        <button
+            type="button"
+            id="modalClose"
+            class="modal-close"
+        >
+            ×
+        </button>
 
 
-        <div class="product-modal">
-
-            <button
-                class="modal-close"
-                onclick="closeProductModal()"
-            >
-                ×
-            </button>
-
+        <div class="modal-image-container">
 
             <img
                 id="modalProductImage"
-                class="modal-product-image"
                 src=""
                 alt="Product"
             >
 
+        </div>
 
-            <div class="modal-product-info">
 
-                <h2 id="modalProductName">
-                    Product
-                </h2>
+        <div class="modal-content">
 
-                <p id="modalProductRegion">
-                    Region
-                </p>
+            <span
+                id="modalProductRegion"
+                class="modal-region"
+            ></span>
 
-                <div
-                    id="modalProductPrice"
-                    class="modal-product-price"
+            <h2 id="modalProductName">
+                Product
+            </h2>
+
+            <div
+                id="modalProductPrice"
+                class="modal-price"
+            >
+                ₱0.00
+            </div>
+
+            <p
+                id="modalProductDescription"
+                class="modal-description"
+            ></p>
+
+
+            <div class="modal-quantity">
+
+                <label for="modalQuantity">
+                    Quantity
+                </label>
+
+                <input
+                    type="number"
+                    id="modalQuantity"
+                    min="1"
+                    value="1"
                 >
-                    ₱0.00
-                </div>
-
-                <p
-                    id="modalProductDescription"
-                    class="modal-product-description"
-                >
-                    Description
-                </p>
-
-
-                <button
-                    id="modalAddButton"
-                    class="btn full"
-                >
-                    Add to Cart
-                </button>
 
             </div>
+
+
+            <button
+                type="button"
+                id="modalAddToCartBtn"
+                class="btn btn-primary full-width"
+            >
+                🛒 Add to Cart
+            </button>
 
         </div>
 
     </div>
 
-
-    <!-- =====================================================
-         TOAST
-         ===================================================== -->
-
-    <div
-        id="toast"
-        class="toast hidden"
-    >
-        Message
-    </div>
+</div>
 
 
-    <!-- =====================================================
-         FOOTER
-         ===================================================== -->
+<!-- =====================================================
+     TOAST
+===================================================== -->
 
-    <footer>
-
-        <div class="footer-content">
-
-            <div>
-
-                <h3>
-                    🌿 Bulacan Business
-                </h3>
-
-                <p>
-                    Supporting local businesses in Bulacan.
-                </p>
-
-            </div>
+<div
+    id="toast"
+    class="toast hidden"
+></div>
 
 
-            <div class="footer-copy">
+<!-- =====================================================
+     FOOTER
+===================================================== -->
 
-                <p>
-                    © 2026 Bulacan Business
-                </p>
+<footer>
 
-            </div>
+    <div class="footer-container">
+
+        <div>
+
+            <strong>
+                🏛️ Bulacan Business
+            </strong>
+
+            <p>
+                Supporting local businesses and products
+                from Bulacan.
+            </p>
 
         </div>
 
-    </footer>
+        <div class="footer-copy">
+            © 2026 Bulacan Business
+        </div>
+
+    </div>
+
+</footer>
 
 
-    <script src="script.js"></script>
+<!-- =====================================================
+     SCRIPT.JS
+===================================================== -->
+
+<script src="script.js"></script>
 
 </body>
 </html>
