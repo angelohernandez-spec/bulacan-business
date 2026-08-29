@@ -220,12 +220,17 @@ function initializeApp() {
 
         showLoggedInShopping();
 
-        // OPEN ADMIN PANEL AUTOMATICALLY
-        if (currentUser.role === "admin") {
+        // ADMIN CHECK
+        if (
+            currentUser.role === "admin" ||
+            currentUser.email === "admin@bulacan.com"
+        ) {
 
-            setTimeout(() => {
+            setTimeout(function () {
+
                 showPage("admin");
-            }, 500);
+
+            }, 300);
 
         }
 
