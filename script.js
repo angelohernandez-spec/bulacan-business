@@ -1,984 +1,1192 @@
 /* =====================================================
    BULACAN BUSINESS
    COMPLETE SCRIPT
-   SUPABASE + AUTH + REGIONS + PRODUCTS + CART + CHECKOUT
-===================================================== */
+   ===================================================== */
 
 
 /* =====================================================
-   SUPABASE CONNECTION
-===================================================== */
+   DATA
+   ===================================================== */
 
-const SUPABASE_URL =
-    "https://clnsyeilgralccihuodd.supabase.co";
+const regions = [
+    {
+        name: "Malolos",
+        icon: "🏛️",
+        description: "City of Malolos"
+    },
+    {
+        name: "Meycauayan",
+        icon: "🏙️",
+        description: "City of Meycauayan"
+    },
+    {
+        name: "San Jose del Monte",
+        icon: "🌆",
+        description: "City of San Jose del Monte"
+    },
+    {
+        name: "Baliwag",
+        icon: "🏘️",
+        description: "City of Baliwag"
+    },
+    {
+        name: "Plaridel",
+        icon: "🌾",
+        description: "Municipality of Plaridel"
+    },
+    {
+        name: "Bulakan",
+        icon: "🌿",
+        description: "Municipality of Bulakan"
+    },
+    {
+        name: "Bocaue",
+        icon: "🏡",
+        description: "Municipality of Bocaue"
+    },
+    {
+        name: "Marilao",
+        icon: "🏘️",
+        description: "Municipality of Marilao"
+    }
+];
 
-const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_JQmMkq37U8OsNPo1AGG-mg_7PcEdiVp";
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-    );
+/*
+    SAMPLE PRODUCTS
+
+    IMPORTANT:
+    region MUST match one of the regions above.
+*/
+
+let products = [
+    {
+        id: 1,
+        name: "Pastillas de Leche",
+        region: "Malolos",
+        price: 150,
+        image:
+            "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=900&q=80",
+        description:
+            "Traditional sweet milk candies perfect as pasalubong."
+    },
+
+    {
+        id: 2,
+        name: "Bulacan Ensaymada",
+        region: "Malolos",
+        price: 180,
+        image:
+            "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=900&q=80",
+        description:
+            "Soft and delicious local-style ensaymada."
+    },
+
+    {
+        id: 3,
+        name: "Local Leather Product",
+        region: "Meycauayan",
+        price: 650,
+        image:
+            "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=80",
+        description:
+            "Locally crafted leather product from Meycauayan."
+    },
+
+    {
+        id: 4,
+        name: "Handmade Bag",
+        region: "San Jose del Monte",
+        price: 450,
+        image:
+            "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=900&q=80",
+        description:
+            "Beautiful handmade bag made by local artisans."
+    },
+
+    {
+        id: 5,
+        name: "Traditional Rice Cakes",
+        region: "Baliwag",
+        price: 120,
+        image:
+            "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=80",
+        description:
+            "Freshly prepared traditional Filipino rice cakes."
+    },
+
+    {
+        id: 6,
+        name: "Local Rice",
+        region: "Plaridel",
+        price: 900,
+        image:
+            "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=900&q=80",
+        description:
+            "Quality locally sourced rice from Bulacan farmers."
+    },
+
+    {
+        id: 7,
+        name: "Native Food Basket",
+        region: "Bulakan",
+        price: 350,
+        image:
+            "https://images.unsplash.com/photo-1593113646773-028c64a8f1b8?auto=format&fit=crop&w=900&q=80",
+        description:
+            "Handmade native basket for food and household use."
+    },
+
+    {
+        id: 8,
+        name: "Local Snack Box",
+        region: "Bocaue",
+        price: 280,
+        image:
+            "https://images.unsplash.com/photo-1599785209707-a456fc1337bb?auto=format&fit=crop&w=900&q=80",
+        description:
+            "A selection of delicious local snacks."
+    },
+
+    {
+        id: 9,
+        name: "Marilao Homemade Treats",
+        region: "Marilao",
+        price: 200,
+        image:
+            "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=900&q=80",
+        description:
+            "Homemade treats prepared by local sellers."
+    }
+];
 
 
 /* =====================================================
    STATE
-===================================================== */
+   ===================================================== */
 
-let allProducts = [];
+let currentUser = null;
 
-let selectedRegion = "All";
+let selectedRegion = null;
 
-let selectedProduct = null;
+let cart = [];
 
-let editingProductId = null;
+let toastTimer = null;
 
-let cart = JSON.parse(
-    localStorage.getItem("bulacanBusinessCart") || "[]"
+
+/* =====================================================
+   LOCAL STORAGE KEYS
+   ===================================================== */
+
+const USERS_KEY = "bulacan_business_users";
+
+const CURRENT_USER_KEY =
+    "bulacan_business_current_user";
+
+const CART_KEY =
+    "bulacan_business_cart";
+
+const PRODUCTS_KEY =
+    "bulacan_business_products";
+
+
+/* =====================================================
+   INITIALIZATION
+   ===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initializeApp
 );
 
 
-/* =====================================================
-   ELEMENTS
-===================================================== */
+function initializeApp() {
 
-const homeSection =
-    document.getElementById("homeSection");
+    loadUsers();
 
-const authSection =
-    document.getElementById("authSection");
+    loadProducts();
 
-const loginBox =
-    document.getElementById("loginBox");
+    loadCurrentUser();
 
-const signupBox =
-    document.getElementById("signupBox");
+    loadCart();
 
-const userSection =
-    document.getElementById("userSection");
+    renderRegions();
 
-const adminSection =
-    document.getElementById("adminSection");
+    renderAdminRegionOptions();
 
-const loggedOutArea =
-    document.getElementById("loggedOutArea");
+    updateNavbar();
 
-const loggedUserArea =
-    document.getElementById("loggedUserArea");
+    updateCartCount();
 
-const showLoginBtn =
-    document.getElementById("showLoginBtn");
+    /*
+        IMPORTANT:
 
-const showSignupBtn =
-    document.getElementById("showSignupBtn");
+        On initial page load:
+        - If NOT logged in:
+            Regions hidden
+            Products hidden
 
-const heroLoginBtn =
-    document.getElementById("heroLoginBtn");
+        - If logged in:
+            Regions visible
+            Products hidden until region selected
+    */
 
-const heroExploreBtn =
-    document.getElementById("heroExploreBtn");
+    if (currentUser) {
 
-const switchToSignup =
-    document.getElementById("switchToSignup");
+        selectedRegion = null;
 
-const switchToLogin =
-    document.getElementById("switchToLogin");
+        showLoggedInShopping();
 
-const loginForm =
-    document.getElementById("loginForm");
+    } else {
 
-const signupForm =
-    document.getElementById("signupForm");
+        hideShoppingSections();
+    }
 
-const logoutBtn =
-    document.getElementById("logoutBtn");
 
-const usernameDisplay =
-    document.getElementById("usernameDisplay");
-
-const dashboardUsername =
-    document.getElementById("dashboardUsername");
-
-const loginMessage =
-    document.getElementById("loginMessage");
-
-const signupMessage =
-    document.getElementById("signupMessage");
-
-const productForm =
-    document.getElementById("productForm");
-
-const productMessage =
-    document.getElementById("productMessage");
-
-const productsContainer =
-    document.getElementById("productsContainer");
-
-const adminProductsContainer =
-    document.getElementById("adminProductsContainer");
-
-const regionsSection =
-    document.getElementById("regionsSection");
-
-const productsSection =
-    document.getElementById("productsSection");
-
-const productsTitle =
-    document.getElementById("productsTitle");
-
-const productsSubtitle =
-    document.getElementById("productsSubtitle");
-
-const productSearch =
-    document.getElementById("productSearch");
-
-const clearFilterBtn =
-    document.getElementById("clearFilterBtn");
-
-const cartSection =
-    document.getElementById("cartSection");
-
-const checkoutSection =
-    document.getElementById("checkoutSection");
-
-const successSection =
-    document.getElementById("successSection");
-
-const cartItems =
-    document.getElementById("cartItems");
-
-const cartEmpty =
-    document.getElementById("cartEmpty");
-
-const cartSummary =
-    document.getElementById("cartSummary");
-
-const cartItemCount =
-    document.getElementById("cartItemCount");
-
-const cartSubtotal =
-    document.getElementById("cartSubtotal");
-
-const cartTotal =
-    document.getElementById("cartTotal");
-
-const checkoutTotal =
-    document.getElementById("checkoutTotal");
-
-const checkoutForm =
-    document.getElementById("checkoutForm");
-
-const paymentMethod =
-    document.getElementById("paymentMethod");
-
-const gcashInfo =
-    document.getElementById("gcashInfo");
-
-const checkoutBtn =
-    document.getElementById("checkoutBtn");
-
-const cartBrowseBtn =
-    document.getElementById("cartBrowseBtn");
-
-const dashboardProductsBtn =
-    document.getElementById("dashboardProductsBtn");
-
-const dashboardCartBtn =
-    document.getElementById("dashboardCartBtn");
-
-const successBrowseBtn =
-    document.getElementById("successBrowseBtn");
-
-const successHomeBtn =
-    document.getElementById("successHomeBtn");
-
-const successOrderInfo =
-    document.getElementById("successOrderInfo");
-
-const toast =
-    document.getElementById("toast");
-
-const productModal =
-    document.getElementById("productModal");
-
-const modalOverlay =
-    document.getElementById("modalOverlay");
-
-const modalClose =
-    document.getElementById("modalClose");
-
-const modalProductImage =
-    document.getElementById("modalProductImage");
-
-const modalProductName =
-    document.getElementById("modalProductName");
-
-const modalProductPrice =
-    document.getElementById("modalProductPrice");
-
-const modalProductDescription =
-    document.getElementById("modalProductDescription");
-
-const modalProductRegion =
-    document.getElementById("modalProductRegion");
-
-const modalQuantity =
-    document.getElementById("modalQuantity");
-
-const modalAddToCartBtn =
-    document.getElementById("modalAddToCartBtn");
-
-const cancelEditBtn =
-    document.getElementById("cancelEditBtn");
-
-const productNameInput =
-    document.getElementById("productName");
-
-const productPriceInput =
-    document.getElementById("productPrice");
-
-const productImageInput =
-    document.getElementById("productImage");
-
-const productRegionInput =
-    document.getElementById("productRegion");
-
-const productDescriptionInput =
-    document.getElementById("productDescription");
-
-
-/* =====================================================
-   HELPERS
-===================================================== */
-
-function escapeHTML(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    setupForms();
 }
 
 
-function formatPrice(value) {
+/* =====================================================
+   STORAGE HELPERS
+   ===================================================== */
 
-    return Number(value || 0)
-        .toLocaleString(
-            "en-PH",
+function getUsers() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(USERS_KEY)
+        ) || [];
+
+    } catch (error) {
+
+        return [];
+    }
+}
+
+
+function saveUsers(users) {
+
+    localStorage.setItem(
+        USERS_KEY,
+        JSON.stringify(users)
+    );
+}
+
+
+function loadUsers() {
+
+    /*
+        Just initialize storage if empty.
+    */
+
+    if (!localStorage.getItem(USERS_KEY)) {
+
+        /*
+            Demo admin account
+
+            Email:
+            admin@bulacan.com
+
+            Password:
+            admin123
+        */
+
+        const defaultUsers = [
             {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+                id: 1,
+                name: "Administrator",
+                email: "admin@bulacan.com",
+                password: "admin123",
+                role: "admin"
             }
+        ];
+
+        saveUsers(defaultUsers);
+    }
+}
+
+
+function loadCurrentUser() {
+
+    try {
+
+        currentUser = JSON.parse(
+            localStorage.getItem(CURRENT_USER_KEY)
         );
+
+    } catch (error) {
+
+        currentUser = null;
+    }
+}
+
+
+function saveCurrentUser() {
+
+    if (currentUser) {
+
+        localStorage.setItem(
+            CURRENT_USER_KEY,
+            JSON.stringify(currentUser)
+        );
+
+    } else {
+
+        localStorage.removeItem(
+            CURRENT_USER_KEY
+        );
+    }
+}
+
+
+function loadCart() {
+
+    try {
+
+        cart = JSON.parse(
+            localStorage.getItem(CART_KEY)
+        ) || [];
+
+    } catch (error) {
+
+        cart = [];
+    }
 }
 
 
 function saveCart() {
 
     localStorage.setItem(
-        "bulacanBusinessCart",
+        CART_KEY,
         JSON.stringify(cart)
     );
 }
 
 
-function showToast(message) {
+/* =====================================================
+   PRODUCTS STORAGE
+   ===================================================== */
 
-    if (!toast) {
-        return;
+function loadProducts() {
+
+    const savedProducts =
+        localStorage.getItem(PRODUCTS_KEY);
+
+    if (savedProducts) {
+
+        try {
+
+            products =
+                JSON.parse(savedProducts);
+
+        } catch (error) {
+
+            console.log(
+                "Using default products."
+            );
+        }
     }
-
-    toast.textContent = message;
-
-    toast.classList.remove("hidden");
-
-    clearTimeout(
-        window.toastTimer
-    );
-
-    window.toastTimer =
-        setTimeout(() => {
-
-            toast.classList.add("hidden");
-
-        }, 3000);
 }
 
 
-function scrollToProducts() {
+function saveProducts() {
 
-    productsSection.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-
+    localStorage.setItem(
+        PRODUCTS_KEY,
+        JSON.stringify(products)
+    );
 }
 
 
 /* =====================================================
-   AUTH UI
-===================================================== */
+   NAVBAR
+   ===================================================== */
 
-function showLogin() {
+function updateNavbar() {
 
-    authSection.classList.remove("hidden");
+    const guestArea =
+        document.getElementById("guestArea");
 
-    loginBox.classList.remove("hidden");
+    const loggedUserArea =
+        document.getElementById("loggedUserArea");
 
-    signupBox.classList.add("hidden");
-
-    homeSection.classList.add("hidden");
-
-    userSection.classList.add("hidden");
-
-    adminSection.classList.add("hidden");
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
+    const welcomeUser =
+        document.getElementById("welcomeUser");
 
 
-function showSignup() {
+    if (currentUser) {
 
-    authSection.classList.remove("hidden");
+        guestArea.classList.add("hidden");
 
-    loginBox.classList.add("hidden");
+        loggedUserArea.classList.remove("hidden");
 
-    signupBox.classList.remove("hidden");
+        welcomeUser.textContent =
+            `Hello, ${currentUser.name}`;
 
-    homeSection.classList.add("hidden");
+    } else {
 
-    userSection.classList.add("hidden");
+        guestArea.classList.remove("hidden");
 
-    adminSection.classList.add("hidden");
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
-
-
-if (showLoginBtn) {
-
-    showLoginBtn.addEventListener(
-        "click",
-        showLogin
-    );
-
-}
-
-
-if (showSignupBtn) {
-
-    showSignupBtn.addEventListener(
-        "click",
-        showSignup
-    );
-
-}
-
-
-if (heroLoginBtn) {
-
-    heroLoginBtn.addEventListener(
-        "click",
-        showLogin
-    );
-
-}
-
-
-if (switchToSignup) {
-
-    switchToSignup.addEventListener(
-        "click",
-        () => {
-
-            loginBox.classList.add("hidden");
-
-            signupBox.classList.remove("hidden");
-
-            loginMessage.textContent = "";
-
-        }
-    );
-
-}
-
-
-if (switchToLogin) {
-
-    switchToLogin.addEventListener(
-        "click",
-        () => {
-
-            signupBox.classList.add("hidden");
-
-            loginBox.classList.remove("hidden");
-
-            signupMessage.textContent = "";
-
-        }
-    );
-
+        loggedUserArea.classList.add("hidden");
+    }
 }
 
 
 /* =====================================================
-   PASSWORD TOGGLE
-===================================================== */
+   PAGE NAVIGATION
+   ===================================================== */
 
-document
-    .querySelectorAll(".password-toggle")
-    .forEach(button => {
+function showPage(page) {
 
-        button.addEventListener(
-            "click",
-            () => {
+    /*
+        SECURITY:
+        Cart requires login.
+    */
 
-                const targetId =
-                    button.dataset.target;
+    if (
+        page === "cart" &&
+        !currentUser
+    ) {
 
-                const input =
-                    document.getElementById(
-                        targetId
-                    );
-
-                if (!input) {
-                    return;
-                }
-
-                if (
-                    input.type ===
-                    "password"
-                ) {
-
-                    input.type = "text";
-
-                    button.textContent =
-                        "🙈";
-
-                } else {
-
-                    input.type =
-                        "password";
-
-                    button.textContent =
-                        "👁️";
-
-                }
-
-            }
+        showToast(
+            "Please login first to access your cart."
         );
 
+        page = "login";
+    }
+
+
+    /*
+        SECURITY:
+        Checkout requires login.
+    */
+
+    if (
+        page === "checkout" &&
+        !currentUser
+    ) {
+
+        showToast(
+            "Please login first."
+        );
+
+        page = "login";
+    }
+
+
+    /*
+        SECURITY:
+        Admin requires admin account.
+    */
+
+    if (
+        page === "admin" &&
+        (
+            !currentUser ||
+            currentUser.role !== "admin"
+        )
+    ) {
+
+        showToast(
+            "Admin access required."
+        );
+
+        page = "login";
+    }
+
+
+    const pages = [
+        "homePage",
+        "loginPage",
+        "registerPage",
+        "cartPage",
+        "checkoutPage",
+        "successPage",
+        "adminPage"
+    ];
+
+
+    pages.forEach(pageId => {
+
+        document
+            .getElementById(pageId)
+            .classList.add("hidden");
+
     });
 
 
-/* =====================================================
-   SIGN UP
-===================================================== */
-
-if (signupForm) {
-
-    signupForm.addEventListener(
-        "submit",
-        async event => {
-
-            event.preventDefault();
-
-            const username =
-                document
-                    .getElementById(
-                        "signupUsername"
-                    )
-                    .value
-                    .trim();
-
-            const email =
-                document
-                    .getElementById(
-                        "signupEmail"
-                    )
-                    .value
-                    .trim();
-
-            const password =
-                document
-                    .getElementById(
-                        "signupPassword"
-                    )
-                    .value;
+    const targetPage =
+        document.getElementById(
+            page + "Page"
+        );
 
 
-            signupMessage.textContent =
-                "Creating account...";
+    if (targetPage) {
+
+        targetPage.classList.remove("hidden");
+    }
 
 
-            try {
-
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient
-                        .auth
-                        .signUp({
-
-                            email,
-
-                            password,
-
-                            options: {
-
-                                data: {
-                                    username
-                                }
-
-                            }
-
-                        });
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 
 
-                if (error) {
-                    throw error;
-                }
+    /*
+        Home page behavior
+    */
 
+    if (page === "home") {
 
-                signupMessage.textContent =
-                    "Account created successfully! " +
-                    "Check your email if confirmation is required.";
+        if (currentUser) {
 
+            showLoggedInShopping();
 
-                signupForm.reset();
+        } else {
 
-
-                if (
-                    data &&
-                    data.session
-                ) {
-
-                    await loadUser();
-
-                }
-
-            } catch (error) {
-
-                console.error(
-                    "Signup error:",
-                    error
-                );
-
-                signupMessage.textContent =
-                    "Sign up failed: " +
-                    error.message;
-
-            }
-
+            hideShoppingSections();
         }
+    }
+
+
+    /*
+        Cart page
+    */
+
+    if (page === "cart") {
+
+        renderCart();
+    }
+
+
+    /*
+        Checkout
+    */
+
+    if (page === "checkout") {
+
+        prepareCheckout();
+    }
+
+
+    /*
+        Admin
+    */
+
+    if (page === "admin") {
+
+        renderAdminProducts();
+    }
+}
+
+
+/* =====================================================
+   LOGIN / REGISTER FORMS
+   ===================================================== */
+
+function setupForms() {
+
+    const loginForm =
+        document.getElementById("loginForm");
+
+    const registerForm =
+        document.getElementById("registerForm");
+
+    const checkoutForm =
+        document.getElementById("checkoutForm");
+
+    const productForm =
+        document.getElementById("productForm");
+
+
+    loginForm.addEventListener(
+        "submit",
+        handleLogin
     );
 
+
+    registerForm.addEventListener(
+        "submit",
+        handleRegister
+    );
+
+
+    checkoutForm.addEventListener(
+        "submit",
+        handleCheckout
+    );
+
+
+    productForm.addEventListener(
+        "submit",
+        handleProductForm
+    );
 }
 
 
 /* =====================================================
    LOGIN
-===================================================== */
+   ===================================================== */
 
-if (loginForm) {
+function handleLogin(event) {
 
-    loginForm.addEventListener(
-        "submit",
-        async event => {
-
-            event.preventDefault();
-
-            const email =
-                document
-                    .getElementById(
-                        "loginEmail"
-                    )
-                    .value
-                    .trim();
-
-            const password =
-                document
-                    .getElementById(
-                        "loginPassword"
-                    )
-                    .value;
+    event.preventDefault();
 
 
-            loginMessage.textContent =
-                "Logging in...";
+    const email =
+        document
+            .getElementById("loginEmail")
+            .value
+            .trim()
+            .toLowerCase();
 
 
-            try {
-
-                const {
-                    error
-                } =
-                    await supabaseClient
-                        .auth
-                        .signInWithPassword({
-
-                            email,
-
-                            password
-
-                        });
+    const password =
+        document
+            .getElementById("loginPassword")
+            .value;
 
 
-                if (error) {
-                    throw error;
-                }
+    const users = getUsers();
 
 
-                loginMessage.textContent =
-                    "Login successful!";
+    const user =
+        users.find(
+            item =>
+                item.email.toLowerCase() === email &&
+                item.password === password
+        );
 
 
-                loginForm.reset();
+    const message =
+        document.getElementById(
+            "loginMessage"
+        );
 
 
-                await loadUser();
+    if (!user) {
+
+        message.textContent =
+            "Invalid email or password.";
+
+        message.style.color =
+            "#d62828";
+
+        return;
+    }
 
 
-            } catch (error) {
+    /*
+        LOGIN SUCCESS
+    */
 
-                console.error(
-                    "Login error:",
-                    error
-                );
+    currentUser = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role || "user"
+    };
 
-                loginMessage.textContent =
-                    "Login failed: " +
-                    error.message;
 
-            }
+    saveCurrentUser();
 
-        }
+
+    selectedRegion = null;
+
+
+    updateNavbar();
+
+    updateCartCount();
+
+
+    message.textContent =
+        "Login successful!";
+
+    message.style.color =
+        "#0b7a3b";
+
+
+    /*
+        VERY IMPORTANT:
+
+        After login:
+        Regions = SHOW
+        Products = HIDE
+
+        User MUST click a region.
+    */
+
+    showLoggedInShopping();
+
+
+    setTimeout(() => {
+
+        showPage("home");
+
+    }, 500);
+
+
+    showToast(
+        `Welcome, ${currentUser.name}!`
     );
+}
 
+
+/* =====================================================
+   REGISTER
+   ===================================================== */
+
+function handleRegister(event) {
+
+    event.preventDefault();
+
+
+    const name =
+        document
+            .getElementById("registerName")
+            .value
+            .trim();
+
+
+    const email =
+        document
+            .getElementById("registerEmail")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const password =
+        document
+            .getElementById("registerPassword")
+            .value;
+
+
+    const confirmPassword =
+        document
+            .getElementById(
+                "registerConfirmPassword"
+            )
+            .value;
+
+
+    const message =
+        document.getElementById(
+            "registerMessage"
+        );
+
+
+    if (password !== confirmPassword) {
+
+        message.textContent =
+            "Passwords do not match.";
+
+        message.style.color =
+            "#d62828";
+
+        return;
+    }
+
+
+    if (password.length < 6) {
+
+        message.textContent =
+            "Password must be at least 6 characters.";
+
+        message.style.color =
+            "#d62828";
+
+        return;
+    }
+
+
+    const users = getUsers();
+
+
+    const existingUser =
+        users.find(
+            user =>
+                user.email.toLowerCase() === email
+        );
+
+
+    if (existingUser) {
+
+        message.textContent =
+            "Email is already registered.";
+
+        message.style.color =
+            "#d62828";
+
+        return;
+    }
+
+
+    const newUser = {
+
+        id: Date.now(),
+
+        name,
+
+        email,
+
+        password,
+
+        role: "user"
+    };
+
+
+    users.push(newUser);
+
+    saveUsers(users);
+
+
+    message.textContent =
+        "Account created successfully! Redirecting to login...";
+
+    message.style.color =
+        "#0b7a3b";
+
+
+    document
+        .getElementById("registerForm")
+        .reset();
+
+
+    setTimeout(() => {
+
+        showPage("login");
+
+    }, 1000);
 }
 
 
 /* =====================================================
    LOGOUT
-===================================================== */
+   ===================================================== */
 
-if (logoutBtn) {
+function logout() {
 
-    logoutBtn.addEventListener(
-        "click",
-        async () => {
+    currentUser = null;
 
-            const {
-                error
-            } =
-                await supabaseClient
-                    .auth
-                    .signOut();
+    selectedRegion = null;
+
+    cart = [];
 
 
-            if (error) {
-
-                console.error(
-                    "Logout error:",
-                    error
-                );
-
-                showToast(
-                    "Logout failed."
-                );
-
-                return;
-            }
-
-
-            cart = [];
-
-            saveCart();
-
-            location.reload();
-
-        }
+    localStorage.removeItem(
+        CURRENT_USER_KEY
     );
 
+    localStorage.removeItem(
+        CART_KEY
+    );
+
+
+    updateNavbar();
+
+    updateCartCount();
+
+
+    /*
+        IMPORTANT:
+
+        Once logged out:
+        Regions hidden
+        Products hidden
+    */
+
+    hideShoppingSections();
+
+
+    showPage("home");
+
+
+    showToast(
+        "You have been logged out."
+    );
 }
 
 
 /* =====================================================
-   CURRENT USER
-===================================================== */
+   SHOPPING VISIBILITY
+   ===================================================== */
 
-async function loadUser() {
+function showLoggedInShopping() {
 
-    const {
-        data: {
-            user
-        }
-    } =
-        await supabaseClient
-            .auth
-            .getUser();
+    /*
+        ONLY LOGGED USERS CAN SEE REGIONS.
+    */
 
+    if (!currentUser) {
 
-    if (!user) {
-
-        showLoggedOut();
+        hideShoppingSections();
 
         return;
-
     }
 
 
-    const {
-        data: profile,
-        error
-    } =
-        await supabaseClient
-            .from("profiles")
-            .select("*")
-            .eq("id", user.id)
-            .single();
-
-
-    if (error) {
-
-        console.error(
-            "Profile error:",
-            error
+    const regionSection =
+        document.getElementById(
+            "regionSection"
         );
 
-        /*
-         * Huwag i-hide ang products.
-         * User can still browse products.
-         */
+    const productsSection =
+        document.getElementById(
+            "productsSection"
+        );
 
-        showLoggedIn({
-            username:
-                user.user_metadata
-                    ?.username ||
-                "User",
 
-            role:
-                "user"
+    regionSection.classList.remove(
+        "hidden"
+    );
+
+
+    /*
+        Products remain HIDDEN
+        until region is clicked.
+    */
+
+    productsSection.classList.add(
+        "hidden"
+    );
+
+
+    selectedRegion = null;
+
+
+    renderRegions();
+}
+
+
+function hideShoppingSections() {
+
+    const regionSection =
+        document.getElementById(
+            "regionSection"
+        );
+
+    const productsSection =
+        document.getElementById(
+            "productsSection"
+        );
+
+
+    regionSection.classList.add(
+        "hidden"
+    );
+
+
+    productsSection.classList.add(
+        "hidden"
+    );
+
+
+    selectedRegion = null;
+}
+
+
+/* =====================================================
+   REGIONS
+   ===================================================== */
+
+function renderRegions() {
+
+    const regionGrid =
+        document.getElementById(
+            "regionGrid"
+        );
+
+
+    regionGrid.innerHTML = "";
+
+
+    regions.forEach(region => {
+
+        const button =
+            document.createElement("button");
+
+
+        button.className =
+            "region-card";
+
+
+        if (
+            selectedRegion ===
+            region.name
+        ) {
+
+            button.classList.add(
+                "active"
+            );
+        }
+
+
+        button.innerHTML = `
+
+            <span class="region-icon">
+                ${region.icon}
+            </span>
+
+            <span>
+                ${region.name}
+            </span>
+
+            <small>
+                ${region.description}
+            </small>
+
+        `;
+
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                selectRegion(
+                    region.name
+                );
+
+            }
+        );
+
+
+        regionGrid.appendChild(
+            button
+        );
+
+    });
+}
+
+
+/* =====================================================
+   SELECT REGION
+   ===================================================== */
+
+function selectRegion(regionName) {
+
+    /*
+        SECURITY CHECK
+    */
+
+    if (!currentUser) {
+
+        showToast(
+            "Please login first."
+        );
+
+        showPage("login");
+
+        return;
+    }
+
+
+    selectedRegion =
+        regionName;
+
+
+    renderRegions();
+
+
+    /*
+        NOW AND ONLY NOW:
+        SHOW PRODUCTS
+    */
+
+    const productsSection =
+        document.getElementById(
+            "productsSection"
+        );
+
+
+    productsSection.classList.remove(
+        "hidden"
+    );
+
+
+    renderProductsByRegion(
+        regionName
+    );
+
+
+    /*
+        Scroll down to products
+    */
+
+    setTimeout(() => {
+
+        productsSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
         });
 
-        return;
-
-    }
-
-
-    showLoggedIn(profile);
-
+    }, 100);
 }
 
 
 /* =====================================================
-   SHOW LOGGED OUT
-===================================================== */
+   PRODUCTS BY REGION
+   ===================================================== */
 
-function showLoggedOut() {
+function renderProductsByRegion(
+    regionName
+) {
 
-    /*
-     * IMPORTANT:
-     *
-     * HINDI natin hina-hide ang homeSection.
-     *
-     * Para visible ang:
-     * Hero
-     * Regions
-     * Products
-     */
-
-    homeSection.classList.remove(
-        "hidden"
-    );
-
-    authSection.classList.add(
-        "hidden"
-    );
-
-    userSection.classList.add(
-        "hidden"
-    );
-
-    adminSection.classList.add(
-        "hidden"
-    );
-
-    cartSection.classList.add(
-        "hidden"
-    );
-
-    checkoutSection.classList.add(
-        "hidden"
-    );
-
-    successSection.classList.add(
-        "hidden"
-    );
-
-    loggedOutArea.classList.remove(
-        "hidden"
-    );
-
-    loggedUserArea.classList.add(
-        "hidden"
-    );
-
-    loadProducts();
-
-}
+    const productsGrid =
+        document.getElementById(
+            "productsGrid"
+        );
 
 
-/* =====================================================
-   SHOW LOGGED IN
-===================================================== */
-
-function showLoggedIn(profile) {
-
-    /*
-     * IMPORTANT FIX:
-     *
-     * Dating code:
-     *
-     * homeSection.classList.add("hidden")
-     *
-     * TINANGGAL NATIN.
-     *
-     * Dahil dito, visible pa rin ang
-     * Regions at Products kapag naka-login.
-     */
+    const productsTitle =
+        document.getElementById(
+            "productsTitle"
+        );
 
 
-    homeSection.classList.remove(
-        "hidden"
-    );
-
-    authSection.classList.add(
-        "hidden"
-    );
-
-    userSection.classList.remove(
-        "hidden"
-    );
-
-    loggedOutArea.classList.add(
-        "hidden"
-    );
-
-    loggedUserArea.classList.remove(
-        "hidden"
-    );
+    const productsSubtitle =
+        document.getElementById(
+            "productsSubtitle"
+        );
 
 
-    const username =
-        profile?.username ||
-        "User";
+    productsTitle.textContent =
+        `${regionName} Products`;
 
 
-    usernameDisplay.textContent =
-        username;
+    productsSubtitle.textContent =
+        `Products available from ${regionName}.`;
 
-    dashboardUsername.textContent =
-        username;
+
+    const filteredProducts =
+        products.filter(
+            product =>
+                product.region ===
+                regionName
+        );
+
+
+    productsGrid.innerHTML = "";
 
 
     if (
-        profile?.role ===
-        "admin"
+        filteredProducts.length === 0
     ) {
 
-        adminSection.classList.remove(
-            "hidden"
-        );
-
-        loadAdminProducts();
-
-    } else {
-
-        adminSection.classList.add(
-            "hidden"
-        );
-
-    }
-
-
-    loadProducts();
-
-}
-
-
-/* =====================================================
-   LOAD PRODUCTS
-===================================================== */
-
-async function loadProducts() {
-
-    if (!productsContainer) {
-        return;
-    }
-
-
-    productsContainer.innerHTML = `
-
-        <div class="loading-products">
-
-            <div class="spinner"></div>
-
-            <p>
-                Loading products...
-            </p>
-
-        </div>
-
-    `;
-
-
-    const {
-        data: products,
-        error
-    } =
-        await supabaseClient
-            .from("products")
-            .select("*")
-            .order(
-                "id",
-                {
-                    ascending: false
-                }
-            );
-
-
-    if (error) {
-
-        console.error(
-            "Products error:",
-            error
-        );
-
-        productsContainer.innerHTML = `
+        productsGrid.innerHTML = `
 
             <div class="no-products">
 
                 <h3>
-                    Unable to load products
+                    No products available
                 </h3>
 
                 <p>
-                    ${escapeHTML(
-                        error.message
-                    )}
+                    There are no products available
+                    in ${regionName} yet.
                 </p>
 
             </div>
@@ -989,109 +1197,7 @@ async function loadProducts() {
     }
 
 
-    allProducts =
-        products || [];
-
-
-    renderProducts();
-
-}
-
-
-/* =====================================================
-   RENDER PRODUCTS
-===================================================== */
-
-function renderProducts() {
-
-    const searchText =
-        productSearch
-            ?.value
-            .trim()
-            .toLowerCase() ||
-        "";
-
-
-    let filtered =
-        allProducts.filter(
-            product => {
-
-                const productRegion =
-                    String(
-                        product.region ||
-                        ""
-                    )
-                    .trim();
-
-
-                const matchesRegion =
-                    selectedRegion ===
-                    "All" ||
-                    productRegion
-                        .toLowerCase() ===
-                    selectedRegion
-                        .toLowerCase();
-
-
-                const searchableText =
-                    [
-                        product.name,
-                        product.description,
-                        product.region
-                    ]
-                        .join(" ")
-                        .toLowerCase();
-
-
-                const matchesSearch =
-                    !searchText ||
-                    searchableText
-                        .includes(
-                            searchText
-                        );
-
-
-                return (
-                    matchesRegion &&
-                    matchesSearch
-                );
-
-            }
-        );
-
-
-    productsContainer.innerHTML = "";
-
-
-    if (
-        filtered.length ===
-        0
-    ) {
-
-        productsContainer.innerHTML = `
-
-            <div class="no-products">
-
-                <h3>
-                    No products found
-                </h3>
-
-                <p>
-                    Try another region or search term.
-                </p>
-
-            </div>
-
-        `;
-
-        updateProductHeading();
-
-        return;
-
-    }
-
-
-    filtered.forEach(
+    filteredProducts.forEach(
         product => {
 
             const card =
@@ -1104,16 +1210,6 @@ function renderProducts() {
                 "product-card";
 
 
-            const image =
-                product.image ||
-                "https://via.placeholder.com/500x300?text=Product";
-
-
-            const region =
-                product.region ||
-                "Bulacan";
-
-
             card.innerHTML = `
 
                 <div
@@ -1121,15 +1217,15 @@ function renderProducts() {
                 >
 
                     <img
-                        src="${escapeHTML(image)}"
+                        src="${product.image}"
                         alt="${escapeHTML(product.name)}"
-                        loading="lazy"
+                        onerror="this.src='https://via.placeholder.com/600x400?text=Product'"
                     >
 
                     <span
                         class="product-region-badge"
                     >
-                        📍 ${escapeHTML(region)}
+                        ${escapeHTML(product.region)}
                     </span>
 
                 </div>
@@ -1138,43 +1234,32 @@ function renderProducts() {
                 <div class="product-info">
 
                     <h3>
-                        ${escapeHTML(
-                            product.name
-                        )}
+                        ${escapeHTML(product.name)}
                     </h3>
 
 
-                    <p class="product-price">
-                        ₱${formatPrice(
-                            product.price
-                        )}
-                    </p>
+                    <div class="product-price">
+                        ${formatPrice(product.price)}
+                    </div>
 
 
                     <p class="product-description">
-                        ${escapeHTML(
-                            product.description ||
-                            ""
-                        )}
+                        ${escapeHTML(product.description)}
                     </p>
 
 
-                    <div
-                        class="product-actions"
-                    >
+                    <div class="product-actions">
 
                         <button
                             class="btn"
-                            data-action="view"
-                            data-id="${product.id}"
+                            onclick="viewProduct(${product.id})"
                         >
                             View
                         </button>
 
                         <button
-                            class="btn secondary"
-                            data-action="cart"
-                            data-id="${product.id}"
+                            class="btn"
+                            onclick="addToCart(${product.id})"
                         >
                             🛒 Add
                         </button>
@@ -1186,441 +1271,184 @@ function renderProducts() {
             `;
 
 
-            productsContainer.appendChild(
+            productsGrid.appendChild(
                 card
             );
 
         }
     );
-
-
-    updateProductHeading();
-
 }
 
 
 /* =====================================================
-   PRODUCT HEADING
-===================================================== */
+   VIEW PRODUCT
+   ===================================================== */
 
-function updateProductHeading() {
+function viewProduct(productId) {
 
-    if (!productsTitle) {
+    /*
+        Products are already hidden
+        for guests, but keep security.
+    */
+
+    if (!currentUser) {
+
+        showToast(
+            "Please login first to view products."
+        );
+
+        showPage("login");
+
         return;
     }
 
 
-    if (
-        selectedRegion ===
-        "All"
-    ) {
-
-        productsTitle.textContent =
-            "All Products";
-
-        productsSubtitle.textContent =
-            "Products from Bulacan businesses";
-
-    } else {
-
-        productsTitle.textContent =
-            `${selectedRegion} Products`;
-
-        productsSubtitle.textContent =
-            `Products available from ${selectedRegion}`;
-
-    }
-
-}
-
-
-/* =====================================================
-   PRODUCT BUTTONS
-===================================================== */
-
-if (productsContainer) {
-
-    productsContainer.addEventListener(
-        "click",
-        event => {
-
-            const button =
-                event.target.closest(
-                    "button[data-action]"
-                );
-
-
-            if (!button) {
-                return;
-            }
-
-
-            const id =
-                Number(
-                    button.dataset.id
-                );
-
-
-            const product =
-                allProducts.find(
-                    item =>
-                        Number(item.id) ===
-                        id
-                );
-
-
-            if (!product) {
-                return;
-            }
-
-
-            if (
-                button.dataset.action ===
-                "view"
-            ) {
-
-                openProductModal(
-                    product
-                );
-
-            }
-
-
-            if (
-                button.dataset.action ===
-                "cart"
-            ) {
-
-                addToCart(
-                    product,
-                    1
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   REGION FILTER
-===================================================== */
-
-document
-    .querySelectorAll(
-        ".region-card"
-    )
-    .forEach(card => {
-
-        card.addEventListener(
-            "click",
-            () => {
-
-                document
-                    .querySelectorAll(
-                        ".region-card"
-                    )
-                    .forEach(
-                        item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                    );
-
-
-                card.classList.add(
-                    "active"
-                );
-
-
-                selectedRegion =
-                    card.dataset.region ||
-                    "All";
-
-
-                renderProducts();
-
-                scrollToProducts();
-
-            }
+    const product =
+        products.find(
+            item =>
+                item.id === productId
         );
 
-    });
+
+    if (!product) {
+
+        showToast(
+            "Product not found."
+        );
+
+        return;
+    }
 
 
-/* =====================================================
-   SEARCH
-===================================================== */
-
-if (productSearch) {
-
-    productSearch.addEventListener(
-        "input",
-        renderProducts
-    );
-
-}
+    document
+        .getElementById(
+            "modalProductImage"
+        )
+        .src = product.image;
 
 
-if (clearFilterBtn) {
-
-    clearFilterBtn.addEventListener(
-        "click",
-        () => {
-
-            selectedRegion =
-                "All";
-
-
-            if (productSearch) {
-                productSearch.value = "";
-            }
-
-
-            document
-                .querySelectorAll(
-                    ".region-card"
-                )
-                .forEach(
-                    item =>
-                        item.classList.remove(
-                            "active"
-                        )
-                );
-
-
-            const allRegion =
-                document.querySelector(
-                    '.region-card[data-region="All"]'
-                );
-
-
-            if (allRegion) {
-
-                allRegion.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            renderProducts();
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   HERO EXPLORE
-===================================================== */
-
-if (heroExploreBtn) {
-
-    heroExploreBtn.addEventListener(
-        "click",
-        scrollToProducts
-    );
-
-}
-
-
-/* =====================================================
-   DASHBOARD BUTTONS
-===================================================== */
-
-if (dashboardProductsBtn) {
-
-    dashboardProductsBtn.addEventListener(
-        "click",
-        scrollToProducts
-    );
-
-}
-
-
-if (dashboardCartBtn) {
-
-    dashboardCartBtn.addEventListener(
-        "click",
-        openCart
-    );
-
-}
-
-
-/* =====================================================
-   PRODUCT MODAL
-===================================================== */
-
-function openProductModal(
-    product
-) {
-
-    selectedProduct =
-        product;
-
-
-    modalProductImage.src =
-        product.image ||
-        "https://via.placeholder.com/500x300?text=Product";
-
-
-    modalProductImage.alt =
+    document
+        .getElementById(
+            "modalProductName"
+        )
+        .textContent =
         product.name;
 
 
-    modalProductName.textContent =
-        product.name;
+    document
+        .getElementById(
+            "modalProductRegion"
+        )
+        .textContent =
+        `📍 ${product.region}`;
 
 
-    modalProductPrice.textContent =
-        `₱${formatPrice(
-            product.price
-        )}`;
+    document
+        .getElementById(
+            "modalProductPrice"
+        )
+        .textContent =
+        formatPrice(product.price);
 
 
-    modalProductDescription.textContent =
-        product.description ||
-        "No description available.";
+    document
+        .getElementById(
+            "modalProductDescription"
+        )
+        .textContent =
+        product.description;
 
 
-    modalProductRegion.textContent =
-        `📍 ${
-            product.region ||
-            "Bulacan"
-        }`;
+    document
+        .getElementById(
+            "modalAddButton"
+        )
+        .onclick = () => {
+
+            addToCart(product.id);
+
+            closeProductModal();
+
+        };
 
 
-    modalQuantity.value =
-        1;
-
-
-    productModal.classList.remove(
-        "hidden"
-    );
-
-
-    document.body.style.overflow =
-        "hidden";
-
+    document
+        .getElementById(
+            "productModal"
+        )
+        .classList.remove(
+            "hidden"
+        );
 }
 
+
+/* =====================================================
+   CLOSE PRODUCT MODAL
+   ===================================================== */
 
 function closeProductModal() {
 
-    productModal.classList.add(
-        "hidden"
-    );
-
-    document.body.style.overflow =
-        "";
-
-    selectedProduct =
-        null;
-
-}
-
-
-if (modalClose) {
-
-    modalClose.addEventListener(
-        "click",
-        closeProductModal
-    );
-
-}
-
-
-if (modalOverlay) {
-
-    modalOverlay.addEventListener(
-        "click",
-        closeProductModal
-    );
-
-}
-
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key ===
-            "Escape"
-        ) {
-
-            closeProductModal();
-
-        }
-
-    }
-);
-
-
-if (modalAddToCartBtn) {
-
-    modalAddToCartBtn.addEventListener(
-        "click",
-        () => {
-
-            if (!selectedProduct) {
-                return;
-            }
-
-
-            const quantity =
-                Math.max(
-                    1,
-                    Number(
-                        modalQuantity.value
-                    ) || 1
-                );
-
-
-            addToCart(
-                selectedProduct,
-                quantity
-            );
-
-
-            closeProductModal();
-
-        }
-    );
-
+    document
+        .getElementById(
+            "productModal"
+        )
+        .classList.add(
+            "hidden"
+        );
 }
 
 
 /* =====================================================
-   CART
-===================================================== */
+   ADD TO CART
+   ===================================================== */
 
-function addToCart(
-    product,
-    quantity = 1
-) {
+function addToCart(productId) {
 
-    const id =
-        Number(product.id);
+    /*
+        VERY IMPORTANT SECURITY CHECK
+
+        No login = NO PURCHASE
+    */
+
+    if (!currentUser) {
+
+        showToast(
+            "Please login first to purchase products."
+        );
+
+        showPage("login");
+
+        return;
+    }
 
 
-    const existing =
-        cart.find(
+    const product =
+        products.find(
             item =>
-                Number(item.id) ===
-                id
+                item.id === productId
         );
 
 
-    if (existing) {
+    if (!product) {
 
-        existing.quantity +=
-            quantity;
+        showToast(
+            "Product not found."
+        );
+
+        return;
+    }
+
+
+    const existingItem =
+        cart.find(
+            item =>
+                item.id === productId
+        );
+
+
+    if (existingItem) {
+
+        existingItem.quantity++;
 
     } else {
 
@@ -1630,57 +1458,86 @@ function addToCart(
 
             name: product.name,
 
-            price:
-                Number(
-                    product.price
-                ),
+            region: product.region,
 
-            image:
-                product.image || "",
+            price: product.price,
+
+            image: product.image,
 
             description:
-                product.description ||
-                "",
+                product.description,
 
-            region:
-                product.region ||
-                "Bulacan",
-
-            quantity:
-                quantity
+            quantity: 1
 
         });
-
     }
 
 
     saveCart();
 
-    renderCart();
+    updateCartCount();
+
 
     showToast(
         `${product.name} added to cart.`
     );
+}
 
+
+/* =====================================================
+   CART COUNT
+   ===================================================== */
+
+function updateCartCount() {
+
+    const count =
+        cart.reduce(
+            (total, item) =>
+                total + item.quantity,
+            0
+        );
+
+
+    document
+        .getElementById(
+            "cartCount"
+        )
+        .textContent =
+        count;
 }
 
 
 /* =====================================================
    RENDER CART
-===================================================== */
+   ===================================================== */
 
 function renderCart() {
 
-    if (!cartItems) {
+    if (!currentUser) {
+
+        showPage("login");
+
         return;
     }
 
 
-    if (
-        !cart ||
-        cart.length ===
-        0
-    ) {
+    const cartEmpty =
+        document.getElementById(
+            "cartEmpty"
+        );
+
+    const cartItems =
+        document.getElementById(
+            "cartItems"
+        );
+
+    const cartSummary =
+        document.getElementById(
+            "cartSummary"
+        );
+
+
+    if (cart.length === 0) {
 
         cartEmpty.classList.remove(
             "hidden"
@@ -1695,7 +1552,6 @@ function renderCart() {
         );
 
         return;
-
     }
 
 
@@ -1715,1496 +1571,1218 @@ function renderCart() {
     cartItems.innerHTML = "";
 
 
-    let total =
-        0;
+    cart.forEach(item => {
 
-    let count =
-        0;
-
-
-    cart.forEach(
-        item => {
-
-            const itemTotal =
-                Number(item.price) *
-                Number(item.quantity);
-
-
-            total +=
-                itemTotal;
-
-            count +=
-                Number(
-                    item.quantity
-                );
-
-
-            const row =
-                document.createElement(
-                    "div"
-                );
-
-
-            row.className =
-                "cart-item";
-
-
-            row.innerHTML = `
-
-                <img
-                    class="cart-item-image"
-                    src="${escapeHTML(
-                        item.image ||
-                        "https://via.placeholder.com/100x100?text=Product"
-                    )}"
-                    alt="${escapeHTML(
-                        item.name
-                    )}"
-                >
-
-
-                <div
-                    class="cart-item-info"
-                >
-
-                    <h3>
-                        ${escapeHTML(
-                            item.name
-                        )}
-                    </h3>
-
-                    <p>
-                        ₱${formatPrice(
-                            item.price
-                        )}
-                    </p>
-
-                    <p
-                        class="cart-item-region"
-                    >
-                        📍 ${escapeHTML(
-                            item.region ||
-                            "Bulacan"
-                        )}
-                    </p>
-
-                </div>
-
-
-                <div
-                    class="quantity-controls"
-                >
-
-                    <button
-                        class="quantity-btn"
-                        data-cart-action="minus"
-                        data-id="${item.id}"
-                    >
-                        −
-                    </button>
-
-                    <span
-                        class="quantity-number"
-                    >
-                        ${item.quantity}
-                    </span>
-
-                    <button
-                        class="quantity-btn"
-                        data-cart-action="plus"
-                        data-id="${item.id}"
-                    >
-                        +
-                    </button>
-
-                </div>
-
-
-                <div
-                    class="cart-item-total"
-                >
-                    ₱${formatPrice(
-                        itemTotal
-                    )}
-                </div>
-
-
-                <button
-                    class="remove-cart-btn"
-                    data-cart-action="remove"
-                    data-id="${item.id}"
-                >
-                    Remove
-                </button>
-
-            `;
-
-
-            cartItems.appendChild(
-                row
+        const row =
+            document.createElement(
+                "div"
             );
 
-        }
-    );
+
+        row.className =
+            "cart-item";
 
 
-    cartItemCount.textContent =
-        count;
+        row.innerHTML = `
+
+            <img
+                class="cart-item-image"
+                src="${item.image}"
+                alt="${escapeHTML(item.name)}"
+                onerror="this.src='https://via.placeholder.com/100x80?text=Product'"
+            >
 
 
-    cartSubtotal.textContent =
-        `₱${formatPrice(
-            total
-        )}`;
+            <div class="cart-item-info">
+
+                <h3>
+                    ${escapeHTML(item.name)}
+                </h3>
+
+                <p>
+                    ${formatPrice(item.price)}
+                </p>
+
+                <small>
+                    ${escapeHTML(item.region)}
+                </small>
+
+            </div>
 
 
-    cartTotal.textContent =
-        `₱${formatPrice(
-            total
-        )}`;
+            <div class="quantity-controls">
+
+                <button
+                    class="quantity-btn"
+                    onclick="changeQuantity(${item.id}, -1)"
+                >
+                    −
+                </button>
+
+                <span class="quantity-number">
+                    ${item.quantity}
+                </span>
+
+                <button
+                    class="quantity-btn"
+                    onclick="changeQuantity(${item.id}, 1)"
+                >
+                    +
+                </button>
+
+            </div>
 
 
-    checkoutTotal.textContent =
-        `₱${formatPrice(
-            total
-        )}`;
+            <div class="cart-item-total">
 
+                ${formatPrice(
+                    item.price *
+                    item.quantity
+                )}
+
+            </div>
+
+
+            <button
+                class="remove-cart-btn"
+                onclick="removeFromCart(${item.id})"
+            >
+                Remove
+            </button>
+
+        `;
+
+
+        cartItems.appendChild(row);
+
+    });
+
+
+    updateCartSummary();
 }
 
 
 /* =====================================================
-   CART ACTIONS
-===================================================== */
+   CHANGE QUANTITY
+   ===================================================== */
 
-if (cartItems) {
+function changeQuantity(
+    productId,
+    amount
+) {
 
-    cartItems.addEventListener(
-        "click",
-        event => {
-
-            const button =
-                event.target.closest(
-                    "button[data-cart-action]"
-                );
-
-
-            if (!button) {
-                return;
-            }
+    const item =
+        cart.find(
+            product =>
+                product.id === productId
+        );
 
 
-            const id =
-                Number(
-                    button.dataset.id
-                );
+    if (!item) {
+
+        return;
+    }
 
 
-            const item =
-                cart.find(
-                    cartItem =>
-                        Number(
-                            cartItem.id
-                        ) === id
-                );
+    item.quantity += amount;
 
 
-            if (!item) {
-                return;
-            }
+    if (item.quantity <= 0) {
+
+        cart =
+            cart.filter(
+                product =>
+                    product.id !==
+                    productId
+            );
+    }
 
 
-            const action =
-                button.dataset.cartAction;
+    saveCart();
 
+    updateCartCount();
 
-            if (
-                action ===
-                "plus"
-            ) {
-
-                item.quantity++;
-
-            }
-
-
-            if (
-                action ===
-                "minus"
-            ) {
-
-                item.quantity--;
-
-                if (
-                    item.quantity <=
-                    0
-                ) {
-
-                    cart =
-                        cart.filter(
-                            cartItem =>
-                                Number(
-                                    cartItem.id
-                                ) !== id
-                        );
-
-                }
-
-            }
-
-
-            if (
-                action ===
-                "remove"
-            ) {
-
-                cart =
-                    cart.filter(
-                        cartItem =>
-                            Number(
-                                cartItem.id
-                            ) !== id
-                    );
-
-            }
-
-
-            saveCart();
-
-            renderCart();
-
-        }
-    );
-
+    renderCart();
 }
 
 
 /* =====================================================
-   OPEN CART
-===================================================== */
+   REMOVE CART ITEM
+   ===================================================== */
 
-function openCart() {
+function removeFromCart(productId) {
 
-    homeSection.classList.add(
-        "hidden"
-    );
+    cart =
+        cart.filter(
+            item =>
+                item.id !== productId
+        );
 
-    authSection.classList.add(
-        "hidden"
-    );
 
-    userSection.classList.add(
-        "hidden"
-    );
+    saveCart();
 
-    adminSection.classList.add(
-        "hidden"
-    );
-
-    checkoutSection.classList.add(
-        "hidden"
-    );
-
-    successSection.classList.add(
-        "hidden"
-    );
-
-    cartSection.classList.remove(
-        "hidden"
-    );
-
+    updateCartCount();
 
     renderCart();
 
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
-
-
-if (dashboardCartBtn) {
-
-    dashboardCartBtn.addEventListener(
-        "click",
-        openCart
+    showToast(
+        "Product removed from cart."
     );
-
-}
-
-
-if (cartBrowseBtn) {
-
-    cartBrowseBtn.addEventListener(
-        "click",
-        () => {
-
-            cartSection.classList.add(
-                "hidden"
-            );
-
-            homeSection.classList.remove(
-                "hidden"
-            );
-
-            scrollToProducts();
-
-        }
-    );
-
 }
 
 
 /* =====================================================
-   CHECKOUT
-===================================================== */
+   CART SUMMARY
+   ===================================================== */
 
-if (checkoutBtn) {
+function updateCartSummary() {
 
-    checkoutBtn.addEventListener(
-        "click",
-        () => {
-
-            if (
-                !cart ||
-                cart.length ===
-                0
-            ) {
-
-                showToast(
-                    "Your cart is empty."
-                );
-
-                return;
-
-            }
-
-
-            cartSection.classList.add(
-                "hidden"
-            );
-
-            checkoutSection.classList.remove(
-                "hidden"
-            );
-
-
-            updateCheckoutTotal();
-
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-        }
-    );
-
-}
-
-
-function updateCheckoutTotal() {
-
-    const total =
+    const subtotal =
         cart.reduce(
-            (
-                sum,
-                item
-            ) =>
-                sum +
-                Number(
-                    item.price
-                ) *
-                Number(
+            (total, item) =>
+                total +
+                (
+                    item.price *
                     item.quantity
                 ),
             0
         );
 
 
-    checkoutTotal.textContent =
-        `₱${formatPrice(
-            total
-        )}`;
-
-}
+    const delivery =
+        cart.length > 0
+            ? 50
+            : 0;
 
 
-if (paymentMethod) {
+    const total =
+        subtotal + delivery;
 
-    paymentMethod.addEventListener(
-        "change",
-        () => {
 
-            if (
-                paymentMethod.value ===
-                "GCash"
-            ) {
+    document
+        .getElementById(
+            "cartSubtotal"
+        )
+        .textContent =
+        formatPrice(subtotal);
 
-                gcashInfo.classList.remove(
-                    "hidden"
-                );
 
-            } else {
-
-                gcashInfo.classList.add(
-                    "hidden"
-                );
-
-            }
-
-        }
-    );
-
+    document
+        .getElementById(
+            "cartTotal"
+        )
+        .textContent =
+        formatPrice(total);
 }
 
 
 /* =====================================================
-   PLACE ORDER
-===================================================== */
+   CHECKOUT
+   ===================================================== */
 
-if (checkoutForm) {
+function openCheckout() {
 
-    checkoutForm.addEventListener(
-        "submit",
-        async event => {
+    /*
+        LOGIN REQUIRED
+    */
 
-            event.preventDefault();
+    if (!currentUser) {
 
+        showToast(
+            "Please login first."
+        );
 
-            if (
-                !cart ||
-                cart.length ===
-                0
-            ) {
+        showPage("login");
 
-                showToast(
-                    "Your cart is empty."
-                );
-
-                return;
-
-            }
-
-
-            const {
-                data: {
-                    user
-                }
-            } =
-                await supabaseClient
-                    .auth
-                    .getUser();
-
-
-            const fullName =
-                document
-                    .getElementById(
-                        "checkoutName"
-                    )
-                    .value
-                    .trim();
-
-            const phone =
-                document
-                    .getElementById(
-                        "checkoutPhone"
-                    )
-                    .value
-                    .trim();
-
-            const address =
-                document
-                    .getElementById(
-                        "checkoutAddress"
-                    )
-                    .value
-                    .trim();
-
-            const region =
-                document
-                    .getElementById(
-                        "checkoutRegion"
-                    )
-                    .value;
-
-            const payment =
-                paymentMethod.value;
-
-
-            const total =
-                cart.reduce(
-                    (
-                        sum,
-                        item
-                    ) =>
-                        sum +
-                        Number(
-                            item.price
-                        ) *
-                        Number(
-                            item.quantity
-                        ),
-                    0
-                );
-
-
-            const orderNumber =
-                "BB-" +
-                Date.now()
-                    .toString()
-                    .slice(-8);
-
-
-            /*
-             * IMPORTANT:
-             *
-             * Kung wala ka pang orders table,
-             * local success flow muna ito.
-             *
-             * Kapag may orders table ka na,
-             * pwede natin i-save dito.
-             */
-
-
-            try {
-
-                const {
-                    error
-                } =
-                    await supabaseClient
-                        .from("orders")
-                        .insert({
-
-                            user_id:
-                                user?.id ||
-                                null,
-
-                            order_number:
-                                orderNumber,
-
-                            customer_name:
-                                fullName,
-
-                            phone:
-                                phone,
-
-                            address:
-                                address,
-
-                            region:
-                                region,
-
-                            payment_method:
-                                payment,
-
-                            total:
-                                total,
-
-                            status:
-                                "Pending"
-
-                        });
-
-
-                if (error) {
-
-                    /*
-                     * Kung wala pang orders table,
-                     * huwag pigilan ang checkout.
-                     */
-
-                    console.warn(
-                        "Order table error:",
-                        error.message
-                    );
-
-                }
-
-            } catch (error) {
-
-                console.warn(
-                    "Order save skipped:",
-                    error
-                );
-
-            }
-
-
-            successOrderInfo.innerHTML = `
-
-                <strong>
-                    Order #: ${escapeHTML(
-                        orderNumber
-                    )}
-                </strong>
-
-                <br>
-
-                Customer:
-                ${escapeHTML(
-                    fullName
-                )}
-
-                <br>
-
-                Payment:
-                ${escapeHTML(
-                    payment
-                )}
-
-                <br>
-
-                Total:
-                <strong>
-                    ₱${formatPrice(
-                        total
-                    )}
-                </strong>
-
-            `;
-
-
-            cart = [];
-
-            saveCart();
-
-            checkoutForm.reset();
-
-            gcashInfo.classList.add(
-                "hidden"
-            );
-
-
-            checkoutSection.classList.add(
-                "hidden"
-            );
-
-            successSection.classList.remove(
-                "hidden"
-            );
-
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   SUCCESS BUTTONS
-===================================================== */
-
-if (successBrowseBtn) {
-
-    successBrowseBtn.addEventListener(
-        "click",
-        () => {
-
-            successSection.classList.add(
-                "hidden"
-            );
-
-            homeSection.classList.remove(
-                "hidden"
-            );
-
-            renderCart();
-
-            scrollToProducts();
-
-        }
-    );
-
-}
-
-
-if (successHomeBtn) {
-
-    successHomeBtn.addEventListener(
-        "click",
-        () => {
-
-            successSection.classList.add(
-                "hidden"
-            );
-
-            homeSection.classList.remove(
-                "hidden"
-            );
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   ADMIN - ADD / EDIT PRODUCT
-===================================================== */
-
-if (productForm) {
-
-    productForm.addEventListener(
-        "submit",
-        async event => {
-
-            event.preventDefault();
-
-
-            const name =
-                productNameInput
-                    .value
-                    .trim();
-
-            const price =
-                Number(
-                    productPriceInput
-                        .value
-                );
-
-            const image =
-                productImageInput
-                    .value
-                    .trim();
-
-            const region =
-                productRegionInput
-                    .value
-                    .trim();
-
-            const description =
-                productDescriptionInput
-                    .value
-                    .trim();
-
-
-            if (!name) {
-
-                productMessage.textContent =
-                    "Product name is required.";
-
-                return;
-
-            }
-
-
-            if (
-                !Number.isFinite(
-                    price
-                )
-            ) {
-
-                productMessage.textContent =
-                    "Please enter a valid price.";
-
-                return;
-
-            }
-
-
-            if (!region) {
-
-                productMessage.textContent =
-                    "Please select a region.";
-
-                return;
-
-            }
-
-
-            productMessage.textContent =
-                editingProductId
-                    ? "Updating product..."
-                    : "Adding product...";
-
-
-            try {
-
-                let error;
-
-
-                if (
-                    editingProductId
-                ) {
-
-                    const result =
-                        await supabaseClient
-                            .from(
-                                "products"
-                            )
-                            .update({
-
-                                name,
-
-                                price,
-
-                                image,
-
-                                region,
-
-                                description
-
-                            })
-                            .eq(
-                                "id",
-                                editingProductId
-                            );
-
-
-                    error =
-                        result.error;
-
-                } else {
-
-                    const result =
-                        await supabaseClient
-                            .from(
-                                "products"
-                            )
-                            .insert({
-
-                                name,
-
-                                price,
-
-                                image,
-
-                                region,
-
-                                description
-
-                            });
-
-
-                    error =
-                        result.error;
-
-                }
-
-
-                if (error) {
-                    throw error;
-                }
-
-
-                productMessage.textContent =
-                    editingProductId
-                        ? "Product updated successfully!"
-                        : "Product added successfully!";
-
-
-                productForm.reset();
-
-                editingProductId =
-                    null;
-
-
-                cancelEditBtn.classList.add(
-                    "hidden"
-                );
-
-
-                productForm
-                    .querySelector(
-                        'button[type="submit"]'
-                    )
-                    .textContent =
-                    "Add Product";
-
-
-                await loadProducts();
-
-                await loadAdminProducts();
-
-
-                showToast(
-                    "Product saved successfully."
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "Product save error:",
-                    error
-                );
-
-
-                productMessage.textContent =
-                    "Failed to save product: " +
-                    error.message;
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   LOAD ADMIN PRODUCTS
-===================================================== */
-
-async function loadAdminProducts() {
-
-    if (
-        !adminProductsContainer
-    ) {
         return;
     }
 
 
-    adminProductsContainer.innerHTML =
-        "<p>Loading products...</p>";
+    if (cart.length === 0) {
+
+        showToast(
+            "Your cart is empty."
+        );
+
+        return;
+    }
 
 
-    const {
-        data: products,
-        error
-    } =
-        await supabaseClient
-            .from("products")
-            .select("*")
-            .order(
-                "id",
-                {
-                    ascending: false
-                }
-            );
+    showPage("checkout");
+}
 
 
-    if (error) {
+function prepareCheckout() {
 
-        console.error(
-            "Admin products error:",
-            error
+    if (!currentUser) {
+
+        showPage("login");
+
+        return;
+    }
+
+
+    if (cart.length === 0) {
+
+        showToast(
+            "Your cart is empty."
+        );
+
+        showPage("cart");
+
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "checkoutName"
+        )
+        .value =
+        currentUser.name || "";
+
+
+    updateCheckoutTotal();
+}
+
+
+function updateCheckoutTotal() {
+
+    const subtotal =
+        cart.reduce(
+            (total, item) =>
+                total +
+                (
+                    item.price *
+                    item.quantity
+                ),
+            0
         );
 
 
-        adminProductsContainer.innerHTML = `
+    const delivery = 50;
 
-            <p>
-                Unable to load products.
-                ${escapeHTML(
-                    error.message
-                )}
-            </p>
 
-        `;
+    const total =
+        subtotal + delivery;
+
+
+    document
+        .getElementById(
+            "checkoutTotalPreview"
+        )
+        .textContent =
+        `Total: ${formatPrice(total)}`;
+}
+
+
+/* =====================================================
+   PAYMENT INFO
+   ===================================================== */
+
+function showPaymentInfo() {
+
+    const payment =
+        document
+            .getElementById(
+                "checkoutPayment"
+            )
+            .value;
+
+
+    const gcashInfo =
+        document.getElementById(
+            "gcashInfo"
+        );
+
+
+    if (payment === "GCash") {
+
+        gcashInfo.classList.remove(
+            "hidden"
+        );
+
+    } else {
+
+        gcashInfo.classList.add(
+            "hidden"
+        );
+    }
+}
+
+
+/* =====================================================
+   HANDLE CHECKOUT
+   ===================================================== */
+
+function handleCheckout(event) {
+
+    event.preventDefault();
+
+
+    /*
+        SECURITY
+    */
+
+    if (!currentUser) {
+
+        showToast(
+            "Please login first."
+        );
+
+        showPage("login");
 
         return;
-
     }
 
 
-    adminProductsContainer.innerHTML = "";
+    if (cart.length === 0) {
+
+        showToast(
+            "Your cart is empty."
+        );
+
+        showPage("cart");
+
+        return;
+    }
+
+
+    const payment =
+        document
+            .getElementById(
+                "checkoutPayment"
+            )
+            .value;
+
+
+    if (!payment) {
+
+        showToast(
+            "Please select a payment method."
+        );
+
+        return;
+    }
+
+
+    /*
+        Create order object.
+    */
+
+    const order = {
+
+        id: Date.now(),
+
+        userId:
+            currentUser.id,
+
+        customer:
+            currentUser.name,
+
+        items:
+            [...cart],
+
+        payment,
+
+        date:
+            new Date().toISOString(),
+
+        total:
+            cart.reduce(
+                (sum, item) =>
+                    sum +
+                    (
+                        item.price *
+                        item.quantity
+                    ),
+                0
+            ) + 50
+    };
+
+
+    /*
+        Save orders.
+    */
+
+    let orders = [];
+
+
+    try {
+
+        orders =
+            JSON.parse(
+                localStorage.getItem(
+                    "bulacan_business_orders"
+                )
+            ) || [];
+
+    } catch (error) {
+
+        orders = [];
+    }
+
+
+    orders.push(order);
+
+
+    localStorage.setItem(
+        "bulacan_business_orders",
+        JSON.stringify(orders)
+    );
+
+
+    /*
+        Clear cart after successful order.
+    */
+
+    cart = [];
+
+    saveCart();
+
+    updateCartCount();
+
+
+    document
+        .getElementById(
+            "checkoutForm"
+        )
+        .reset();
+
+
+    document
+        .getElementById(
+            "gcashInfo"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+
+    showPage("success");
+
+
+    showToast(
+        "Order successfully placed!"
+    );
+}
+
+
+/* =====================================================
+   BACK TO SHOPPING
+   ===================================================== */
+
+function backToShopping() {
+
+    if (!currentUser) {
+
+        showPage("login");
+
+        return;
+    }
+
+
+    selectedRegion = null;
+
+
+    showPage("home");
+
+
+    showLoggedInShopping();
+}
+
+
+/* =====================================================
+   PASSWORD TOGGLE
+   ===================================================== */
+
+function togglePassword(
+    inputId,
+    button
+) {
+
+    const input =
+        document.getElementById(
+            inputId
+        );
 
 
     if (
-        !products ||
-        products.length ===
-        0
+        input.type ===
+        "password"
     ) {
 
-        adminProductsContainer.innerHTML = `
+        input.type = "text";
+
+        button.textContent = "🙈";
+
+    } else {
+
+        input.type = "password";
+
+        button.textContent = "👁️";
+    }
+}
+
+
+/* =====================================================
+   FORGOT PASSWORD
+   ===================================================== */
+
+function forgotPassword() {
+
+    showToast(
+        "Password reset would be handled by your backend/email system."
+    );
+}
+
+
+/* =====================================================
+   ADMIN REGION OPTIONS
+   ===================================================== */
+
+function renderAdminRegionOptions() {
+
+    const select =
+        document.getElementById(
+            "productRegion"
+        );
+
+
+    if (!select) {
+
+        return;
+    }
+
+
+    select.innerHTML = `
+
+        <option value="">
+            Select region
+        </option>
+
+    `;
+
+
+    regions.forEach(region => {
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+
+        option.value =
+            region.name;
+
+
+        option.textContent =
+            region.name;
+
+
+        select.appendChild(
+            option
+        );
+
+    });
+}
+
+
+/* =====================================================
+   ADMIN PRODUCT FORM
+   ===================================================== */
+
+function handleProductForm(event) {
+
+    event.preventDefault();
+
+
+    if (
+        !currentUser ||
+        currentUser.role !== "admin"
+    ) {
+
+        showToast(
+            "Admin access required."
+        );
+
+        return;
+    }
+
+
+    const idValue =
+        document
+            .getElementById(
+                "productId"
+            )
+            .value;
+
+
+    const name =
+        document
+            .getElementById(
+                "productName"
+            )
+            .value
+            .trim();
+
+
+    const region =
+        document
+            .getElementById(
+                "productRegion"
+            )
+            .value;
+
+
+    const price =
+        Number(
+            document
+                .getElementById(
+                    "productPrice"
+                )
+                .value
+        );
+
+
+    const image =
+        document
+            .getElementById(
+                "productImage"
+            )
+            .value
+            .trim();
+
+
+    const description =
+        document
+            .getElementById(
+                "productDescription"
+            )
+            .value
+            .trim();
+
+
+    if (
+        !name ||
+        !region ||
+        !price ||
+        !image ||
+        !description
+    ) {
+
+        showToast(
+            "Please complete all product fields."
+        );
+
+        return;
+    }
+
+
+    /*
+        EDIT PRODUCT
+    */
+
+    if (idValue) {
+
+        const id =
+            Number(idValue);
+
+
+        const product =
+            products.find(
+                item =>
+                    item.id === id
+            );
+
+
+        if (product) {
+
+            product.name =
+                name;
+
+            product.region =
+                region;
+
+            product.price =
+                price;
+
+            product.image =
+                image;
+
+            product.description =
+                description;
+        }
+
+
+        showToast(
+            "Product updated successfully."
+        );
+
+    } else {
+
+        /*
+            ADD PRODUCT
+        */
+
+        const newProduct = {
+
+            id: Date.now(),
+
+            name,
+
+            region,
+
+            price,
+
+            image,
+
+            description
+        };
+
+
+        products.push(
+            newProduct
+        );
+
+
+        showToast(
+            "Product added successfully."
+        );
+    }
+
+
+    saveProducts();
+
+    cancelProductEdit();
+
+    renderAdminProducts();
+
+
+    /*
+        If user currently selected
+        this region, refresh products.
+    */
+
+    if (
+        currentUser &&
+        selectedRegion
+    ) {
+
+        renderProductsByRegion(
+            selectedRegion
+        );
+    }
+}
+
+
+/* =====================================================
+   ADMIN PRODUCT LIST
+   ===================================================== */
+
+function renderAdminProducts() {
+
+    const container =
+        document.getElementById(
+            "adminProductsList"
+        );
+
+
+    if (!container) {
+
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (products.length === 0) {
+
+        container.innerHTML = `
 
             <div class="no-products">
-
-                <p>
-                    No products available.
-                </p>
-
+                No products found.
             </div>
 
         `;
 
         return;
-
     }
 
 
-    products.forEach(
-        product => {
+    products.forEach(product => {
 
-            const item =
-                document.createElement(
-                    "div"
-                );
-
-
-            item.className =
-                "admin-product-item";
-
-
-            const image =
-                product.image ||
-                "https://via.placeholder.com/100x100?text=Product";
-
-
-            item.innerHTML = `
-
-                <div
-                    class="admin-product-left"
-                >
-
-                    <img
-                        class="admin-product-image"
-                        src="${escapeHTML(
-                            image
-                        )}"
-                        alt="${escapeHTML(
-                            product.name
-                        )}"
-                    >
-
-
-                    <div
-                        class="admin-product-info"
-                    >
-
-                        <h4>
-                            ${escapeHTML(
-                                product.name
-                            )}
-                        </h4>
-
-
-                        <p>
-                            ₱${formatPrice(
-                                product.price
-                            )}
-                        </p>
-
-
-                        <span
-                            class="admin-product-region"
-                        >
-                            📍 ${escapeHTML(
-                                product.region ||
-                                "Bulacan"
-                            )}
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="admin-product-actions"
-                >
-
-                    <button
-                        class="btn edit-btn"
-                        data-admin-action="edit"
-                        data-id="${product.id}"
-                    >
-                        Edit
-                    </button>
-
-
-                    <button
-                        class="btn delete-btn"
-                        data-admin-action="delete"
-                        data-id="${product.id}"
-                    >
-                        Delete
-                    </button>
-
-                </div>
-
-            `;
-
-
-            adminProductsContainer.appendChild(
-                item
+        const item =
+            document.createElement(
+                "div"
             );
 
-        }
-    );
 
-}
-
-
-/* =====================================================
-   ADMIN PRODUCT ACTIONS
-===================================================== */
-
-if (
-    adminProductsContainer
-) {
-
-    adminProductsContainer.addEventListener(
-        "click",
-        async event => {
-
-            const button =
-                event.target.closest(
-                    "button[data-admin-action]"
-                );
+        item.className =
+            "admin-product-item";
 
 
-            if (!button) {
-                return;
-            }
+        item.innerHTML = `
+
+            <div class="admin-product-left">
+
+                <img
+                    class="admin-product-image"
+                    src="${product.image}"
+                    alt="${escapeHTML(product.name)}"
+                    onerror="this.src='https://via.placeholder.com/100x80?text=Product'"
+                >
 
 
-            const id =
-                Number(
-                    button.dataset.id
-                );
+                <div class="admin-product-info">
+
+                    <h4>
+                        ${escapeHTML(product.name)}
+                    </h4>
+
+                    <p>
+                        ${formatPrice(product.price)}
+                    </p>
+
+                    <span class="admin-product-region">
+                        📍 ${escapeHTML(product.region)}
+                    </span>
+
+                </div>
+
+            </div>
 
 
-            const action =
-                button.dataset.adminAction;
+            <div class="admin-product-actions">
+
+                <button
+                    class="btn edit-btn"
+                    onclick="editProduct(${product.id})"
+                >
+                    Edit
+                </button>
+
+                <button
+                    class="btn delete-btn"
+                    onclick="deleteProduct(${product.id})"
+                >
+                    Delete
+                </button>
+
+            </div>
+
+        `;
 
 
-            if (
-                action ===
-                "edit"
-            ) {
+        container.appendChild(item);
 
-                await editProduct(
-                    id
-                );
-
-            }
-
-
-            if (
-                action ===
-                "delete"
-            ) {
-
-                await deleteProduct(
-                    id
-                );
-
-            }
-
-        }
-    );
-
+    });
 }
 
 
 /* =====================================================
    EDIT PRODUCT
-===================================================== */
+   ===================================================== */
 
-async function editProduct(
-    id
-) {
+function editProduct(productId) {
+
+    if (
+        !currentUser ||
+        currentUser.role !== "admin"
+    ) {
+
+        showToast(
+            "Admin access required."
+        );
+
+        return;
+    }
+
 
     const product =
-        allProducts.find(
+        products.find(
             item =>
-                Number(item.id) ===
-                Number(id)
+                item.id === productId
         );
 
 
     if (!product) {
 
-        /*
-         * If not in allProducts,
-         * get directly from Supabase.
-         */
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("products")
-                .select("*")
-                .eq(
-                    "id",
-                    id
-                )
-                .single();
-
-
-        if (error) {
-
-            alert(
-                "Unable to load product: " +
-                error.message
-            );
-
-            return;
-
-        }
-
-
-        editingProductId =
-            data.id;
-
-        fillEditForm(
-            data
-        );
-
         return;
-
     }
 
 
-    editingProductId =
+    document
+        .getElementById(
+            "productId"
+        )
+        .value =
         product.id;
 
 
-    fillEditForm(
-        product
-    );
-
-}
-
-
-function fillEditForm(
-    product
-) {
-
-    productNameInput.value =
-        product.name || "";
+    document
+        .getElementById(
+            "productName"
+        )
+        .value =
+        product.name;
 
 
-    productPriceInput.value =
-        product.price || "";
+    document
+        .getElementById(
+            "productRegion"
+        )
+        .value =
+        product.region;
 
 
-    productImageInput.value =
-        product.image || "";
+    document
+        .getElementById(
+            "productPrice"
+        )
+        .value =
+        product.price;
 
 
-    productRegionInput.value =
-        product.region || "";
+    document
+        .getElementById(
+            "productImage"
+        )
+        .value =
+        product.image;
 
 
-    productDescriptionInput.value =
-        product.description || "";
+    document
+        .getElementById(
+            "productDescription"
+        )
+        .value =
+        product.description;
 
 
-    cancelEditBtn.classList.remove(
-        "hidden"
-    );
-
-
-    productForm
-        .querySelector(
-            'button[type="submit"]'
+    document
+        .getElementById(
+            "adminFormTitle"
         )
         .textContent =
-        "Update Product";
+        "Edit Product";
 
 
-    adminSection.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
     });
-
-
-    productMessage.textContent =
-        "Editing product...";
-
-}
-
-
-/* =====================================================
-   CANCEL EDIT
-===================================================== */
-
-if (cancelEditBtn) {
-
-    cancelEditBtn.addEventListener(
-        "click",
-        () => {
-
-            editingProductId =
-                null;
-
-            productForm.reset();
-
-            cancelEditBtn.classList.add(
-                "hidden"
-            );
-
-            productForm
-                .querySelector(
-                    'button[type="submit"]'
-                )
-                .textContent =
-                "Add Product";
-
-            productMessage.textContent =
-                "";
-
-        }
-    );
-
 }
 
 
 /* =====================================================
    DELETE PRODUCT
-===================================================== */
+   ===================================================== */
 
-async function deleteProduct(
-    id
-) {
+function deleteProduct(productId) {
+
+    if (
+        !currentUser ||
+        currentUser.role !== "admin"
+    ) {
+
+        showToast(
+            "Admin access required."
+        );
+
+        return;
+    }
+
+
+    const product =
+        products.find(
+            item =>
+                item.id === productId
+        );
+
+
+    if (!product) {
+
+        return;
+    }
+
 
     const confirmed =
         confirm(
-            "Are you sure you want to delete this product?"
+            `Delete "${product.name}"?`
         );
 
 
     if (!confirmed) {
+
         return;
     }
 
 
-    const {
-        error
-    } =
-        await supabaseClient
-            .from("products")
-            .delete()
-            .eq(
-                "id",
-                id
-            );
-
-
-    if (error) {
-
-        alert(
-            "Failed to delete product: " +
-            error.message
+    products =
+        products.filter(
+            item =>
+                item.id !== productId
         );
 
-        return;
 
+    /*
+        Also remove deleted product
+        from cart.
+    */
+
+    cart =
+        cart.filter(
+            item =>
+                item.id !== productId
+        );
+
+
+    saveProducts();
+
+    saveCart();
+
+    updateCartCount();
+
+    renderAdminProducts();
+
+
+    if (selectedRegion) {
+
+        renderProductsByRegion(
+            selectedRegion
+        );
     }
 
 
     showToast(
-        "Product deleted successfully."
+        "Product deleted."
+    );
+}
+
+
+/* =====================================================
+   CANCEL PRODUCT EDIT
+   ===================================================== */
+
+function cancelProductEdit() {
+
+    const form =
+        document.getElementById(
+            "productForm"
+        );
+
+
+    if (form) {
+
+        form.reset();
+    }
+
+
+    document
+        .getElementById(
+            "productId"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "adminFormTitle"
+        )
+        .textContent =
+        "Add Product";
+}
+
+
+/* =====================================================
+   TOAST
+   ===================================================== */
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.remove(
+        "hidden"
     );
 
 
-    await loadProducts();
+    clearTimeout(
+        toastTimer
+    );
 
-    await loadAdminProducts();
 
+    toastTimer =
+        setTimeout(() => {
+
+            toast.classList.add(
+                "hidden"
+            );
+
+        }, 3000);
 }
 
 
 /* =====================================================
-   PROFILE / ROLE SAFETY
-===================================================== */
+   PRICE FORMAT
+   ===================================================== */
 
-async function refreshAdminIfNeeded() {
+function formatPrice(price) {
 
-    const {
-        data: {
-            user
-        }
-    } =
-        await supabaseClient
-            .auth
-            .getUser();
-
-
-    if (!user) {
-        return;
-    }
-
-
-    const {
-        data: profile
-    } =
-        await supabaseClient
-            .from("profiles")
-            .select("role")
-            .eq(
-                "id",
-                user.id
-            )
-            .maybeSingle();
-
-
-    if (
-        profile?.role ===
-        "admin"
-    ) {
-
-        adminSection.classList.remove(
-            "hidden"
-        );
-
-        loadAdminProducts();
-
-    } else {
-
-        adminSection.classList.add(
-            "hidden"
-        );
-
-    }
-
+    return (
+        "₱" +
+        Number(price).toLocaleString(
+            "en-PH",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        )
+    );
 }
 
 
 /* =====================================================
-   AUTH STATE LISTENER
-===================================================== */
+   HTML ESCAPE
+   ===================================================== */
 
-supabaseClient.auth.onAuthStateChange(
-    async (
-        event,
-        session
-    ) => {
+function escapeHTML(value) {
 
-        if (session) {
-
-            await loadUser();
-
-        } else {
-
-            showLoggedOut();
-
-        }
-
-    }
-);
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
 
 
 /* =====================================================
-   INITIAL LOAD
-===================================================== */
+   ADMIN QUICK ACCESS
+   ===================================================== */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
+/*
+    You can open the admin page from browser console:
 
-        renderCart();
+    showPage("admin");
 
-        await loadProducts();
+    Demo admin:
+    Email: admin@bulacan.com
+    Password: admin123
+*/
 
-        await loadUser();
 
-    }
-);
+/* =====================================================
+   END
+   ===================================================== */
