@@ -1,12 +1,32 @@
-/* =====================================================
+/* =========================================================
    BULACAN BUSINESS
-   COMPLETE SCRIPT
-   ===================================================== */
+   COMPLETE SCRIPT.JS
+   ========================================================= */
+
+/* =========================================================
+   SUPABASE
+   ========================================================= */
+
+const SUPABASE_URL = "";
+const SUPABASE_ANON_KEY = "";
+
+let supabaseClient = null;
+
+if (
+    typeof window.supabase !== "undefined" &&
+    SUPABASE_URL &&
+    SUPABASE_ANON_KEY
+) {
+    supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+}
 
 
-/* =====================================================
+/* =========================================================
    DATA
-   ===================================================== */
+   ========================================================= */
 
 const regions = [
     {
@@ -51,13 +71,6 @@ const regions = [
     }
 ];
 
-
-/*
-    SAMPLE PRODUCTS
-
-    IMPORTANT:
-    region MUST match one of the regions above.
-*/
 
 let products = [
     {
@@ -161,38 +174,29 @@ let products = [
 ];
 
 
-/* =====================================================
+/* =========================================================
    STATE
-   ===================================================== */
+   ========================================================= */
 
 let currentUser = null;
-
 let selectedRegion = null;
-
 let cart = [];
-
 let toastTimer = null;
 
 
-/* =====================================================
-   LOCAL STORAGE KEYS
-   ===================================================== */
+/* =========================================================
+   LOCAL STORAGE
+   ========================================================= */
 
 const USERS_KEY = "bulacan_business_users";
-
-const CURRENT_USER_KEY =
-    "bulacan_business_current_user";
-
-const CART_KEY =
-    "bulacan_business_cart";
-
-const PRODUCTS_KEY =
-    "bulacan_business_products";
+const CURRENT_USER_KEY = "bulacan_business_current_user";
+const CART_KEY = "bulacan_business_cart";
+const PRODUCTS_KEY = "bulacan_business_products";
 
 
-/* =====================================================
-   INITIALIZATION
-   ===================================================== */
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -203,32 +207,24 @@ document.addEventListener(
 function initializeApp() {
 
     loadUsers();
-
     loadProducts();
-
     loadCurrentUser();
-
     loadCart();
 
-    renderRegions();
-
-    renderAdminRegionOptions();
-
     updateNavbar();
-
     updateCartCount();
 
     /*
-        IMPORTANT:
+       IMPORTANT:
 
-        On initial page load:
-        - If NOT logged in:
-            Regions hidden
-            Products hidden
+       Logged out:
+       Region hidden
+       Products hidden
 
-        - If logged in:
-            Regions visible
-            Products hidden until region selected
+       Logged in:
+       Region visible
+       Products hidden
+       User must select region.
     */
 
     if (currentUser) {
@@ -242,14 +238,13 @@ function initializeApp() {
         hideShoppingSections();
     }
 
-
-    setupForms();
+    setupAllButtons();
 }
 
 
-/* =====================================================
-   STORAGE HELPERS
-   ===================================================== */
+/* =========================================================
+   STORAGE
+   ========================================================= */
 
 function getUsers() {
 
@@ -277,23 +272,13 @@ function saveUsers(users) {
 
 function loadUsers() {
 
-    /*
-        Just initialize storage if empty.
-    */
+    if (
+        !localStorage.getItem(
+            USERS_KEY
+        )
+    ) {
 
-    if (!localStorage.getItem(USERS_KEY)) {
-
-        /*
-            Demo admin account
-
-            Email:
-            admin@bulacan.com
-
-            Password:
-            admin123
-        */
-
-        const defaultUsers = [
+        saveUsers([
             {
                 id: 1,
                 name: "Administrator",
@@ -301,9 +286,7 @@ function loadUsers() {
                 password: "admin123",
                 role: "admin"
             }
-        ];
-
-        saveUsers(defaultUsers);
+        ]);
     }
 }
 
@@ -313,7 +296,9 @@ function loadCurrentUser() {
     try {
 
         currentUser = JSON.parse(
-            localStorage.getItem(CURRENT_USER_KEY)
+            localStorage.getItem(
+                CURRENT_USER_KEY
+            )
         );
 
     } catch (error) {
@@ -346,7 +331,9 @@ function loadCart() {
     try {
 
         cart = JSON.parse(
-            localStorage.getItem(CART_KEY)
+            localStorage.getItem(
+                CART_KEY
+            )
         ) || [];
 
     } catch (error) {
@@ -365,28 +352,24 @@ function saveCart() {
 }
 
 
-/* =====================================================
-   PRODUCTS STORAGE
-   ===================================================== */
-
 function loadProducts() {
 
-    const savedProducts =
-        localStorage.getItem(PRODUCTS_KEY);
+    const saved =
+        localStorage.getItem(
+            PRODUCTS_KEY
+        );
 
-    if (savedProducts) {
+    if (!saved) return;
 
-        try {
+    try {
 
-            products =
-                JSON.parse(savedProducts);
+        products = JSON.parse(saved);
 
-        } catch (error) {
+    } catch (error) {
 
-            console.log(
-                "Using default products."
-            );
-        }
+        console.log(
+            "Using default products."
+        );
     }
 }
 
@@ -400,132 +383,601 @@ function saveProducts() {
 }
 
 
-/* =====================================================
+/* =========================================================
+   BUTTON SETUP
+   ========================================================= */
+
+function setupAllButtons() {
+
+    /*
+       Navbar
+    */
+
+    const showLoginBtn =
+        document.getElementById(
+            "showLoginBtn"
+        );
+
+    const showSignupBtn =
+        document.getElementById(
+            "showSignupBtn"
+        );
+
+    const logoutBtn =
+        document.getElementById(
+            "logoutBtn"
+        );
+
+
+    if (showLoginBtn) {
+
+        showLoginBtn.onclick = function () {
+
+            showAuth("login");
+        };
+    }
+
+
+    if (showSignupBtn) {
+
+        showSignupBtn.onclick = function () {
+
+            showAuth("signup");
+        };
+    }
+
+
+    if (logoutBtn) {
+
+        logoutBtn.onclick = logout;
+    }
+
+
+    /*
+       Hero buttons
+    */
+
+    const heroExploreBtn =
+        document.getElementById(
+            "heroExploreBtn"
+        );
+
+    const heroLoginBtn =
+        document.getElementById(
+            "heroLoginBtn"
+        );
+
+
+    if (heroExploreBtn) {
+
+        heroExploreBtn.onclick =
+            function () {
+
+                if (!currentUser) {
+
+                    showToast(
+                        "Please login first to explore products."
+                    );
+
+                    showAuth("login");
+
+                    return;
+                }
+
+                showLoggedInShopping();
+
+                document
+                    .getElementById(
+                        "regionsSection"
+                    )
+                    ?.scrollIntoView({
+                        behavior: "smooth"
+                    });
+            };
+    }
+
+
+    if (heroLoginBtn) {
+
+        heroLoginBtn.onclick =
+            function () {
+
+                if (currentUser) {
+
+                    showLoggedInShopping();
+
+                    return;
+                }
+
+                showAuth("login");
+            };
+    }
+
+
+    /*
+       Dashboard
+    */
+
+    const dashboardProductsBtn =
+        document.getElementById(
+            "dashboardProductsBtn"
+        );
+
+    const dashboardCartBtn =
+        document.getElementById(
+            "dashboardCartBtn"
+        );
+
+
+    if (dashboardProductsBtn) {
+
+        dashboardProductsBtn.onclick =
+            function () {
+
+                if (!currentUser) {
+
+                    showAuth("login");
+
+                    return;
+                }
+
+                document
+                    .getElementById(
+                        "regionsSection"
+                    )
+                    ?.scrollIntoView({
+                        behavior: "smooth"
+                    });
+            };
+    }
+
+
+    if (dashboardCartBtn) {
+
+        dashboardCartBtn.onclick =
+            function () {
+
+                openCart();
+            };
+    }
+
+
+    /*
+       Auth switching
+    */
+
+    const switchToSignup =
+        document.getElementById(
+            "switchToSignup"
+        );
+
+    const switchToLogin =
+        document.getElementById(
+            "switchToLogin"
+        );
+
+
+    if (switchToSignup) {
+
+        switchToSignup.onclick =
+            function () {
+
+                showAuth("signup");
+            };
+    }
+
+
+    if (switchToLogin) {
+
+        switchToLogin.onclick =
+            function () {
+
+                showAuth("login");
+            };
+    }
+
+
+    /*
+       Forms
+    */
+
+    const loginForm =
+        document.getElementById(
+            "loginForm"
+        );
+
+    const signupForm =
+        document.getElementById(
+            "signupForm"
+        );
+
+
+    if (loginForm) {
+
+        loginForm.addEventListener(
+            "submit",
+            handleLogin
+        );
+    }
+
+
+    if (signupForm) {
+
+        signupForm.addEventListener(
+            "submit",
+            handleSignup
+        );
+    }
+
+
+    /*
+       Password toggle
+    */
+
+    document
+        .querySelectorAll(
+            ".password-toggle"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    togglePassword(
+                        this.dataset.target,
+                        this
+                    );
+                }
+            );
+
+        });
+
+
+    /*
+       Modal
+    */
+
+    const modalClose =
+        document.getElementById(
+            "modalClose"
+        );
+
+    const modalOverlay =
+        document.getElementById(
+            "modalOverlay"
+        );
+
+    const modalAddToCartBtn =
+        document.getElementById(
+            "modalAddToCartBtn"
+        );
+
+
+    if (modalClose) {
+
+        modalClose.onclick =
+            closeProductModal;
+    }
+
+
+    if (modalOverlay) {
+
+        modalOverlay.onclick =
+            closeProductModal;
+    }
+
+
+    if (modalAddToCartBtn) {
+
+        modalAddToCartBtn.onclick =
+            addModalProductToCart;
+    }
+
+
+    /*
+       Cart
+    */
+
+    const checkoutBtn =
+        document.getElementById(
+            "checkoutBtn"
+        );
+
+    const cartBrowseBtn =
+        document.getElementById(
+            "cartBrowseBtn"
+        );
+
+
+    if (checkoutBtn) {
+
+        checkoutBtn.onclick =
+            openCheckout;
+    }
+
+
+    if (cartBrowseBtn) {
+
+        cartBrowseBtn.onclick =
+            function () {
+
+                showPage("home");
+
+                if (currentUser) {
+
+                    showLoggedInShopping();
+                }
+            };
+    }
+
+
+    /*
+       Checkout
+    */
+
+    const checkoutForm =
+        document.getElementById(
+            "checkoutForm"
+        );
+
+    const paymentMethod =
+        document.getElementById(
+            "paymentMethod"
+        );
+
+
+    if (checkoutForm) {
+
+        checkoutForm.addEventListener(
+            "submit",
+            handleCheckout
+        );
+    }
+
+
+    if (paymentMethod) {
+
+        paymentMethod.addEventListener(
+            "change",
+            showPaymentInfo
+        );
+    }
+
+
+    /*
+       Success
+    */
+
+    const successBrowseBtn =
+        document.getElementById(
+            "successBrowseBtn"
+        );
+
+    const successHomeBtn =
+        document.getElementById(
+            "successHomeBtn"
+        );
+
+
+    if (successBrowseBtn) {
+
+        successBrowseBtn.onclick =
+            function () {
+
+                selectedRegion = null;
+
+                showPage("home");
+
+                showLoggedInShopping();
+            };
+    }
+
+
+    if (successHomeBtn) {
+
+        successHomeBtn.onclick =
+            function () {
+
+                showPage("home");
+            };
+    }
+
+
+    /*
+       Search
+    */
+
+    const productSearch =
+        document.getElementById(
+            "productSearch"
+        );
+
+    const clearFilterBtn =
+        document.getElementById(
+            "clearFilterBtn"
+        );
+
+
+    if (productSearch) {
+
+        productSearch.addEventListener(
+            "input",
+            function () {
+
+                renderProductsByRegion(
+                    selectedRegion
+                );
+            }
+        );
+    }
+
+
+    if (clearFilterBtn) {
+
+        clearFilterBtn.onclick =
+            function () {
+
+                if (selectedRegion) {
+
+                    renderProductsByRegion(
+                        selectedRegion
+                    );
+                }
+            };
+    }
+
+
+    /*
+       Admin
+    */
+
+    const productForm =
+        document.getElementById(
+            "productForm"
+        );
+
+    const cancelEditBtn =
+        document.getElementById(
+            "cancelEditBtn"
+        );
+
+
+    if (productForm) {
+
+        productForm.addEventListener(
+            "submit",
+            handleProductForm
+        );
+    }
+
+
+    if (cancelEditBtn) {
+
+        cancelEditBtn.onclick =
+            cancelProductEdit;
+    }
+
+
+    renderAdminRegionOptions();
+    renderRegions();
+}
+
+
+/* =========================================================
    NAVBAR
-   ===================================================== */
+   ========================================================= */
 
 function updateNavbar() {
 
-    const guestArea =
-        document.getElementById("guestArea");
+    /*
+       Your HTML uses:
+       loggedOutArea
+       loggedUserArea
+       usernameDisplay
+    */
+
+    const loggedOutArea =
+        document.getElementById(
+            "loggedOutArea"
+        );
 
     const loggedUserArea =
-        document.getElementById("loggedUserArea");
+        document.getElementById(
+            "loggedUserArea"
+        );
 
-    const welcomeUser =
-        document.getElementById("welcomeUser");
+    const usernameDisplay =
+        document.getElementById(
+            "usernameDisplay"
+        );
 
 
     if (currentUser) {
 
-        guestArea.classList.add("hidden");
+        loggedOutArea?.classList.add(
+            "hidden"
+        );
 
-        loggedUserArea.classList.remove("hidden");
+        loggedUserArea?.classList.remove(
+            "hidden"
+        );
 
-        welcomeUser.textContent =
-            `Hello, ${currentUser.name}`;
+        if (usernameDisplay) {
+
+            usernameDisplay.textContent =
+                currentUser.name ||
+                "User";
+        }
 
     } else {
 
-        guestArea.classList.remove("hidden");
+        loggedOutArea?.classList.remove(
+            "hidden"
+        );
 
-        loggedUserArea.classList.add("hidden");
+        loggedUserArea?.classList.add(
+            "hidden"
+        );
     }
 }
 
 
-/* =====================================================
-   PAGE NAVIGATION
-   ===================================================== */
+/* =========================================================
+   AUTH
+   ========================================================= */
 
-function showPage(page) {
+function showAuth(type) {
 
-    /*
-        SECURITY:
-        Cart requires login.
-    */
-
-    if (
-        page === "cart" &&
-        !currentUser
-    ) {
-
-        showToast(
-            "Please login first to access your cart."
-        );
-
-        page = "login";
-    }
-
-
-    /*
-        SECURITY:
-        Checkout requires login.
-    */
-
-    if (
-        page === "checkout" &&
-        !currentUser
-    ) {
-
-        showToast(
-            "Please login first."
-        );
-
-        page = "login";
-    }
-
-
-    /*
-        SECURITY:
-        Admin requires admin account.
-    */
-
-    if (
-        page === "admin" &&
-        (
-            !currentUser ||
-            currentUser.role !== "admin"
-        )
-    ) {
-
-        showToast(
-            "Admin access required."
-        );
-
-        page = "login";
-    }
-
-
-    const pages = [
-        "homePage",
-        "loginPage",
-        "registerPage",
-        "cartPage",
-        "checkoutPage",
-        "successPage",
-        "adminPage"
-    ];
-
-
-    pages.forEach(pageId => {
-
-        document
-            .getElementById(pageId)
-            .classList.add("hidden");
-
-    });
-
-
-    const targetPage =
+    const homeSection =
         document.getElementById(
-            page + "Page"
+            "homeSection"
+        );
+
+    const authSection =
+        document.getElementById(
+            "authSection"
+        );
+
+    const loginBox =
+        document.getElementById(
+            "loginBox"
+        );
+
+    const signupBox =
+        document.getElementById(
+            "signupBox"
         );
 
 
-    if (targetPage) {
+    homeSection?.classList.add(
+        "hidden"
+    );
 
-        targetPage.classList.remove("hidden");
+    authSection?.classList.remove(
+        "hidden"
+    );
+
+
+    if (type === "signup") {
+
+        loginBox?.classList.add(
+            "hidden"
+        );
+
+        signupBox?.classList.remove(
+            "hidden"
+        );
+
+    } else {
+
+        signupBox?.classList.add(
+            "hidden"
+        );
+
+        loginBox?.classList.remove(
+            "hidden"
+        );
     }
 
 
@@ -533,121 +985,77 @@ function showPage(page) {
         top: 0,
         behavior: "smooth"
     });
-
-
-    /*
-        Home page behavior
-    */
-
-    if (page === "home") {
-
-        if (currentUser) {
-
-            showLoggedInShopping();
-
-        } else {
-
-            hideShoppingSections();
-        }
-    }
-
-
-    /*
-        Cart page
-    */
-
-    if (page === "cart") {
-
-        renderCart();
-    }
-
-
-    /*
-        Checkout
-    */
-
-    if (page === "checkout") {
-
-        prepareCheckout();
-    }
-
-
-    /*
-        Admin
-    */
-
-    if (page === "admin") {
-
-        renderAdminProducts();
-    }
 }
 
 
-/* =====================================================
-   LOGIN / REGISTER FORMS
-   ===================================================== */
+function showHome() {
 
-function setupForms() {
+    document
+        .getElementById(
+            "authSection"
+        )
+        ?.classList.add("hidden");
 
-    const loginForm =
-        document.getElementById("loginForm");
+    document
+        .getElementById(
+            "cartSection"
+        )
+        ?.classList.add("hidden");
 
-    const registerForm =
-        document.getElementById("registerForm");
+    document
+        .getElementById(
+            "checkoutSection"
+        )
+        ?.classList.add("hidden");
 
-    const checkoutForm =
-        document.getElementById("checkoutForm");
+    document
+        .getElementById(
+            "successSection"
+        )
+        ?.classList.add("hidden");
 
-    const productForm =
-        document.getElementById("productForm");
+    document
+        .getElementById(
+            "adminSection"
+        )
+        ?.classList.add("hidden");
 
-
-    loginForm.addEventListener(
-        "submit",
-        handleLogin
-    );
-
-
-    registerForm.addEventListener(
-        "submit",
-        handleRegister
-    );
-
-
-    checkoutForm.addEventListener(
-        "submit",
-        handleCheckout
-    );
-
-
-    productForm.addEventListener(
-        "submit",
-        handleProductForm
-    );
+    document
+        .getElementById(
+            "homeSection"
+        )
+        ?.classList.remove("hidden");
 }
 
 
-/* =====================================================
+/* =========================================================
    LOGIN
-   ===================================================== */
+   ========================================================= */
 
 function handleLogin(event) {
 
     event.preventDefault();
 
-
     const email =
         document
-            .getElementById("loginEmail")
+            .getElementById(
+                "loginEmail"
+            )
             .value
             .trim()
             .toLowerCase();
 
-
     const password =
         document
-            .getElementById("loginPassword")
+            .getElementById(
+                "loginPassword"
+            )
             .value;
+
+    const message =
+        document.getElementById(
+            "loginMessage"
+        );
 
 
     const users = getUsers();
@@ -656,38 +1064,41 @@ function handleLogin(event) {
     const user =
         users.find(
             item =>
-                item.email.toLowerCase() === email &&
+                String(item.email)
+                    .toLowerCase() === email &&
                 item.password === password
-        );
-
-
-    const message =
-        document.getElementById(
-            "loginMessage"
         );
 
 
     if (!user) {
 
-        message.textContent =
-            "Invalid email or password.";
+        if (message) {
 
-        message.style.color =
-            "#d62828";
+            message.textContent =
+                "Invalid email or password.";
+
+            message.style.color =
+                "#d62828";
+        }
 
         return;
     }
 
 
-    /*
-        LOGIN SUCCESS
-    */
-
     currentUser = {
+
         id: user.id,
-        name: user.name,
+
+        name:
+            user.name ||
+            user.username ||
+            "User",
+
         email: user.email,
-        role: user.role || "user"
+
+        role:
+            user.role ||
+            "user"
     };
 
 
@@ -697,36 +1108,31 @@ function handleLogin(event) {
     selectedRegion = null;
 
 
+    document
+        .getElementById(
+            "loginForm"
+        )
+        ?.reset();
+
+
+    if (message) {
+
+        message.textContent =
+            "Login successful!";
+
+        message.style.color =
+            "#0b7a3b";
+    }
+
+
     updateNavbar();
 
     updateCartCount();
 
 
-    message.textContent =
-        "Login successful!";
-
-    message.style.color =
-        "#0b7a3b";
-
-
-    /*
-        VERY IMPORTANT:
-
-        After login:
-        Regions = SHOW
-        Products = HIDE
-
-        User MUST click a region.
-    */
+    showHome();
 
     showLoggedInShopping();
-
-
-    setTimeout(() => {
-
-        showPage("home");
-
-    }, 500);
 
 
     showToast(
@@ -735,25 +1141,29 @@ function handleLogin(event) {
 }
 
 
-/* =====================================================
-   REGISTER
-   ===================================================== */
+/* =========================================================
+   SIGN UP
+   ========================================================= */
 
-function handleRegister(event) {
+function handleSignup(event) {
 
     event.preventDefault();
 
 
     const name =
         document
-            .getElementById("registerName")
+            .getElementById(
+                "signupUsername"
+            )
             .value
             .trim();
 
 
     const email =
         document
-            .getElementById("registerEmail")
+            .getElementById(
+                "signupEmail"
+            )
             .value
             .trim()
             .toLowerCase();
@@ -761,43 +1171,28 @@ function handleRegister(event) {
 
     const password =
         document
-            .getElementById("registerPassword")
-            .value;
-
-
-    const confirmPassword =
-        document
             .getElementById(
-                "registerConfirmPassword"
+                "signupPassword"
             )
             .value;
 
 
     const message =
         document.getElementById(
-            "registerMessage"
+            "signupMessage"
         );
-
-
-    if (password !== confirmPassword) {
-
-        message.textContent =
-            "Passwords do not match.";
-
-        message.style.color =
-            "#d62828";
-
-        return;
-    }
 
 
     if (password.length < 6) {
 
-        message.textContent =
-            "Password must be at least 6 characters.";
+        if (message) {
 
-        message.style.color =
-            "#d62828";
+            message.textContent =
+                "Password must be at least 6 characters.";
+
+            message.style.color =
+                "#d62828";
+        }
 
         return;
     }
@@ -806,20 +1201,24 @@ function handleRegister(event) {
     const users = getUsers();
 
 
-    const existingUser =
+    const existing =
         users.find(
             user =>
-                user.email.toLowerCase() === email
+                String(user.email)
+                    .toLowerCase() === email
         );
 
 
-    if (existingUser) {
+    if (existing) {
 
-        message.textContent =
-            "Email is already registered.";
+        if (message) {
 
-        message.style.color =
-            "#d62828";
+            message.textContent =
+                "Email is already registered.";
+
+            message.style.color =
+                "#d62828";
+        }
 
         return;
     }
@@ -844,29 +1243,33 @@ function handleRegister(event) {
     saveUsers(users);
 
 
-    message.textContent =
-        "Account created successfully! Redirecting to login...";
+    if (message) {
 
-    message.style.color =
-        "#0b7a3b";
+        message.textContent =
+            "Account created! You can now login.";
+
+        message.style.color =
+            "#0b7a3b";
+    }
 
 
     document
-        .getElementById("registerForm")
-        .reset();
+        .getElementById(
+            "signupForm"
+        )
+        ?.reset();
 
 
-    setTimeout(() => {
-
-        showPage("login");
-
-    }, 1000);
+    setTimeout(
+        () => showAuth("login"),
+        800
+    );
 }
 
 
-/* =====================================================
+/* =========================================================
    LOGOUT
-   ===================================================== */
+   ========================================================= */
 
 function logout() {
 
@@ -890,19 +1293,9 @@ function logout() {
 
     updateCartCount();
 
-
-    /*
-        IMPORTANT:
-
-        Once logged out:
-        Regions hidden
-        Products hidden
-    */
-
     hideShoppingSections();
 
-
-    showPage("home");
+    showHome();
 
 
     showToast(
@@ -911,15 +1304,11 @@ function logout() {
 }
 
 
-/* =====================================================
+/* =========================================================
    SHOPPING VISIBILITY
-   ===================================================== */
+   ========================================================= */
 
 function showLoggedInShopping() {
-
-    /*
-        ONLY LOGGED USERS CAN SEE REGIONS.
-    */
 
     if (!currentUser) {
 
@@ -929,9 +1318,9 @@ function showLoggedInShopping() {
     }
 
 
-    const regionSection =
+    const regionsSection =
         document.getElementById(
-            "regionSection"
+            "regionsSection"
         );
 
     const productsSection =
@@ -940,75 +1329,95 @@ function showLoggedInShopping() {
         );
 
 
-    regionSection.classList.remove(
+    /*
+       REGION SHOW
+    */
+
+    regionsSection?.classList.remove(
         "hidden"
     );
 
 
     /*
-        Products remain HIDDEN
-        until region is clicked.
+       PRODUCT HIDE UNTIL REGION CLICK
     */
 
-    productsSection.classList.add(
+    productsSection?.classList.add(
         "hidden"
     );
 
 
     selectedRegion = null;
 
-
     renderRegions();
+
+
+    /*
+       Dashboard visible when logged in
+    */
+
+    document
+        .getElementById(
+            "userSection"
+        )
+        ?.classList.remove("hidden");
 }
 
 
 function hideShoppingSections() {
 
-    const regionSection =
-        document.getElementById(
-            "regionSection"
-        );
+    document
+        .getElementById(
+            "regionsSection"
+        )
+        ?.classList.add("hidden");
 
-    const productsSection =
-        document.getElementById(
+
+    document
+        .getElementById(
             "productsSection"
-        );
+        )
+        ?.classList.add("hidden");
 
 
-    regionSection.classList.add(
-        "hidden"
-    );
-
-
-    productsSection.classList.add(
-        "hidden"
-    );
+    document
+        .getElementById(
+            "userSection"
+        )
+        ?.classList.add("hidden");
 
 
     selectedRegion = null;
 }
 
 
-/* =====================================================
+/* =========================================================
    REGIONS
-   ===================================================== */
+   ========================================================= */
 
 function renderRegions() {
 
-    const regionGrid =
-        document.getElementById(
-            "regionGrid"
+    const grid =
+        document.querySelector(
+            ".region-grid"
         );
 
 
-    regionGrid.innerHTML = "";
+    if (!grid) return;
+
+
+    grid.innerHTML = "";
 
 
     regions.forEach(region => {
 
         const button =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
 
+
+        button.type = "button";
 
         button.className =
             "region-card";
@@ -1032,11 +1441,11 @@ function renderRegions() {
             </span>
 
             <span>
-                ${region.name}
+                ${escapeHTML(region.name)}
             </span>
 
             <small>
-                ${region.description}
+                ${escapeHTML(region.description)}
             </small>
 
         `;
@@ -1044,33 +1453,27 @@ function renderRegions() {
 
         button.addEventListener(
             "click",
-            () => {
+            function () {
 
                 selectRegion(
                     region.name
                 );
-
             }
         );
 
 
-        regionGrid.appendChild(
+        grid.appendChild(
             button
         );
-
     });
 }
 
 
-/* =====================================================
+/* =========================================================
    SELECT REGION
-   ===================================================== */
+   ========================================================= */
 
 function selectRegion(regionName) {
-
-    /*
-        SECURITY CHECK
-    */
 
     if (!currentUser) {
 
@@ -1078,7 +1481,7 @@ function selectRegion(regionName) {
             "Please login first."
         );
 
-        showPage("login");
+        showAuth("login");
 
         return;
     }
@@ -1091,18 +1494,13 @@ function selectRegion(regionName) {
     renderRegions();
 
 
-    /*
-        NOW AND ONLY NOW:
-        SHOW PRODUCTS
-    */
-
     const productsSection =
         document.getElementById(
             "productsSection"
         );
 
 
-    productsSection.classList.remove(
+    productsSection?.classList.remove(
         "hidden"
     );
 
@@ -1112,56 +1510,89 @@ function selectRegion(regionName) {
     );
 
 
-    /*
-        Scroll down to products
-    */
+    setTimeout(
+        () => {
 
-    setTimeout(() => {
+            productsSection?.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
 
-        productsSection.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-    }, 100);
+        },
+        100
+    );
 }
 
 
-/* =====================================================
-   PRODUCTS BY REGION
-   ===================================================== */
+/* =========================================================
+   PRODUCTS
+   ========================================================= */
 
 function renderProductsByRegion(
     regionName
 ) {
 
-    const productsGrid =
+    if (!currentUser) {
+
+        return;
+    }
+
+
+    if (!regionName) {
+
+        return;
+    }
+
+
+    const container =
         document.getElementById(
-            "productsGrid"
+            "productsContainer"
         );
 
 
-    const productsTitle =
+    if (!container) return;
+
+
+    const title =
         document.getElementById(
             "productsTitle"
         );
 
-
-    const productsSubtitle =
+    const subtitle =
         document.getElementById(
             "productsSubtitle"
         );
 
 
-    productsTitle.textContent =
-        `${regionName} Products`;
+    if (title) {
+
+        title.textContent =
+            `${regionName} Products`;
+    }
 
 
-    productsSubtitle.textContent =
-        `Products available from ${regionName}.`;
+    if (subtitle) {
+
+        subtitle.textContent =
+            `Products available from ${regionName}.`;
+    }
 
 
-    const filteredProducts =
+    const searchInput =
+        document.getElementById(
+            "productSearch"
+        );
+
+
+    const search =
+        searchInput
+            ? searchInput.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    let filtered =
         products.filter(
             product =>
                 product.region ===
@@ -1169,14 +1600,31 @@ function renderProductsByRegion(
         );
 
 
-    productsGrid.innerHTML = "";
+    if (search) {
+
+        filtered =
+            filtered.filter(
+                product =>
+
+                    product.name
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    product.description
+                        .toLowerCase()
+                        .includes(search)
+            );
+    }
 
 
-    if (
-        filteredProducts.length === 0
-    ) {
+    container.innerHTML = "";
 
-        productsGrid.innerHTML = `
+
+    if (filtered.length === 0) {
+
+        container.innerHTML = `
 
             <div class="no-products">
 
@@ -1186,7 +1634,7 @@ function renderProductsByRegion(
 
                 <p>
                     There are no products available
-                    in ${regionName} yet.
+                    in ${escapeHTML(regionName)} yet.
                 </p>
 
             </div>
@@ -1197,99 +1645,105 @@ function renderProductsByRegion(
     }
 
 
-    filteredProducts.forEach(
-        product => {
+    filtered.forEach(product => {
 
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "product-card";
-
-
-            card.innerHTML = `
-
-                <div
-                    class="product-image-wrapper"
-                >
-
-                    <img
-                        src="${product.image}"
-                        alt="${escapeHTML(product.name)}"
-                        onerror="this.src='https://via.placeholder.com/600x400?text=Product'"
-                    >
-
-                    <span
-                        class="product-region-badge"
-                    >
-                        ${escapeHTML(product.region)}
-                    </span>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <h3>
-                        ${escapeHTML(product.name)}
-                    </h3>
-
-
-                    <div class="product-price">
-                        ${formatPrice(product.price)}
-                    </div>
-
-
-                    <p class="product-description">
-                        ${escapeHTML(product.description)}
-                    </p>
-
-
-                    <div class="product-actions">
-
-                        <button
-                            class="btn"
-                            onclick="viewProduct(${product.id})"
-                        >
-                            View
-                        </button>
-
-                        <button
-                            class="btn"
-                            onclick="addToCart(${product.id})"
-                        >
-                            🛒 Add
-                        </button>
-
-                    </div>
-
-                </div>
-
-            `;
-
-
-            productsGrid.appendChild(
-                card
+        const card =
+            document.createElement(
+                "div"
             );
 
-        }
-    );
+
+        card.className =
+            "product-card";
+
+
+        card.innerHTML = `
+
+            <div class="product-image-wrapper">
+
+                <img
+                    src="${escapeAttribute(product.image)}"
+                    alt="${escapeAttribute(product.name)}"
+                    onerror="this.src='https://via.placeholder.com/600x400?text=Product'"
+                >
+
+                <span class="product-region-badge">
+                    📍 ${escapeHTML(product.region)}
+                </span>
+
+            </div>
+
+
+            <div class="product-info">
+
+                <h3>
+                    ${escapeHTML(product.name)}
+                </h3>
+
+                <div class="product-price">
+                    ${formatPrice(product.price)}
+                </div>
+
+                <p class="product-description">
+                    ${escapeHTML(product.description)}
+                </p>
+
+
+                <div class="product-actions">
+
+                    <button
+                        type="button"
+                        class="btn"
+                        data-view-product="${product.id}"
+                    >
+                        View
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn"
+                        data-add-product="${product.id}"
+                    >
+                        🛒 Add
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+
+        const viewBtn =
+            card.querySelector(
+                "[data-view-product]"
+            );
+
+        const addBtn =
+            card.querySelector(
+                "[data-add-product]"
+            );
+
+
+        viewBtn.onclick =
+            () => viewProduct(product.id);
+
+        addBtn.onclick =
+            () => addToCart(product.id);
+
+
+        container.appendChild(card);
+    });
 }
 
 
-/* =====================================================
+/* =========================================================
    VIEW PRODUCT
-   ===================================================== */
+   ========================================================= */
+
+let modalProductId = null;
+
 
 function viewProduct(productId) {
-
-    /*
-        Products are already hidden
-        for guests, but keep security.
-    */
 
     if (!currentUser) {
 
@@ -1297,7 +1751,7 @@ function viewProduct(productId) {
             "Please login first to view products."
         );
 
-        showPage("login");
+        showAuth("login");
 
         return;
     }
@@ -1320,11 +1774,16 @@ function viewProduct(productId) {
     }
 
 
+    modalProductId =
+        productId;
+
+
     document
         .getElementById(
             "modalProductImage"
         )
-        .src = product.image;
+        .src =
+        product.image;
 
 
     document
@@ -1361,15 +1820,9 @@ function viewProduct(productId) {
 
     document
         .getElementById(
-            "modalAddButton"
+            "modalQuantity"
         )
-        .onclick = () => {
-
-            addToCart(product.id);
-
-            closeProductModal();
-
-        };
+        .value = 1;
 
 
     document
@@ -1382,9 +1835,46 @@ function viewProduct(productId) {
 }
 
 
-/* =====================================================
-   CLOSE PRODUCT MODAL
-   ===================================================== */
+/* =========================================================
+   MODAL ADD TO CART
+   ========================================================= */
+
+function addModalProductToCart() {
+
+    if (!modalProductId) {
+
+        return;
+    }
+
+
+    const quantityInput =
+        document.getElementById(
+            "modalQuantity"
+        );
+
+
+    const quantity =
+        Math.max(
+            1,
+            Number(
+                quantityInput?.value || 1
+            )
+        );
+
+
+    addToCart(
+        modalProductId,
+        quantity
+    );
+
+
+    closeProductModal();
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+   ========================================================= */
 
 function closeProductModal() {
 
@@ -1392,23 +1882,23 @@ function closeProductModal() {
         .getElementById(
             "productModal"
         )
-        .classList.add(
+        ?.classList.add(
             "hidden"
         );
+
+
+    modalProductId = null;
 }
 
 
-/* =====================================================
-   ADD TO CART
-   ===================================================== */
+/* =========================================================
+   CART
+   ========================================================= */
 
-function addToCart(productId) {
-
-    /*
-        VERY IMPORTANT SECURITY CHECK
-
-        No login = NO PURCHASE
-    */
+function addToCart(
+    productId,
+    quantity = 1
+) {
 
     if (!currentUser) {
 
@@ -1416,7 +1906,7 @@ function addToCart(productId) {
             "Please login first to purchase products."
         );
 
-        showPage("login");
+        showAuth("login");
 
         return;
     }
@@ -1439,16 +1929,17 @@ function addToCart(productId) {
     }
 
 
-    const existingItem =
+    const existing =
         cart.find(
             item =>
                 item.id === productId
         );
 
 
-    if (existingItem) {
+    if (existing) {
 
-        existingItem.quantity++;
+        existing.quantity +=
+            Number(quantity);
 
     } else {
 
@@ -1467,8 +1958,8 @@ function addToCart(productId) {
             description:
                 product.description,
 
-            quantity: 1
-
+            quantity:
+                Number(quantity)
         });
     }
 
@@ -1484,38 +1975,224 @@ function addToCart(productId) {
 }
 
 
-/* =====================================================
-   CART COUNT
-   ===================================================== */
-
 function updateCartCount() {
 
     const count =
         cart.reduce(
-            (total, item) =>
-                total + item.quantity,
+            (
+                total,
+                item
+            ) =>
+                total +
+                Number(
+                    item.quantity || 0
+                ),
             0
         );
 
 
-    document
-        .getElementById(
+    /*
+       If cartCount exists
+    */
+
+    const cartCount =
+        document.getElementById(
             "cartCount"
-        )
-        .textContent =
-        count;
+        );
+
+
+    if (cartCount) {
+
+        cartCount.textContent =
+            count;
+    }
+
+
+    /*
+       If no cart count element exists,
+       no error.
+    */
 }
 
 
-/* =====================================================
+/* =========================================================
+   OPEN CART
+   ========================================================= */
+
+function openCart() {
+
+    if (!currentUser) {
+
+        showToast(
+            "Please login first to access your cart."
+        );
+
+        showAuth("login");
+
+        return;
+    }
+
+
+    showPage("cart");
+}
+
+
+/* =========================================================
+   SHOW PAGE
+   ========================================================= */
+
+function showPage(page) {
+
+    if (
+        page === "cart" &&
+        !currentUser
+    ) {
+
+        showAuth("login");
+
+        return;
+    }
+
+
+    if (
+        page === "checkout" &&
+        !currentUser
+    ) {
+
+        showAuth("login");
+
+        return;
+    }
+
+
+    if (
+        page === "admin" &&
+        (
+            !currentUser ||
+            currentUser.role !== "admin"
+        )
+    ) {
+
+        showToast(
+            "Admin access required."
+        );
+
+        showAuth("login");
+
+        return;
+    }
+
+
+    const home =
+        document.getElementById(
+            "homeSection"
+        );
+
+    const auth =
+        document.getElementById(
+            "authSection"
+        );
+
+    const cartSection =
+        document.getElementById(
+            "cartSection"
+        );
+
+    const checkout =
+        document.getElementById(
+            "checkoutSection"
+        );
+
+    const success =
+        document.getElementById(
+            "successSection"
+        );
+
+    const admin =
+        document.getElementById(
+            "adminSection"
+        );
+
+
+    home?.classList.add("hidden");
+    auth?.classList.add("hidden");
+    cartSection?.classList.add("hidden");
+    checkout?.classList.add("hidden");
+    success?.classList.add("hidden");
+    admin?.classList.add("hidden");
+
+
+    if (page === "home") {
+
+        home?.classList.remove(
+            "hidden"
+        );
+
+        if (currentUser) {
+
+            showLoggedInShopping();
+
+        } else {
+
+            hideShoppingSections();
+        }
+    }
+
+
+    if (page === "cart") {
+
+        cartSection?.classList.remove(
+            "hidden"
+        );
+
+        renderCart();
+    }
+
+
+    if (page === "checkout") {
+
+        checkout?.classList.remove(
+            "hidden"
+        );
+
+        prepareCheckout();
+    }
+
+
+    if (page === "success") {
+
+        success?.classList.remove(
+            "hidden"
+        );
+    }
+
+
+    if (page === "admin") {
+
+        admin?.classList.remove(
+            "hidden"
+        );
+
+        renderAdminProducts();
+    }
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+/* =========================================================
    RENDER CART
-   ===================================================== */
+   ========================================================= */
 
 function renderCart() {
 
     if (!currentUser) {
 
-        showPage("login");
+        showAuth("login");
 
         return;
     }
@@ -1535,6 +2212,15 @@ function renderCart() {
         document.getElementById(
             "cartSummary"
         );
+
+
+    if (!cartEmpty ||
+        !cartItems ||
+        !cartSummary
+    ) {
+
+        return;
+    }
 
 
     if (cart.length === 0) {
@@ -1587,11 +2273,10 @@ function renderCart() {
 
             <img
                 class="cart-item-image"
-                src="${item.image}"
-                alt="${escapeHTML(item.name)}"
+                src="${escapeAttribute(item.image)}"
+                alt="${escapeAttribute(item.name)}"
                 onerror="this.src='https://via.placeholder.com/100x80?text=Product'"
             >
-
 
             <div class="cart-item-info">
 
@@ -1604,7 +2289,7 @@ function renderCart() {
                 </p>
 
                 <small>
-                    ${escapeHTML(item.region)}
+                    📍 ${escapeHTML(item.region)}
                 </small>
 
             </div>
@@ -1613,8 +2298,9 @@ function renderCart() {
             <div class="quantity-controls">
 
                 <button
+                    type="button"
                     class="quantity-btn"
-                    onclick="changeQuantity(${item.id}, -1)"
+                    data-minus
                 >
                     −
                 </button>
@@ -1624,8 +2310,9 @@ function renderCart() {
                 </span>
 
                 <button
+                    type="button"
                     class="quantity-btn"
-                    onclick="changeQuantity(${item.id}, 1)"
+                    data-plus
                 >
                     +
                 </button>
@@ -1644,8 +2331,9 @@ function renderCart() {
 
 
             <button
+                type="button"
                 class="remove-cart-btn"
-                onclick="removeFromCart(${item.id})"
+                data-remove
             >
                 Remove
             </button>
@@ -1653,8 +2341,36 @@ function renderCart() {
         `;
 
 
-        cartItems.appendChild(row);
+        row.querySelector(
+            "[data-minus]"
+        ).onclick =
+            () =>
+                changeQuantity(
+                    item.id,
+                    -1
+                );
 
+
+        row.querySelector(
+            "[data-plus]"
+        ).onclick =
+            () =>
+                changeQuantity(
+                    item.id,
+                    1
+                );
+
+
+        row.querySelector(
+            "[data-remove]"
+        ).onclick =
+            () =>
+                removeFromCart(
+                    item.id
+                );
+
+
+        cartItems.appendChild(row);
     });
 
 
@@ -1662,9 +2378,9 @@ function renderCart() {
 }
 
 
-/* =====================================================
-   CHANGE QUANTITY
-   ===================================================== */
+/* =========================================================
+   QUANTITY
+   ========================================================= */
 
 function changeQuantity(
     productId,
@@ -1674,14 +2390,12 @@ function changeQuantity(
     const item =
         cart.find(
             product =>
-                product.id === productId
+                product.id ===
+                productId
         );
 
 
-    if (!item) {
-
-        return;
-    }
+    if (!item) return;
 
 
     item.quantity += amount;
@@ -1706,9 +2420,9 @@ function changeQuantity(
 }
 
 
-/* =====================================================
-   REMOVE CART ITEM
-   ===================================================== */
+/* =========================================================
+   REMOVE
+   ========================================================= */
 
 function removeFromCart(productId) {
 
@@ -1732,19 +2446,22 @@ function removeFromCart(productId) {
 }
 
 
-/* =====================================================
+/* =========================================================
    CART SUMMARY
-   ===================================================== */
+   ========================================================= */
 
 function updateCartSummary() {
 
     const subtotal =
         cart.reduce(
-            (total, item) =>
+            (
+                total,
+                item
+            ) =>
                 total +
                 (
-                    item.price *
-                    item.quantity
+                    Number(item.price) *
+                    Number(item.quantity)
                 ),
             0
         );
@@ -1760,32 +2477,59 @@ function updateCartSummary() {
         subtotal + delivery;
 
 
-    document
-        .getElementById(
+    const subtotalElement =
+        document.getElementById(
             "cartSubtotal"
-        )
-        .textContent =
-        formatPrice(subtotal);
+        );
 
-
-    document
-        .getElementById(
+    const totalElement =
+        document.getElementById(
             "cartTotal"
-        )
-        .textContent =
-        formatPrice(total);
+        );
+
+    const itemCountElement =
+        document.getElementById(
+            "cartItemCount"
+        );
+
+
+    if (subtotalElement) {
+
+        subtotalElement.textContent =
+            formatPrice(subtotal);
+    }
+
+
+    if (totalElement) {
+
+        totalElement.textContent =
+            formatPrice(total);
+    }
+
+
+    if (itemCountElement) {
+
+        itemCountElement.textContent =
+            cart.reduce(
+                (
+                    total,
+                    item
+                ) =>
+                    total +
+                    Number(
+                        item.quantity
+                    ),
+                0
+            );
+    }
 }
 
 
-/* =====================================================
+/* =========================================================
    CHECKOUT
-   ===================================================== */
+   ========================================================= */
 
 function openCheckout() {
-
-    /*
-        LOGIN REQUIRED
-    */
 
     if (!currentUser) {
 
@@ -1793,7 +2537,7 @@ function openCheckout() {
             "Please login first."
         );
 
-        showPage("login");
+        showAuth("login");
 
         return;
     }
@@ -1817,7 +2561,7 @@ function prepareCheckout() {
 
     if (!currentUser) {
 
-        showPage("login");
+        showAuth("login");
 
         return;
     }
@@ -1835,12 +2579,17 @@ function prepareCheckout() {
     }
 
 
-    document
-        .getElementById(
+    const name =
+        document.getElementById(
             "checkoutName"
-        )
-        .value =
-        currentUser.name || "";
+        );
+
+
+    if (name) {
+
+        name.value =
+            currentUser.name || "";
+    }
 
 
     updateCheckoutTotal();
@@ -1851,44 +2600,51 @@ function updateCheckoutTotal() {
 
     const subtotal =
         cart.reduce(
-            (total, item) =>
+            (
+                total,
+                item
+            ) =>
                 total +
                 (
-                    item.price *
-                    item.quantity
+                    Number(item.price) *
+                    Number(item.quantity)
                 ),
             0
         );
 
 
-    const delivery = 50;
-
-
     const total =
-        subtotal + delivery;
+        subtotal + 50;
 
 
-    document
-        .getElementById(
-            "checkoutTotalPreview"
-        )
-        .textContent =
-        `Total: ${formatPrice(total)}`;
+    /*
+       Your HTML uses checkoutTotal
+    */
+
+    const checkoutTotal =
+        document.getElementById(
+            "checkoutTotal"
+        );
+
+
+    if (checkoutTotal) {
+
+        checkoutTotal.textContent =
+            formatPrice(total);
+    }
 }
 
 
-/* =====================================================
-   PAYMENT INFO
-   ===================================================== */
+/* =========================================================
+   PAYMENT
+   ========================================================= */
 
 function showPaymentInfo() {
 
     const payment =
-        document
-            .getElementById(
-                "checkoutPayment"
-            )
-            .value;
+        document.getElementById(
+            "paymentMethod"
+        );
 
 
     const gcashInfo =
@@ -1897,7 +2653,18 @@ function showPaymentInfo() {
         );
 
 
-    if (payment === "GCash") {
+    if (!payment ||
+        !gcashInfo
+    ) {
+
+        return;
+    }
+
+
+    if (
+        payment.value ===
+        "GCash"
+    ) {
 
         gcashInfo.classList.remove(
             "hidden"
@@ -1912,18 +2679,14 @@ function showPaymentInfo() {
 }
 
 
-/* =====================================================
+/* =========================================================
    HANDLE CHECKOUT
-   ===================================================== */
+   ========================================================= */
 
 function handleCheckout(event) {
 
     event.preventDefault();
 
-
-    /*
-        SECURITY
-    */
 
     if (!currentUser) {
 
@@ -1931,7 +2694,7 @@ function handleCheckout(event) {
             "Please login first."
         );
 
-        showPage("login");
+        showAuth("login");
 
         return;
     }
@@ -1950,11 +2713,9 @@ function handleCheckout(event) {
 
 
     const payment =
-        document
-            .getElementById(
-                "checkoutPayment"
-            )
-            .value;
+        document.getElementById(
+            "paymentMethod"
+        )?.value;
 
 
     if (!payment) {
@@ -1967,9 +2728,20 @@ function handleCheckout(event) {
     }
 
 
-    /*
-        Create order object.
-    */
+    const subtotal =
+        cart.reduce(
+            (
+                sum,
+                item
+            ) =>
+                sum +
+                (
+                    Number(item.price) *
+                    Number(item.quantity)
+                ),
+            0
+        );
+
 
     const order = {
 
@@ -1990,21 +2762,9 @@ function handleCheckout(event) {
             new Date().toISOString(),
 
         total:
-            cart.reduce(
-                (sum, item) =>
-                    sum +
-                    (
-                        item.price *
-                        item.quantity
-                    ),
-                0
-            ) + 50
+            subtotal + 50
     };
 
-
-    /*
-        Save orders.
-    */
 
     let orders = [];
 
@@ -2033,10 +2793,6 @@ function handleCheckout(event) {
     );
 
 
-    /*
-        Clear cart after successful order.
-    */
-
     cart = [];
 
     saveCart();
@@ -2048,16 +2804,44 @@ function handleCheckout(event) {
         .getElementById(
             "checkoutForm"
         )
-        .reset();
+        ?.reset();
 
 
     document
         .getElementById(
             "gcashInfo"
         )
-        .classList.add(
+        ?.classList.add(
             "hidden"
         );
+
+
+    const successInfo =
+        document.getElementById(
+            "successOrderInfo"
+        );
+
+
+    if (successInfo) {
+
+        successInfo.innerHTML = `
+
+            <strong>
+                Order #${order.id}
+            </strong>
+
+            <br>
+
+            Total:
+            ${formatPrice(order.total)}
+
+            <br>
+
+            Payment:
+            ${escapeHTML(payment)}
+
+        `;
+    }
 
 
     showPage("success");
@@ -2069,78 +2853,9 @@ function handleCheckout(event) {
 }
 
 
-/* =====================================================
-   BACK TO SHOPPING
-   ===================================================== */
-
-function backToShopping() {
-
-    if (!currentUser) {
-
-        showPage("login");
-
-        return;
-    }
-
-
-    selectedRegion = null;
-
-
-    showPage("home");
-
-
-    showLoggedInShopping();
-}
-
-
-/* =====================================================
-   PASSWORD TOGGLE
-   ===================================================== */
-
-function togglePassword(
-    inputId,
-    button
-) {
-
-    const input =
-        document.getElementById(
-            inputId
-        );
-
-
-    if (
-        input.type ===
-        "password"
-    ) {
-
-        input.type = "text";
-
-        button.textContent = "🙈";
-
-    } else {
-
-        input.type = "password";
-
-        button.textContent = "👁️";
-    }
-}
-
-
-/* =====================================================
-   FORGOT PASSWORD
-   ===================================================== */
-
-function forgotPassword() {
-
-    showToast(
-        "Password reset would be handled by your backend/email system."
-    );
-}
-
-
-/* =====================================================
-   ADMIN REGION OPTIONS
-   ===================================================== */
+/* =========================================================
+   ADMIN REGIONS
+   ========================================================= */
 
 function renderAdminRegionOptions() {
 
@@ -2150,16 +2865,13 @@ function renderAdminRegionOptions() {
         );
 
 
-    if (!select) {
-
-        return;
-    }
+    if (!select) return;
 
 
     select.innerHTML = `
 
         <option value="">
-            Select region
+            Select product region
         </option>
 
     `;
@@ -2176,7 +2888,6 @@ function renderAdminRegionOptions() {
         option.value =
             region.name;
 
-
         option.textContent =
             region.name;
 
@@ -2184,14 +2895,13 @@ function renderAdminRegionOptions() {
         select.appendChild(
             option
         );
-
     });
 }
 
 
-/* =====================================================
+/* =========================================================
    ADMIN PRODUCT FORM
-   ===================================================== */
+   ========================================================= */
 
 function handleProductForm(event) {
 
@@ -2211,64 +2921,55 @@ function handleProductForm(event) {
     }
 
 
-    const idValue =
-        document
-            .getElementById(
-                "productId"
-            )
-            .value;
+    const productName =
+        document.getElementById(
+            "productName"
+        );
 
+    const productPrice =
+        document.getElementById(
+            "productPrice"
+        );
 
-    const name =
-        document
-            .getElementById(
-                "productName"
-            )
-            .value
-            .trim();
+    const productImage =
+        document.getElementById(
+            "productImage"
+        );
 
+    const productRegion =
+        document.getElementById(
+            "productRegion"
+        );
 
-    const region =
-        document
-            .getElementById(
-                "productRegion"
-            )
-            .value;
-
-
-    const price =
-        Number(
-            document
-                .getElementById(
-                    "productPrice"
-                )
-                .value
+    const productDescription =
+        document.getElementById(
+            "productDescription"
         );
 
 
-    const image =
-        document
-            .getElementById(
-                "productImage"
-            )
-            .value
-            .trim();
+    const name =
+        productName.value.trim();
 
+    const price =
+        Number(
+            productPrice.value
+        );
+
+    const image =
+        productImage.value.trim();
+
+    const region =
+        productRegion.value;
 
     const description =
-        document
-            .getElementById(
-                "productDescription"
-            )
-            .value
-            .trim();
+        productDescription.value.trim();
 
 
     if (
         !name ||
-        !region ||
         !price ||
         !image ||
+        !region ||
         !description
     ) {
 
@@ -2281,14 +2982,22 @@ function handleProductForm(event) {
 
 
     /*
-        EDIT PRODUCT
+       Check if editing
     */
 
-    if (idValue) {
+    const productId =
+        document.getElementById(
+            "productId"
+        );
 
-        const id =
-            Number(idValue);
 
+    const id =
+        productId
+            ? Number(productId.value)
+            : 0;
+
+
+    if (id) {
 
         const product =
             products.find(
@@ -2302,14 +3011,14 @@ function handleProductForm(event) {
             product.name =
                 name;
 
-            product.region =
-                region;
-
             product.price =
                 price;
 
             product.image =
                 image;
+
+            product.region =
+                region;
 
             product.description =
                 description;
@@ -2322,29 +3031,20 @@ function handleProductForm(event) {
 
     } else {
 
-        /*
-            ADD PRODUCT
-        */
-
-        const newProduct = {
+        products.push({
 
             id: Date.now(),
 
             name,
 
-            region,
-
             price,
 
             image,
 
+            region,
+
             description
-        };
-
-
-        products.push(
-            newProduct
-        );
+        });
 
 
         showToast(
@@ -2360,14 +3060,9 @@ function handleProductForm(event) {
     renderAdminProducts();
 
 
-    /*
-        If user currently selected
-        this region, refresh products.
-    */
-
     if (
-        currentUser &&
-        selectedRegion
+        selectedRegion &&
+        currentUser
     ) {
 
         renderProductsByRegion(
@@ -2377,22 +3072,19 @@ function handleProductForm(event) {
 }
 
 
-/* =====================================================
+/* =========================================================
    ADMIN PRODUCT LIST
-   ===================================================== */
+   ========================================================= */
 
 function renderAdminProducts() {
 
     const container =
         document.getElementById(
-            "adminProductsList"
+            "adminProductsContainer"
         );
 
 
-    if (!container) {
-
-        return;
-    }
+    if (!container) return;
 
 
     container.innerHTML = "";
@@ -2401,11 +3093,9 @@ function renderAdminProducts() {
     if (products.length === 0) {
 
         container.innerHTML = `
-
             <div class="no-products">
                 No products found.
             </div>
-
         `;
 
         return;
@@ -2430,11 +3120,10 @@ function renderAdminProducts() {
 
                 <img
                     class="admin-product-image"
-                    src="${product.image}"
-                    alt="${escapeHTML(product.name)}"
+                    src="${escapeAttribute(product.image)}"
+                    alt="${escapeAttribute(product.name)}"
                     onerror="this.src='https://via.placeholder.com/100x80?text=Product'"
                 >
-
 
                 <div class="admin-product-info">
 
@@ -2458,33 +3147,55 @@ function renderAdminProducts() {
             <div class="admin-product-actions">
 
                 <button
+                    type="button"
                     class="btn edit-btn"
-                    onclick="editProduct(${product.id})"
                 >
                     Edit
                 </button>
 
                 <button
+                    type="button"
                     class="btn delete-btn"
-                    onclick="deleteProduct(${product.id})"
                 >
                     Delete
                 </button>
 
             </div>
-
         `;
 
 
-        container.appendChild(item);
+        item
+            .querySelector(
+                ".edit-btn"
+            )
+            .onclick =
+            () =>
+                editProduct(
+                    product.id
+                );
 
+
+        item
+            .querySelector(
+                ".delete-btn"
+            )
+            .onclick =
+            () =>
+                deleteProduct(
+                    product.id
+                );
+
+
+        container.appendChild(
+            item
+        );
     });
 }
 
 
-/* =====================================================
+/* =========================================================
    EDIT PRODUCT
-   ===================================================== */
+   ========================================================= */
 
 function editProduct(productId) {
 
@@ -2508,18 +3219,20 @@ function editProduct(productId) {
         );
 
 
-    if (!product) {
-
-        return;
-    }
+    if (!product) return;
 
 
-    document
-        .getElementById(
+    const productIdInput =
+        document.getElementById(
             "productId"
-        )
-        .value =
-        product.id;
+        );
+
+
+    if (productIdInput) {
+
+        productIdInput.value =
+            product.id;
+    }
 
 
     document
@@ -2528,14 +3241,6 @@ function editProduct(productId) {
         )
         .value =
         product.name;
-
-
-    document
-        .getElementById(
-            "productRegion"
-        )
-        .value =
-        product.region;
 
 
     document
@@ -2556,30 +3261,57 @@ function editProduct(productId) {
 
     document
         .getElementById(
+            "productRegion"
+        )
+        .value =
+        product.region;
+
+
+    document
+        .getElementById(
             "productDescription"
         )
         .value =
         product.description;
 
 
+    const title =
+        document.getElementById(
+            "adminFormTitle"
+        );
+
+
+    if (title) {
+
+        title.textContent =
+            "Edit Product";
+    }
+
+
+    const cancel =
+        document.getElementById(
+            "cancelEditBtn"
+        );
+
+
+    cancel?.classList.remove(
+        "hidden"
+    );
+
+
     document
         .getElementById(
-            "adminFormTitle"
+            "adminSection"
         )
-        .textContent =
-        "Edit Product";
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+        ?.scrollIntoView({
+            behavior: "smooth"
+        });
 }
 
 
-/* =====================================================
+/* =========================================================
    DELETE PRODUCT
-   ===================================================== */
+   ========================================================= */
 
 function deleteProduct(productId) {
 
@@ -2603,10 +3335,7 @@ function deleteProduct(productId) {
         );
 
 
-    if (!product) {
-
-        return;
-    }
+    if (!product) return;
 
 
     const confirmed =
@@ -2615,10 +3344,7 @@ function deleteProduct(productId) {
         );
 
 
-    if (!confirmed) {
-
-        return;
-    }
+    if (!confirmed) return;
 
 
     products =
@@ -2627,11 +3353,6 @@ function deleteProduct(productId) {
                 item.id !== productId
         );
 
-
-    /*
-        Also remove deleted product
-        from cart.
-    */
 
     cart =
         cart.filter(
@@ -2663,9 +3384,9 @@ function deleteProduct(productId) {
 }
 
 
-/* =====================================================
-   CANCEL PRODUCT EDIT
-   ===================================================== */
+/* =========================================================
+   CANCEL EDIT
+   ========================================================= */
 
 function cancelProductEdit() {
 
@@ -2675,31 +3396,49 @@ function cancelProductEdit() {
         );
 
 
-    if (form) {
+    form?.reset();
 
-        form.reset();
+
+    const productId =
+        document.getElementById(
+            "productId"
+        );
+
+
+    if (productId) {
+
+        productId.value = "";
     }
 
 
-    document
-        .getElementById(
-            "productId"
-        )
-        .value = "";
-
-
-    document
-        .getElementById(
+    const title =
+        document.getElementById(
             "adminFormTitle"
-        )
-        .textContent =
-        "Add Product";
+        );
+
+
+    if (title) {
+
+        title.textContent =
+            "Add Product";
+    }
+
+
+    const cancel =
+        document.getElementById(
+            "cancelEditBtn"
+        );
+
+
+    cancel?.classList.add(
+        "hidden"
+    );
 }
 
 
-/* =====================================================
+/* =========================================================
    TOAST
-   ===================================================== */
+   ========================================================= */
 
 function showToast(message) {
 
@@ -2707,6 +3446,14 @@ function showToast(message) {
         document.getElementById(
             "toast"
         );
+
+
+    if (!toast) {
+
+        alert(message);
+
+        return;
+    }
 
 
     toast.textContent =
@@ -2724,65 +3471,167 @@ function showToast(message) {
 
 
     toastTimer =
-        setTimeout(() => {
+        setTimeout(
+            () => {
 
-            toast.classList.add(
-                "hidden"
-            );
+                toast.classList.add(
+                    "hidden"
+                );
 
-        }, 3000);
+            },
+            3000
+        );
 }
 
 
-/* =====================================================
-   PRICE FORMAT
-   ===================================================== */
+/* =========================================================
+   PASSWORD
+   ========================================================= */
+
+function togglePassword(
+    inputId,
+    button
+) {
+
+    const input =
+        document.getElementById(
+            inputId
+        );
+
+
+    if (!input) return;
+
+
+    if (
+        input.type ===
+        "password"
+    ) {
+
+        input.type = "text";
+
+        button.textContent =
+            "🙈";
+
+    } else {
+
+        input.type =
+            "password";
+
+        button.textContent =
+            "👁️";
+    }
+}
+
+
+/* =========================================================
+   PRICE
+   ========================================================= */
 
 function formatPrice(price) {
 
     return (
         "₱" +
-        Number(price).toLocaleString(
-            "en-PH",
-            {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }
-        )
+        Number(price)
+            .toLocaleString(
+                "en-PH",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            )
     );
 }
 
 
-/* =====================================================
+/* =========================================================
    HTML ESCAPE
-   ===================================================== */
+   ========================================================= */
 
 function escapeHTML(value) {
 
     return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 }
 
 
-/* =====================================================
+function escapeAttribute(value) {
+
+    return escapeHTML(value);
+}
+
+
+/* =========================================================
+   BACK TO SHOPPING
+   ========================================================= */
+
+function backToShopping() {
+
+    if (!currentUser) {
+
+        showAuth("login");
+
+        return;
+    }
+
+
+    selectedRegion = null;
+
+    showPage("home");
+
+    showLoggedInShopping();
+}
+
+
+/* =========================================================
+   FORGOT PASSWORD
+   ========================================================= */
+
+function forgotPassword() {
+
+    showToast(
+        "Password reset requires a backend/email system."
+    );
+}
+
+
+/* =========================================================
    ADMIN QUICK ACCESS
-   ===================================================== */
+   ========================================================= */
 
 /*
-    You can open the admin page from browser console:
+   Admin:
 
-    showPage("admin");
+   Email:
+   admin@bulacan.com
 
-    Demo admin:
-    Email: admin@bulacan.com
-    Password: admin123
+   Password:
+   admin123
+
+   To open admin from browser console:
+
+   showPage("admin");
 */
 
 
-/* =====================================================
+/* =========================================================
    END
-   ===================================================== */
+   ========================================================= */
