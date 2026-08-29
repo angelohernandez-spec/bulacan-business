@@ -272,25 +272,39 @@ function saveUsers(users) {
 
 function loadUsers() {
 
-    if (
-        !localStorage.getItem(
-            USERS_KEY
-        )
-    ) {
+    let users = [];
 
-        saveUsers([
-            {
-                id: 1,
-                name: "Administrator",
-                email: "admin@bulacan.com",
-                password: "admin123",
-                role: "admin"
-            }
-        ]);
+    try {
+        users =
+            JSON.parse(
+                localStorage.getItem(USERS_KEY)
+            ) || [];
+    } catch (error) {
+        users = [];
+    }
+
+    const adminExists =
+        users.some(
+            user =>
+                String(user.email)
+                    .toLowerCase()
+                    .trim() ===
+                "admin@bulacan.com"
+        );
+
+    if (!adminExists) {
+
+        users.push({
+            id: 1,
+            name: "Administrator",
+            email: "admin@bulacan.com",
+            password: "admin123",
+            role: "admin"
+        });
+
+        saveUsers(users);
     }
 }
-
-
 function loadCurrentUser() {
 
     try {
@@ -1036,47 +1050,44 @@ function handleLogin(event) {
 
     event.preventDefault();
 
+    const emailInput =
+        document.getElementById("loginEmail");
+
+    const passwordInput =
+        document.getElementById("loginPassword");
+
+    const message =
+        document.getElementById("loginMessage");
+
+    if (!emailInput || !passwordInput) {
+        console.error("Login fields not found.");
+        return;
+    }
+
     const email =
-        document
-            .getElementById(
-                "loginEmail"
-            )
-            .value
+        emailInput.value
             .trim()
             .toLowerCase();
 
     const password =
-        document
-            .getElementById(
-                "loginPassword"
-            )
-            .value;
-
-    const message =
-        document.getElementById(
-            "loginMessage"
-        );
-
+        passwordInput.value;
 
     const users = getUsers();
-
 
     const user =
         users.find(
             item =>
                 String(item.email)
+                    .trim()
                     .toLowerCase() === email &&
-                item.password === password
+                String(item.password) === password
         );
-
 
     if (!user) {
 
         if (message) {
-
             message.textContent =
                 "Invalid email or password.";
-
             message.style.color =
                 "#d62828";
         }
@@ -1084,62 +1095,58 @@ function handleLogin(event) {
         return;
     }
 
-
     currentUser = {
-
         id: user.id,
-
         name:
             user.name ||
             user.username ||
             "User",
-
         email: user.email,
-
         role:
             user.role ||
             "user"
     };
 
-
     saveCurrentUser();
-
 
     selectedRegion = null;
 
-
     document
-        .getElementById(
-            "loginForm"
-        )
+        .getElementById("loginForm")
         ?.reset();
 
-
     if (message) {
-
         message.textContent =
             "Login successful!";
-
         message.style.color =
             "#0b7a3b";
     }
 
-
     updateNavbar();
-
     updateCartCount();
 
-
     showHome();
-
     showLoggedInShopping();
-
 
     showToast(
         `Welcome, ${currentUser.name}!`
     );
-}
 
+    /*
+       If admin, open admin dashboard
+    */
+
+    if (currentUser.role === "admin") {
+
+        showToast(
+            "Welcome, Administrator!"
+        );
+
+        setTimeout(() => {
+            showPage("admin");
+        }, 500);
+    }
+}
 
 /* =========================================================
    SIGN UP
