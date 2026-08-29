@@ -19,17 +19,20 @@
 
 <body>
 
-<!-- ==========================================
+<!-- ==================================================
      NAVBAR
-     ========================================== -->
+================================================== -->
 
 <header class="navbar">
 
     <div class="logo">
+        <span class="logo-icon">🇵🇭</span>
         Bulacan Business
     </div>
 
-    <div class="user-area">
+    <div id="userArea" class="user-area">
+
+        <!-- Logged out -->
 
         <button
             id="showLoginBtn"
@@ -47,6 +50,13 @@
             Sign Up
         </button>
 
+        <!-- Logged in -->
+
+        <span
+            id="navUsername"
+            class="nav-username hidden"
+        ></span>
+
         <button
             id="navLogoutBtn"
             class="btn nav-btn logout-nav hidden"
@@ -62,9 +72,10 @@
 
 <main>
 
-<!-- ==========================================
+
+<!-- ==================================================
      HOME
-     ========================================== -->
+================================================== -->
 
 <section
     id="homeSection"
@@ -101,9 +112,9 @@
 </section>
 
 
-<!-- ==========================================
-     AUTH
-     ========================================== -->
+<!-- ==================================================
+     AUTH SECTION
+================================================== -->
 
 <section
     id="authSection"
@@ -112,7 +123,10 @@
 
     <div class="auth-background"></div>
 
-    <!-- LOGIN -->
+
+    <!-- ==================================================
+         LOGIN
+    ================================================== -->
 
     <div
         id="loginBox"
@@ -131,6 +145,7 @@
             Login to start shopping
         </p>
 
+
         <form id="loginForm">
 
             <label for="loginEmail">
@@ -141,8 +156,10 @@
                 type="email"
                 id="loginEmail"
                 placeholder="Enter your email"
+                autocomplete="email"
                 required
             >
+
 
             <label for="loginPassword">
                 Password
@@ -152,17 +169,20 @@
                 type="password"
                 id="loginPassword"
                 placeholder="Enter your password"
+                autocomplete="current-password"
                 required
             >
+
 
             <button
                 type="submit"
                 class="btn full"
             >
-                Login
+                🔑 Login
             </button>
 
         </form>
+
 
         <button
             id="forgotPasswordBtn"
@@ -172,7 +192,9 @@
             Forgot Password?
         </button>
 
-        <p>
+
+        <p class="auth-switch">
+
             Don't have an account?
 
             <button
@@ -182,7 +204,9 @@
             >
                 Sign Up
             </button>
+
         </p>
+
 
         <p
             id="loginMessage"
@@ -192,7 +216,9 @@
     </div>
 
 
-    <!-- SIGN UP -->
+    <!-- ==================================================
+         SIGN UP
+    ================================================== -->
 
     <div
         id="signupBox"
@@ -211,6 +237,7 @@
             Join Bulacan Business
         </p>
 
+
         <form id="signupForm">
 
             <label for="signupUsername">
@@ -221,8 +248,10 @@
                 type="text"
                 id="signupUsername"
                 placeholder="Choose a username"
+                autocomplete="username"
                 required
             >
+
 
             <label for="signupEmail">
                 Email
@@ -232,8 +261,10 @@
                 type="email"
                 id="signupEmail"
                 placeholder="Enter your email"
+                autocomplete="email"
                 required
             >
+
 
             <label for="signupPassword">
                 Password
@@ -244,19 +275,23 @@
                 id="signupPassword"
                 placeholder="Minimum 6 characters"
                 minlength="6"
+                autocomplete="new-password"
                 required
             >
+
 
             <button
                 type="submit"
                 class="btn full"
             >
-                Create Account
+                ✨ Create Account
             </button>
 
         </form>
 
-        <p>
+
+        <p class="auth-switch">
+
             Already have an account?
 
             <button
@@ -266,7 +301,9 @@
             >
                 Login
             </button>
+
         </p>
+
 
         <p
             id="signupMessage"
@@ -278,9 +315,9 @@
 </section>
 
 
-<!-- ==========================================
+<!-- ==================================================
      RESET PASSWORD
-     ========================================== -->
+================================================== -->
 
 <section
     id="resetPasswordSection"
@@ -301,6 +338,7 @@
             Create your new password
         </p>
 
+
         <form id="resetPasswordForm">
 
             <label for="newPassword">
@@ -312,8 +350,10 @@
                 id="newPassword"
                 placeholder="New password"
                 minlength="6"
+                autocomplete="new-password"
                 required
             >
+
 
             <label for="confirmPassword">
                 Confirm Password
@@ -324,17 +364,20 @@
                 id="confirmPassword"
                 placeholder="Confirm password"
                 minlength="6"
+                autocomplete="new-password"
                 required
             >
+
 
             <button
                 type="submit"
                 class="btn full"
             >
-                Change Password
+                🔐 Change Password
             </button>
 
         </form>
+
 
         <p
             id="resetPasswordMessage"
@@ -346,9 +389,9 @@
 </section>
 
 
-<!-- ==========================================
+<!-- ==================================================
      SHOP DASHBOARD
-     ========================================== -->
+================================================== -->
 
 <section
     id="shopDashboard"
@@ -376,9 +419,9 @@
 </section>
 
 
-<!-- ==========================================
+<!-- ==================================================
      USER DASHBOARD
-     ========================================== -->
+================================================== -->
 
 <section
     id="userSection"
@@ -391,14 +434,18 @@
             👤
         </div>
 
-        <div>
+        <div class="dashboard-user-info">
+
+            <span class="dashboard-label">
+                Welcome back
+            </span>
 
             <h2>
                 User Dashboard
             </h2>
 
             <p>
-                Welcome,
+                Hello,
                 <strong id="usernameDisplay">
                     User
                 </strong>
@@ -406,12 +453,13 @@
 
         </div>
 
+
         <button
             id="logoutBtn"
             class="btn logout-btn"
             type="button"
         >
-            Logout
+            🚪 Logout
         </button>
 
     </div>
@@ -419,9 +467,9 @@
 </section>
 
 
-<!-- ==========================================
+<!-- ==================================================
      REGION SELECTION
-     ========================================== -->
+================================================== -->
 
 <section
     id="regionSection"
@@ -447,6 +495,9 @@
 
     <div class="region-grid">
 
+
+        <!-- LUZON -->
+
         <button
             class="region-card"
             data-region="Luzon"
@@ -457,13 +508,17 @@
                 🏙️
             </div>
 
-            <h3>
-                Luzon
-            </h3>
+            <div class="region-info">
 
-            <p>
-                View Luzon products
-            </p>
+                <h3>
+                    Luzon
+                </h3>
+
+                <p>
+                    View Luzon products
+                </p>
+
+            </div>
 
             <span class="region-arrow">
                 →
@@ -471,6 +526,8 @@
 
         </button>
 
+
+        <!-- VISAYAS -->
 
         <button
             class="region-card"
@@ -482,13 +539,17 @@
                 🌴
             </div>
 
-            <h3>
-                Visayas
-            </h3>
+            <div class="region-info">
 
-            <p>
-                View Visayas products
-            </p>
+                <h3>
+                    Visayas
+                </h3>
+
+                <p>
+                    View Visayas products
+                </p>
+
+            </div>
 
             <span class="region-arrow">
                 →
@@ -496,6 +557,8 @@
 
         </button>
 
+
+        <!-- MINDANAO -->
 
         <button
             class="region-card"
@@ -507,13 +570,17 @@
                 🌄
             </div>
 
-            <h3>
-                Mindanao
-            </h3>
+            <div class="region-info">
 
-            <p>
-                View Mindanao products
-            </p>
+                <h3>
+                    Mindanao
+                </h3>
+
+                <p>
+                    View Mindanao products
+                </p>
+
+            </div>
 
             <span class="region-arrow">
                 →
@@ -526,9 +593,9 @@
 </section>
 
 
-<!-- ==========================================
+<!-- ==================================================
      PRODUCTS
-     ========================================== -->
+================================================== -->
 
 <section
     id="productsSection"
@@ -566,14 +633,16 @@
         class="products-grid"
     >
 
+        <!-- Products inserted by JavaScript -->
+
     </div>
 
 </section>
 
 
-<!-- ==========================================
+<!-- ==================================================
      CART
-     ========================================== -->
+================================================== -->
 
 <section
     id="cartSection"
@@ -590,6 +659,10 @@
             Your Cart
         </h2>
 
+        <p>
+            Review your items before checkout.
+        </p>
+
     </div>
 
 
@@ -597,6 +670,8 @@
         id="cartItems"
         class="cart-items"
     >
+
+        <!-- Cart items inserted by JavaScript -->
 
     </div>
 
@@ -618,17 +693,23 @@
     </div>
 
 
-    <!-- ======================================
+    <!-- ==================================================
          CHECKOUT
-         ====================================== -->
+    ================================================== -->
 
     <div class="checkout-box">
 
         <h3>
-            Checkout
+            📦 Checkout
         </h3>
 
+        <p class="checkout-subtitle">
+            Enter your delivery information.
+        </p>
+
+
         <form id="checkoutForm">
+
 
             <label for="customerName">
                 Full Name
@@ -638,6 +719,7 @@
                 type="text"
                 id="customerName"
                 placeholder="Enter your full name"
+                autocomplete="name"
                 required
             >
 
@@ -677,29 +759,39 @@
             </select>
 
 
-            <!-- GCASH -->
+            <!-- ==================================================
+                 GCASH INFORMATION
+            ================================================== -->
 
             <div
                 id="gcashInfo"
                 class="gcash-info hidden"
             >
 
-                <h4>
-                    📱 GCash Payment
-                </h4>
-
-                <p>
-                    Send your payment to:
-                </p>
-
-                <div class="gcash-number">
-                    09090661615
+                <div class="gcash-icon">
+                    📱
                 </div>
 
-                <p>
-                    After sending the payment,
-                    click Place Order.
-                </p>
+                <div>
+
+                    <h4>
+                        GCash Payment
+                    </h4>
+
+                    <p>
+                        Send your payment to:
+                    </p>
+
+                    <div class="gcash-number">
+                        09090661615
+                    </div>
+
+                    <p>
+                        After sending the payment,
+                        click <strong>Place Order</strong>.
+                    </p>
+
+                </div>
 
             </div>
 
@@ -724,9 +816,9 @@
 </section>
 
 
-<!-- ==========================================
+<!-- ==================================================
      ADMIN DASHBOARD
-     ========================================== -->
+================================================== -->
 
 <section
     id="adminSection"
@@ -737,7 +829,7 @@
 
         <div>
 
-            <span>
+            <span class="admin-label">
                 🔐 Administrator
             </span>
 
@@ -754,15 +846,26 @@
     </div>
 
 
-    <!-- ADD PRODUCT -->
+    <!-- ==================================================
+         ADD / EDIT PRODUCT
+    ================================================== -->
 
     <div class="admin-form">
 
-        <h3>
+        <h3 id="productFormTitle">
             ➕ Add Product
         </h3>
 
+
         <form id="productForm">
+
+            <!-- Hidden ID for editing -->
+
+            <input
+                type="hidden"
+                id="productId"
+            >
+
 
             <label for="productName">
                 Product Name
@@ -825,7 +928,7 @@
             <input
                 type="text"
                 id="productImage"
-                placeholder="Image URL"
+                placeholder="https://example.com/image.jpg"
             >
 
 
@@ -839,12 +942,26 @@
             ></textarea>
 
 
-            <button
-                type="submit"
-                class="btn"
-            >
-                Add Product
-            </button>
+            <div class="admin-form-buttons">
+
+                <button
+                    type="submit"
+                    id="productSubmitBtn"
+                    class="btn"
+                >
+                    ➕ Add Product
+                </button>
+
+
+                <button
+                    type="button"
+                    id="cancelEditBtn"
+                    class="btn cancel-btn hidden"
+                >
+                    Cancel Edit
+                </button>
+
+            </div>
 
         </form>
 
@@ -857,17 +974,34 @@
     </div>
 
 
-    <!-- ADMIN PRODUCTS -->
+    <!-- ==================================================
+         ADMIN PRODUCTS
+    ================================================== -->
 
     <div class="admin-products">
 
-        <h3>
-            📦 Manage Products
-        </h3>
+        <div class="admin-products-header">
+
+            <h3>
+                📦 Manage Products
+            </h3>
+
+            <button
+                id="refreshProductsBtn"
+                class="btn small-btn"
+                type="button"
+            >
+                🔄 Refresh
+            </button>
+
+        </div>
+
 
         <div
             id="adminProductsContainer"
         >
+
+            <!-- Admin products inserted by JavaScript -->
 
         </div>
 
@@ -875,19 +1009,20 @@
 
 </section>
 
+
 </main>
 
 
-<!-- ==========================================
+<!-- ==================================================
      FOOTER
-     ========================================== -->
+================================================== -->
 
 <footer>
 
     <div class="footer-content">
 
         <h3>
-            Bulacan Business
+            🇵🇭 Bulacan Business
         </h3>
 
         <p>
@@ -903,9 +1038,9 @@
 </footer>
 
 
-<!-- ==========================================
+<!-- ==================================================
      JAVASCRIPT
-     ========================================== -->
+================================================== -->
 
 <script src="script.js"></script>
 
