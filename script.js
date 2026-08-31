@@ -2654,38 +2654,54 @@ function showPaymentInfo() {
             "paymentMethod"
         );
 
-
     const gcashInfo =
         document.getElementById(
             "gcashInfo"
         );
 
-
-    if (!payment ||
-        !gcashInfo
-    ) {
-
+    if (!payment || !gcashInfo) {
         return;
     }
 
+    if (payment.value === "GCash") {
 
-    if (
-        payment.value ===
-        "GCash"
-    ) {
+        gcashInfo.classList.remove("hidden");
 
-        gcashInfo.classList.remove(
-            "hidden"
-        );
+        updateGCashAmount();
 
     } else {
 
-        gcashInfo.classList.add(
-            "hidden"
-        );
+        gcashInfo.classList.add("hidden");
     }
 }
+function updateGCashAmount() {
 
+    const gcashAmount =
+        document.getElementById(
+            "gcashAmount"
+        );
+
+    if (!gcashAmount) {
+        return;
+    }
+
+    const subtotal =
+        cart.reduce(
+            (total, item) =>
+                total +
+                (
+                    Number(item.price) *
+                    Number(item.quantity)
+                ),
+            0
+        );
+
+    const total =
+        subtotal + 50;
+
+    gcashAmount.textContent =
+        formatPrice(total);
+}
 
 /* =========================================================
    HANDLE CHECKOUT
