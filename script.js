@@ -182,7 +182,30 @@ let currentUser = null;
 let selectedRegion = null;
 let cart = [];
 let toastTimer = null;
+/* =========================================================
+   SHIPPING FEE BY DISTANCE / REGION
+   ========================================================= */
 
+const SHIPPING_FEES = {
+    "Malolos": 50,
+    "Bulakan": 60,
+    "Bocaue": 70,
+    "Plaridel": 80,
+    "Marilao": 90,
+    "Meycauayan": 100,
+    "Baliwag": 110,
+    "San Jose del Monte": 120
+};
+
+
+function getShippingFee() {
+
+    if (!selectedRegion) {
+        return 50;
+    }
+
+    return SHIPPING_FEES[selectedRegion] || 100;
+}
 
 /* =========================================================
    LOCAL STORAGE
@@ -2475,10 +2498,10 @@ function updateCartSummary() {
         );
 
 
-    const delivery =
-        cart.length > 0
-            ? 50
-            : 0;
+   const delivery =
+    cart.length > 0
+        ? getShippingFee()
+        : 0;
 
 
     const total =
@@ -2621,8 +2644,8 @@ function updateCheckoutTotal() {
         );
 
 
-    const total =
-        subtotal + 50;
+   const total =
+    subtotal + getShippingFee();
 
 
     /*
@@ -2697,7 +2720,7 @@ function updateGCashAmount() {
         );
 
     const total =
-        subtotal + 50;
+    subtotal + getShippingFee();
 
     gcashAmount.textContent =
         formatPrice(total);
@@ -2785,8 +2808,8 @@ function handleCheckout(event) {
         date:
             new Date().toISOString(),
 
-        total:
-            subtotal + 50
+       total:
+    subtotal + getShippingFee()
     };
 
 
