@@ -2477,7 +2477,7 @@ function updateCartSummary() {
 
     const delivery =
         cart.length > 0
-            ? 50
+            ? 1
             : 0;
 
 
