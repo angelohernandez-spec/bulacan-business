@@ -2477,7 +2477,7 @@ function updateCartSummary() {
 
     const delivery =
         cart.length > 0
-            ? 1
+            ? 50
             : 0;
 
 
@@ -2622,7 +2622,7 @@ function updateCheckoutTotal() {
 
 
     const total =
-        subtotal + 1;
+        subtotal + 50;
 
 
     /*
