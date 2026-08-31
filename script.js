@@ -2622,7 +2622,7 @@ function updateCheckoutTotal() {
 
 
     const total =
-        subtotal + 50;
+        subtotal + 1;
 
 
     /*
