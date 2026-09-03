@@ -2198,14 +2198,11 @@ function showPage(page) {
     }
 
 
-    if (page === "admin") {
-
-        admin?.classList.remove(
-            "hidden"
-        );
-
-        renderAdminProducts();
-    }
+   if (page === "admin") {
+    admin?.classList.remove("hidden");
+    renderAdminProducts();
+    renderAdminOrders();
+}
 
 
     window.scrollTo({
@@ -2790,27 +2787,42 @@ function handleCheckout(event) {
         );
 
 
-    const order = {
+   const gcashReference =
+    document.getElementById("gcashReference")?.value.trim() || "";
 
-        id: Date.now(),
+if (payment === "GCash" && !gcashReference) {
+    showToast("Please enter your GCash reference number.");
+    return;
+}
 
-        userId:
-            currentUser.id,
+const shippingFee = getShippingFee();
 
-        customer:
-            currentUser.name,
+const order = {
+    id: Date.now(),
 
-        items:
-            [...cart],
+    userId: currentUser.id,
 
-        payment,
+    customer: currentUser.name,
 
-        date:
-            new Date().toISOString(),
+    items: [...cart],
 
-       total:
-    subtotal + getShippingFee()
-    };
+    payment: payment,
+
+    gcashReference: gcashReference,
+
+    subtotal: subtotal,
+
+    shippingFee: shippingFee,
+
+    total: subtotal + shippingFee,
+
+    status:
+        payment === "GCash"
+            ? "Pending Verification"
+            : "Approved",
+
+    date: new Date().toISOString()
+};
 
 
     let orders = [];
