@@ -44,7 +44,11 @@ body {
         Helvetica,
         sans-serif;
 
-    background: var(--light);
+    background-image: url("image.png");
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
     color: var(--text);
 
     line-height: 1.6;
