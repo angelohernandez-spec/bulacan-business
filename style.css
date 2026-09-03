@@ -482,7 +482,12 @@ img {
 ========================================================= */
 
 .regions-section {
-    background: #f8faf8;
+    position: relative;
+    background-image: url("image.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 80px 0;
 }
 
 .region-grid {
