@@ -2045,17 +2045,54 @@ a:focus-visible {
     padding: 30px;
     color: #777;
 }
-/* ===== EXPLORE BULACAN BACKGROUND ===== */
+/* =========================================================
+   EXPLORE BULACAN - BACKGROUND IMAGE
+========================================================= */
 
 #regionsSection {
-    background-image: url("image.png") !important;
-    background-size: cover !important;
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
-    min-height: 600px;
+    position: relative !important;
+    min-height: 600px !important;
+    padding: 100px 0 !important;
+
+    overflow: hidden;
+
+    background: transparent !important;
 }
 
-/* Para makita nang maayos ang heading sa background */
+/* BACKGROUND IMAGE */
+#regionsSection::before {
+    content: "";
+    position: absolute;
+
+    inset: 0;
+
+    background-image: url("image.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    z-index: 0;
+}
+
+/* DARK OVERLAY */
+#regionsSection::after {
+    content: "";
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.35);
+
+    z-index: 1;
+}
+
+/* CONTENT SA HARAP NG BACKGROUND */
+#regionsSection .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* TEXT */
 #regionsSection .section-heading h2 {
     color: white !important;
 }
