@@ -213,13 +213,10 @@ img {
     display: flex;
     align-items: center;
 
-    background:
-        linear-gradient(
-            110deg,
-            rgba(13, 79, 49, 0.92),
-            rgba(20, 108, 67, 0.78)
-        ),
-        url("https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1800&q=85");
+   background-image: url("image.png");
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
 
     background-size: cover;
     background-position: center;
