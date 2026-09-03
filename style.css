@@ -207,21 +207,16 @@ img {
 
 .hero {
     min-height: 620px;
-
     position: relative;
 
     display: flex;
     align-items: center;
 
-   background-image: url("image.png");
-background-size: cover;
-background-position: center;
-background-repeat: no-repeat;
-
+    background-image: url("image.png");
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
 }
-
 .hero-overlay {
     position: absolute;
     inset: 0;
