@@ -483,11 +483,14 @@ img {
 
 .regions-section {
     position: relative;
-    background-image: url("image.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 80px 0;
+    width: 100%;
+    min-height: 600px;
+    padding: 100px 0;
+
+    background-image: url("image.png") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
 }
 
 .region-grid {
@@ -2041,4 +2044,26 @@ a:focus-visible {
     text-align: center;
     padding: 30px;
     color: #777;
+}
+/* ===== EXPLORE BULACAN BACKGROUND ===== */
+
+#regionsSection {
+    background-image: url("image.png") !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    min-height: 600px;
+}
+
+/* Para makita nang maayos ang heading sa background */
+#regionsSection .section-heading h2 {
+    color: white !important;
+}
+
+#regionsSection .section-heading p {
+    color: white !important;
+}
+
+#regionsSection .eyebrow {
+    color: #ffd700 !important;
 }
