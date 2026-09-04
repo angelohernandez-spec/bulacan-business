@@ -2127,7 +2127,7 @@ a:focus-visible {
     padding: 100px 0 !important;
     overflow: hidden;
 
-    background-image: url("heavens-bg.jpg") !important;
+    background-image: url("image-bg.jpg") !important;
     background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
