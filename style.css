@@ -2148,4 +2148,34 @@ a:focus-visible {
         ),
         url("heavens-bg.jpg")
         center center / cover no-repeat !important;
+}* =========================================================
+   MAGKADIKIT NA BACKGROUND
+========================================================= */
+
+/* HERO */
+#homeSection .hero {
+    margin-bottom: 0 !important;
+}
+
+/* LOCATION SECTION */
+#regionsSection {
+    margin-top: 0 !important;
+    padding-top: 70px !important;
+
+    background:
+        url("heavens-bg.jpg")
+        center center / cover no-repeat !important;
+}
+
+/* USER SECTION */
+#userSection {
+    margin-bottom: 0 !important;
+}
+
+/* TANGGALIN ANG GAP / LINE */
+#userSection,
+#regionsSection,
+#productsSection {
+    border-top: none !important;
+    box-shadow: none !important;
 }
