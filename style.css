@@ -2068,7 +2068,7 @@ a:focus-visible {
     position: absolute;
     inset: 0;
 
-    background-image: url("image.png");
+    background-image: url("image.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -2116,4 +2116,16 @@ a:focus-visible {
 
 .dashboard-section .eyebrow {
     color: #ffd700 !important;
+}
+/* ================================
+   LOGGED-IN HOME BACKGROUND
+================================ */
+
+#homeSection {
+    position: relative;
+    min-height: 600px;
+    background-image: url("image.jpg") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
 }
