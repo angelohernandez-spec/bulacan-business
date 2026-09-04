@@ -2051,103 +2051,61 @@ a:focus-visible {
 }
 /* =========================================================
    LOGGED-IN HOME
-   MY ACCOUNT + EXPLORE BULACAN
-   ONE CONTINUOUS BACKGROUND
+   ONE BACKGROUND / NO DIVIDER
 ========================================================= */
 
-.hidden {
-    display: none !important;
-}
-
-
-/* HOME CONTAINER */
-#homeSection {
+#homeSection.logged-in {
     position: relative !important;
-}
-
-
-/* =========================================================
-   ISANG BACKGROUND PARA SA MY ACCOUNT + EXPLORE BULACAN
-========================================================= */
-
-#homeSection.logged-in::after {
-    content: "";
-    position: absolute;
-
-    left: 0;
-    right: 0;
-
-    top: 0;
-    bottom: 0;
-
     background:
         linear-gradient(
             rgba(0, 0, 0, 0.25),
             rgba(0, 0, 0, 0.25)
         ),
-        url("heavens-bg.jpg")
-        center top / cover no-repeat;
-
-    z-index: 0;
-    pointer-events: none;
+        url("heavens-bg.jpg") center top / cover no-repeat !important;
 }
 
 
-/* =========================================================
-   HERO — ITAGO PAGKA-LOGIN
-========================================================= */
-
+/* ITAGO ANG HERO PAG NAKA-LOGIN */
 #homeSection.logged-in .hero {
     display: none !important;
 }
 
 
-/* =========================================================
-   MY ACCOUNT
-========================================================= */
-
+/* MY ACCOUNT */
 #homeSection.logged-in #userSection {
     position: relative !important;
-
     min-height: 600px !important;
-
     margin: 0 !important;
     padding: 100px 0 !important;
 
     background: transparent !important;
-
     border: none !important;
     box-shadow: none !important;
-
-    z-index: 1;
 }
 
 
-/* =========================================================
-   EXPLORE BULACAN
-========================================================= */
-
+/* EXPLORE BULACAN */
 #homeSection.logged-in #regionsSection {
     position: relative !important;
-
     min-height: 600px !important;
-
     margin: 0 !important;
     padding: 100px 0 !important;
 
     background: transparent !important;
-
     border: none !important;
     box-shadow: none !important;
-
-    z-index: 1;
 }
 
 
-/* =========================================================
-   CONTENT
-========================================================= */
+/* WALANG HATI */
+#homeSection.logged-in #userSection + #regionsSection {
+    margin-top: 0 !important;
+    padding-top: 100px !important;
+    border-top: none !important;
+}
 
+
+/* CONTENT */
 #homeSection.logged-in #userSection .container,
 #homeSection.logged-in #regionsSection .container {
     position: relative;
@@ -2155,32 +2113,17 @@ a:focus-visible {
 }
 
 
-/* =========================================================
-   WHITE TEXT
-========================================================= */
-
-#homeSection.logged-in #userSection .section-heading h2,
-#homeSection.logged-in #userSection .section-heading p,
-#homeSection.logged-in #regionsSection .section-heading h2,
-#homeSection.logged-in #regionsSection .section-heading p {
+/* TEXT */
+#homeSection.logged-in #userSection h2,
+#homeSection.logged-in #userSection p,
+#homeSection.logged-in #regionsSection h2,
+#homeSection.logged-in #regionsSection p {
     color: white !important;
 }
 
 
-/* =========================================================
-   GOLD LABEL
-========================================================= */
-
+/* GOLD LABEL */
 #homeSection.logged-in #userSection .eyebrow,
 #homeSection.logged-in #regionsSection .eyebrow {
     color: #ffd700 !important;
-}
-
-
-/* =========================================================
-   WALANG GAP
-========================================================= */
-
-#homeSection.logged-in #userSection + #regionsSection {
-    margin-top: 0 !important;
 }
