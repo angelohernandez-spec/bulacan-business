@@ -2049,24 +2049,11 @@ a:focus-visible {
     padding: 30px;
     color: #777;
 }/* =========================================================
-   CONTINUOUS BACKGROUND - BACKGROUND 2 + 3
-========================================================= */
-
-/* ISANG BACKGROUND LANG PARA SA 2 AT 3 */
-#homeSection {
-    position: relative;
-    background:
-        url("heavens-bg.jpg")
-        center top / cover no-repeat !important;
-}
-
-
-/* MY ACCOUNT */
-/* =========================================================
-   BACKGROUND 2 + BACKGROUND 3
+   BACKGROUND 2 + 3
    ISANG TULOY-TULOY NA BACKGROUND
 ========================================================= */
 
+/* PAREHONG BACKGROUND AT PAREHONG POSITION */
 #userSection,
 #regionsSection {
     position: relative !important;
@@ -2076,36 +2063,53 @@ a:focus-visible {
     box-shadow: none !important;
 
     background-image: url("heavens-bg.jpg") !important;
-    background-size: cover !important;
-    background-position: center center !important;
     background-repeat: no-repeat !important;
 
-    /* IMPORTANT */
+    /*
+       FIXED = hindi nire-restart ang image
+       habang lumilipat mula MY ACCOUNT
+       papunta sa EXPLORE BULACAN
+    */
     background-attachment: fixed !important;
+
+    background-size: cover !important;
+    background-position: center center !important;
 }
 
 
-/* MY ACCOUNT */
+/* =========================================================
+   MY ACCOUNT
+========================================================= */
+
 #userSection {
     min-height: 600px !important;
     padding: 100px 0 !important;
 }
 
 
-/* EXPLORE BULACAN */
+/* =========================================================
+   EXPLORE BULACAN
+========================================================= */
+
 #regionsSection {
     min-height: 600px !important;
     padding: 100px 0 !important;
 }
 
 
-/* WALANG PUWANG SA PAGITAN */
+/* =========================================================
+   WALANG GAP SA PAGITAN
+========================================================= */
+
 #userSection + #regionsSection {
     margin-top: 0 !important;
 }
 
 
-/* CONTENT */
+/* =========================================================
+   CONTENT
+========================================================= */
+
 #userSection .container,
 #regionsSection .container {
     position: relative;
@@ -2113,7 +2117,10 @@ a:focus-visible {
 }
 
 
-/* TEXT */
+/* =========================================================
+   TEXT
+========================================================= */
+
 #userSection .section-heading h2,
 #userSection .section-heading p,
 #regionsSection .section-heading h2,
@@ -2122,7 +2129,10 @@ a:focus-visible {
 }
 
 
-/* LABEL */
+/* =========================================================
+   EYEBROW
+========================================================= */
+
 #userSection .eyebrow,
 #regionsSection .eyebrow {
     color: #ffd700 !important;
