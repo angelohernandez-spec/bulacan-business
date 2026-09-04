@@ -1151,16 +1151,55 @@ function handleLogin(event) {
             "#0b7a3b";
     }
 
-   updateNavbar();
+ updateNavbar();
 updateCartCount();
 
-/* PALIT BACKGROUND PAG LOGIN */
-document
-    .getElementById("homeSection")
-    ?.classList.add("logged-in");
+/* ================================
+   PAG LOGIN:
+   ITAGO ANG HERO
+   IPAKITA ANG MY ACCOUNT
+================================ */
+
+const homeSection =
+    document.getElementById("homeSection");
+
+const hero =
+    document.querySelector("#homeSection .hero");
+
+const userSection =
+    document.getElementById("userSection");
+
+const regionsSection =
+    document.getElementById("regionsSection");
+
+const productsSection =
+    document.getElementById("productsSection");
+
+/* Logged-in mode */
+homeSection?.classList.add("logged-in");
+
+/* ITAGO ANG WELCOME TO HEAVENS PRODUCT */
+hero?.classList.add("hidden");
+
+/* IPAKITA ANG MY ACCOUNT */
+userSection?.classList.remove("hidden");
+
+/* LOCATION IPAPAKITA DIN */
+regionsSection?.classList.remove("hidden");
+
+/* PRODUCTS HIDDEN MUNA */
+productsSection?.classList.add("hidden");
+
+/* Render locations */
+selectedRegion = null;
+renderRegions();
 
 showHome();
-showLoggedInShopping();
+
+window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+});
     showToast(
         `Welcome, ${currentUser.name}!`
     );
@@ -1351,7 +1390,6 @@ function logout() {
 /* =========================================================
    SHOPPING VISIBILITY
    ========================================================= */
-
 function showLoggedInShopping() {
 
     if (!currentUser) {
@@ -1361,79 +1399,50 @@ function showLoggedInShopping() {
         return;
     }
 
+    const homeSection =
+        document.getElementById("homeSection");
+
+    const hero =
+        document.querySelector("#homeSection .hero");
+
+    const userSection =
+        document.getElementById("userSection");
 
     const regionsSection =
-        document.getElementById(
-            "regionsSection"
-        );
+        document.getElementById("regionsSection");
 
     const productsSection =
-        document.getElementById(
-            "productsSection"
-        );
+        document.getElementById("productsSection");
 
 
-    /*
-       REGION SHOW
-    */
+    /* ================================
+       LOGGED IN MODE
+    ================================= */
 
-    regionsSection?.classList.remove(
-        "hidden"
-    );
+    homeSection?.classList.add("logged-in");
 
 
-    /*
-       PRODUCT HIDE UNTIL REGION CLICK
-    */
+    /* ITAGO ANG WELCOME HERO */
+    hero?.classList.add("hidden");
 
-    productsSection?.classList.add(
-        "hidden"
-    );
+
+    /* IPAKITA ANG MY ACCOUNT */
+    userSection?.classList.remove("hidden");
+
+
+    /* IPAKITA ANG CHOOSE A LOCATION */
+    regionsSection?.classList.remove("hidden");
+
+
+    /* PRODUCTS HIDDEN HANGGA'T
+       WALANG PINIPILING LOCATION */
+    productsSection?.classList.add("hidden");
 
 
     selectedRegion = null;
 
     renderRegions();
-
-
-    /*
-       Dashboard visible when logged in
-    */
-
-    document
-        .getElementById(
-            "userSection"
-        )
-        ?.classList.remove("hidden");
 }
-
-
-function hideShoppingSections() {
-
-    document
-        .getElementById(
-            "regionsSection"
-        )
-        ?.classList.add("hidden");
-
-
-    document
-        .getElementById(
-            "productsSection"
-        )
-        ?.classList.add("hidden");
-
-
-    document
-        .getElementById(
-            "userSection"
-        )
-        ?.classList.add("hidden");
-
-
-    selectedRegion = null;
-}
-
 
 /* =========================================================
    REGIONS
