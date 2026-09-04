@@ -2117,15 +2117,35 @@ a:focus-visible {
 .dashboard-section .eyebrow {
     color: #ffd700 !important;
 }
-/* ================================
-   LOGGED-IN HOME BACKGROUND
-================================ */
+/* =========================================================
+   LOGGED-IN HOME - HEAVENS PRODUCT BACKGROUND
+========================================================= */
 
 #homeSection {
-    position: relative;
-    min-height: 600px;
-    background-image: url("image.jpg") !important;
+    position: relative !important;
+    min-height: 600px !important;
+    padding: 100px 0 !important;
+    overflow: hidden;
+
+    background-image: url("heavens-bg.jpg") !important;
     background-size: cover !important;
-    background-position: center !important;
+    background-position: center center !important;
     background-repeat: no-repeat !important;
+}
+
+/* DARK OVERLAY */
+#homeSection::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.30);
+
+    z-index: 0;
+}
+
+/* CONTENT SA HARAP */
+#homeSection .container {
+    position: relative;
+    z-index: 1;
 }
