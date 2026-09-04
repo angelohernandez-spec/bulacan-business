@@ -3634,7 +3634,377 @@ function renderAdminProducts() {
         );
     });
 }
+/* =========================================================
+   ADMIN ORDERS
+   ========================================================= */
 
+function renderAdminOrders() {
+
+    const container =
+        document.getElementById(
+            "adminOrdersContainer"
+        );
+
+    if (!container) return;
+
+
+    let orders = [];
+
+    try {
+
+        orders =
+            JSON.parse(
+                localStorage.getItem(
+                    "bulacan_business_orders"
+                )
+            ) || [];
+
+    } catch (error) {
+
+        orders = [];
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (orders.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="no-products">
+
+                <h3>
+                    📦 No Customer Orders
+                </h3>
+
+                <p>
+                    Customer orders will appear here.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    /* Pinakabagong order muna */
+
+    orders
+        .slice()
+        .reverse()
+        .forEach(order => {
+
+            const orderCard =
+                document.createElement(
+                    "div"
+                );
+
+            orderCard.className =
+                "admin-order-card";
+
+
+            /* =========================
+               ITEMS
+            ========================= */
+
+            const itemsHTML =
+                (order.items || [])
+                    .map(item => `
+
+                        <div class="admin-order-item">
+
+                            <span>
+                                ${escapeHTML(
+                                    item.name
+                                )}
+                                × ${Number(
+                                    item.quantity || 0
+                                )}
+                            </span>
+
+                            <strong>
+                                ${formatPrice(
+                                    Number(item.price || 0) *
+                                    Number(item.quantity || 0)
+                                )}
+                            </strong>
+
+                        </div>
+
+                    `)
+                    .join("");
+
+
+            /* =========================
+               GPS
+            ========================= */
+
+            let locationHTML = "";
+
+
+            if (
+                order.deliveryLatitude !== null &&
+                order.deliveryLatitude !== undefined &&
+                order.deliveryLatitude !== "" &&
+                order.deliveryLongitude !== null &&
+                order.deliveryLongitude !== undefined &&
+                order.deliveryLongitude !== ""
+            ) {
+
+                const lat =
+                    Number(
+                        order.deliveryLatitude
+                    );
+
+                const lng =
+                    Number(
+                        order.deliveryLongitude
+                    );
+
+
+                const googleMapsURL =
+                    `https://www.google.com/maps?q=${encodeURIComponent(
+                        lat + "," + lng
+                    )}`;
+
+
+                locationHTML = `
+
+                    <div class="order-gps">
+
+                        <p>
+                            🛰️
+                            <strong>GPS Location</strong>
+                        </p>
+
+                        <p>
+                            ${lat.toFixed(6)},
+                            ${lng.toFixed(6)}
+                        </p>
+
+                        <a
+                            href="${escapeAttribute(
+                                googleMapsURL
+                            )}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn"
+                        >
+                            🗺️ Open in Google Maps
+                        </a>
+
+                    </div>
+
+                `;
+
+            } else {
+
+                locationHTML = `
+
+                    <div class="order-gps">
+
+                        <p>
+                            📌 GPS location not provided.
+                        </p>
+
+                    </div>
+
+                `;
+            }
+
+
+            /* =========================
+               ORDER CARD
+            ========================= */
+
+            orderCard.innerHTML = `
+
+                <div class="admin-order-header">
+
+                    <div>
+
+                        <h3>
+                            📦 Order #${order.id}
+                        </h3>
+
+                        <small>
+                            ${new Date(
+                                order.date
+                            ).toLocaleString(
+                                "en-PH"
+                            )}
+                        </small>
+
+                    </div>
+
+                    <strong class="order-status">
+                        ${escapeHTML(
+                            order.status || "Pending"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="admin-order-customer">
+
+                    <h4>
+                        👤 Customer Information
+                    </h4>
+
+                    <p>
+                        <strong>Name:</strong>
+                        ${escapeHTML(
+                            order.customer || "Unknown"
+                        )}
+                    </p>
+
+                    <p>
+                        <strong>Email:</strong>
+                        ${escapeHTML(
+                            order.email || "N/A"
+                        )}
+                    </p>
+
+                </div>
+
+
+                <div class="order-delivery-location">
+
+                    <h4>
+                        📍 Delivery Location
+                    </h4>
+
+
+                    <p>
+                        <strong>Address:</strong><br>
+                        ${escapeHTML(
+                            order.deliveryAddress || "N/A"
+                        )}
+                    </p>
+
+
+                    <p>
+                        <strong>Barangay:</strong>
+                        ${escapeHTML(
+                            order.deliveryBarangay || "N/A"
+                        )}
+                    </p>
+
+
+                    <p>
+                        <strong>City / Municipality:</strong>
+                        ${escapeHTML(
+                            order.deliveryCity || "N/A"
+                        )}
+                    </p>
+
+
+                    <p>
+                        📱
+                        <strong>Contact:</strong>
+                        ${escapeHTML(
+                            order.deliveryContact || "N/A"
+                        )}
+                    </p>
+
+
+                    ${locationHTML}
+
+                </div>
+
+
+                <div class="admin-order-items">
+
+                    <h4>
+                        🛍️ Ordered Products
+                    </h4>
+
+                    ${itemsHTML}
+
+                </div>
+
+
+                <div class="admin-order-payment">
+
+                    <p>
+                        <strong>
+                            💳 Payment:
+                        </strong>
+
+                        ${escapeHTML(
+                            order.payment || "N/A"
+                        )}
+                    </p>
+
+
+                    ${
+                        order.gcashReference
+                            ? `
+                                <p>
+                                    <strong>
+                                        📱 GCash Reference:
+                                    </strong>
+
+                                    ${escapeHTML(
+                                        order.gcashReference
+                                    )}
+                                </p>
+                            `
+                            : ""
+                    }
+
+                </div>
+
+
+                <div class="admin-order-total">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <strong>
+                        ${formatPrice(
+                            order.subtotal || 0
+                        )}
+                    </strong>
+
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <strong>
+                        ${formatPrice(
+                            order.shippingFee || 0
+                        )}
+                    </strong>
+
+
+                    <span class="order-grand-total">
+                        Total
+                    </span>
+
+                    <strong class="order-grand-total">
+                        ${formatPrice(
+                            order.total || 0
+                        )}
+                    </strong>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                orderCard
+            );
+
+        });
+}
 
 /* =========================================================
    EDIT PRODUCT
