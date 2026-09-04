@@ -407,7 +407,7 @@ img {
             rgba(0, 0, 0, 0.35),
             rgba(0, 0, 0, 0.35)
         ),
-        url("image.png") center center / cover no-repeat;
+        url("heaven-bg.png") center center / cover no-repeat;
 }
 .dashboard-grid {
     display: grid;
@@ -491,7 +491,7 @@ img {
     min-height: 600px;
     padding: 100px 0;
 
-    background-image: url("image.jpg") !important;
+    background-image: url("home-bg.jpg") !important;
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
