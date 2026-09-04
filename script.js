@@ -237,11 +237,16 @@ function initializeApp() {
     updateNavbar();
     updateCartCount();
 
-    if (currentUser) {
+   if (currentUser) {
 
-        selectedRegion = null;
+    selectedRegion = null;
 
-        showLoggedInShopping();
+    /* PALIT BACKGROUND KAPAG MAY SAVED LOGIN */
+    document
+        .getElementById("homeSection")
+        ?.classList.add("logged-in");
+
+    showLoggedInShopping();
 
         // ADMIN CHECK
         if (
@@ -1146,12 +1151,16 @@ function handleLogin(event) {
             "#0b7a3b";
     }
 
-    updateNavbar();
-    updateCartCount();
+   updateNavbar();
+updateCartCount();
 
-    showHome();
-    showLoggedInShopping();
+/* PALIT BACKGROUND PAG LOGIN */
+document
+    .getElementById("homeSection")
+    ?.classList.add("logged-in");
 
+showHome();
+showLoggedInShopping();
     showToast(
         `Welcome, ${currentUser.name}!`
     );
@@ -1310,6 +1319,10 @@ function logout() {
 
     cart = [];
 
+    /* BALIK SA NORMAL BACKGROUND PAG LOGOUT */
+    document
+        .getElementById("homeSection")
+        ?.classList.remove("logged-in");
 
     localStorage.removeItem(
         CURRENT_USER_KEY
