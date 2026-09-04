@@ -1384,6 +1384,39 @@ function logout() {
     showToast(
         "You have been logged out."
     );
+}function hideShoppingSections() {
+
+    const homeSection =
+        document.getElementById("homeSection");
+
+    const hero =
+        document.querySelector("#homeSection .hero");
+
+    const userSection =
+        document.getElementById("userSection");
+
+    const regionsSection =
+        document.getElementById("regionsSection");
+
+    const productsSection =
+        document.getElementById("productsSection");
+
+    // NORMAL / LOGGED OUT MODE
+    homeSection?.classList.remove("logged-in");
+
+    // IBALIK ANG HERO
+    hero?.classList.remove("hidden");
+
+    // ITAGO ANG MY ACCOUNT
+    userSection?.classList.add("hidden");
+
+    // ITAGO ANG LOCATIONS
+    regionsSection?.classList.add("hidden");
+
+    // ITAGO ANG PRODUCTS
+    productsSection?.classList.add("hidden");
+
+    selectedRegion = null;
 }
 
 
