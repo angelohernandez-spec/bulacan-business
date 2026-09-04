@@ -491,7 +491,7 @@ img {
     min-height: 600px;
     padding: 100px 0;
 
-    background-image: url("image.jpg") !important;
+    background-image: url("heavens-bg.jpg") !important;
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -2067,7 +2067,7 @@ a:focus-visible {
     position: absolute;
     inset: 0;
 
-    background-image: url("heavens-bg.jpg") !important;
+    background-image: url("image.jpg") !important;
     background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
@@ -2118,7 +2118,7 @@ a:focus-visible {
     padding: 100px 0 !important;
     overflow: hidden;
 
-    background-image: url("heavens-bg.jpg") !important;
+    background-image: url("image.jpg") !important;
     background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
