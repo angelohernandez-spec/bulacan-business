@@ -2673,7 +2673,147 @@ function prepareCheckout() {
         name.value =
             currentUser.name || "";
     }
+    /* =====================================================
+       DELIVERY LOCATION
+    ===================================================== */
 
+    const checkoutForm =
+        document.getElementById("checkoutForm");
+
+    if (checkoutForm) {
+
+        let locationBox =
+            document.getElementById("deliveryLocationBox");
+
+        if (!locationBox) {
+
+            locationBox =
+                document.createElement("div");
+
+            locationBox.id =
+                "deliveryLocationBox";
+
+            locationBox.className =
+                "delivery-location-box";
+
+            locationBox.innerHTML = `
+
+                <h3>📍 Delivery Location</h3>
+
+                <p>
+                    Please enter the complete address
+                    where you want your order delivered.
+                </p>
+
+                <label>
+                    Complete Address
+                </label>
+
+                <textarea
+                    id="deliveryAddress"
+                    placeholder="House/Building No., Street, Subdivision..."
+                    rows="3"
+                    required
+                ></textarea>
+
+                <label>
+                    Barangay
+                </label>
+
+                <input
+                    type="text"
+                    id="deliveryBarangay"
+                    placeholder="Enter your barangay"
+                    required
+                >
+
+                <label>
+                    City / Municipality
+                </label>
+
+                <input
+                    type="text"
+                    id="deliveryCity"
+                    placeholder="Enter your city or municipality"
+                    required
+                >
+
+                <label>
+                    Contact Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="deliveryContact"
+                    placeholder="09XXXXXXXXX"
+                    required
+                >
+
+                <button
+                    type="button"
+                    id="getLocationBtn"
+                    class="btn"
+                >
+                    📍 Use My Current Location
+                </button>
+
+                <p
+                    id="locationStatus"
+                    class="location-status"
+                >
+                    Current location not selected.
+                </p>
+
+                <input
+                    type="hidden"
+                    id="deliveryLatitude"
+                >
+
+                <input
+                    type="hidden"
+                    id="deliveryLongitude"
+                >
+
+            `;
+
+            /*
+               Ilalagay ang location box
+               bago ang payment section.
+            */
+
+            const paymentMethod =
+                document.getElementById(
+                    "paymentMethod"
+                );
+
+            if (paymentMethod) {
+
+                paymentMethod
+                    .closest("div")
+                    ?.before(locationBox);
+
+            } else {
+
+                checkoutForm.prepend(
+                    locationBox
+                );
+            }
+
+
+            /* CURRENT LOCATION BUTTON */
+
+            const getLocationBtn =
+                document.getElementById(
+                    "getLocationBtn"
+                );
+
+            if (getLocationBtn) {
+
+                getLocationBtn.onclick =
+                    getCurrentLocation;
+            }
+        }
+    }
 
     updateCheckoutTotal();
 }
@@ -2716,7 +2856,110 @@ function updateCheckoutTotal() {
             formatPrice(total);
     }
 }
+/* =========================================================
+   DELIVERY LOCATION
+   ========================================================= */
 
+function getCurrentLocation() {
+
+    const status =
+        document.getElementById(
+            "locationStatus"
+        );
+
+    const latitude =
+        document.getElementById(
+            "deliveryLatitude"
+        );
+
+    const longitude =
+        document.getElementById(
+            "deliveryLongitude"
+        );
+
+    if (!navigator.geolocation) {
+
+        if (status) {
+
+            status.textContent =
+                "❌ Your browser does not support location.";
+        }
+
+        return;
+    }
+
+
+    if (status) {
+
+        status.textContent =
+            "📡 Getting your current location...";
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function (position) {
+
+            const lat =
+                position.coords.latitude;
+
+            const lng =
+                position.coords.longitude;
+
+
+            if (latitude) {
+
+                latitude.value =
+                    lat;
+            }
+
+
+            if (longitude) {
+
+                longitude.value =
+                    lng;
+            }
+
+
+            if (status) {
+
+                status.textContent =
+                    `✅ Location selected: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            }
+
+
+            showToast(
+                "Delivery location selected."
+            );
+        },
+
+        function (error) {
+
+            console.error(
+                "Location error:",
+                error
+            );
+
+
+            if (status) {
+
+                status.textContent =
+                    "❌ Unable to get your location. Please enter your address manually.";
+            }
+
+
+            showToast(
+                "Please allow location access."
+            );
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
+}
 
 /* =========================================================
    PAYMENT
