@@ -2049,67 +2049,75 @@ a:focus-visible {
     padding: 30px;
     color: #777;
 }/* =========================================================
-   BACKGROUND 2 + 3
-   ISANG TULOY-TULOY NA BACKGROUND
+   MY ACCOUNT + EXPLORE BULACAN
+   ONE CONTINUOUS BACKGROUND
 ========================================================= */
 
-/* PAREHONG BACKGROUND AT PAREHONG POSITION */
-#userSection,
-#regionsSection {
+/* PARENT */
+#homeSection {
+    position: relative !important;
+}
+
+
+/* BACKGROUND NA SUMASAKOP SA MY ACCOUNT + EXPLORE */
+#homeSection::after {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    /* 620px = simula pagkatapos ng HERO */
+    top: 620px;
+    bottom: 0;
+
+    background-image: url("heavens-bg.jpg");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    z-index: 0;
+    pointer-events: none;
+}
+
+
+/* MY ACCOUNT */
+#userSection {
     position: relative !important;
 
+    min-height: 600px !important;
+
     margin: 0 !important;
+    padding: 100px 0 !important;
+
+    background: transparent !important;
+
     border: none !important;
     box-shadow: none !important;
 
-    background-image: url("heavens-bg.jpg") !important;
-    background-repeat: no-repeat !important;
-
-    /*
-       FIXED = hindi nire-restart ang image
-       habang lumilipat mula MY ACCOUNT
-       papunta sa EXPLORE BULACAN
-    */
-    background-attachment: fixed !important;
-
-    background-size: cover !important;
-    background-position: center center !important;
+    z-index: 1;
 }
 
 
-/* =========================================================
-   MY ACCOUNT
-========================================================= */
-
-#userSection {
-    min-height: 600px !important;
-    padding: 100px 0 !important;
-}
-
-
-/* =========================================================
-   EXPLORE BULACAN
-========================================================= */
-
+/* EXPLORE BULACAN */
 #regionsSection {
+    position: relative !important;
+
     min-height: 600px !important;
+
+    margin: 0 !important;
     padding: 100px 0 !important;
+
+    background: transparent !important;
+
+    border: none !important;
+    box-shadow: none !important;
+
+    z-index: 1;
 }
 
 
-/* =========================================================
-   WALANG GAP SA PAGITAN
-========================================================= */
-
-#userSection + #regionsSection {
-    margin-top: 0 !important;
-}
-
-
-/* =========================================================
-   CONTENT
-========================================================= */
-
+/* CONTENT SA HARAP NG BACKGROUND */
 #userSection .container,
 #regionsSection .container {
     position: relative;
@@ -2117,10 +2125,7 @@ a:focus-visible {
 }
 
 
-/* =========================================================
-   TEXT
-========================================================= */
-
+/* TEXT */
 #userSection .section-heading h2,
 #userSection .section-heading p,
 #regionsSection .section-heading h2,
@@ -2129,10 +2134,7 @@ a:focus-visible {
 }
 
 
-/* =========================================================
-   EYEBROW
-========================================================= */
-
+/* LABEL */
 #userSection .eyebrow,
 #regionsSection .eyebrow {
     color: #ffd700 !important;
