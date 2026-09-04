@@ -2109,3 +2109,21 @@ a:focus-visible {
     background: rgba(255, 255, 255, 0.90) !important;
     backdrop-filter: blur(5px);
 }
+/* =========================================================
+   HEAVENS PRODUCT - BACKGROUND PAG NAKA-LOGIN
+========================================================= */
+
+/* Normal / bago mag-login */
+.hero {
+    background: url("image.png") center center / cover no-repeat !important;
+}
+
+/* Kapag naka-login na at visible ang MY ACCOUNT */
+body:has(#userSection:not(.hidden)) .hero {
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.25),
+            rgba(0, 0, 0, 0.25)
+        ),
+        url("heavens-bg.jpg") center center / cover no-repeat !important;
+}
