@@ -2126,4 +2126,26 @@ a:focus-visible {
             rgba(0, 0, 0, 0.25)
         ),
         url("heavens-bg.jpg") center center / cover no-repeat !important;
+}/* =========================================================
+   HEAVENS PRODUCT BACKGROUND - LOGIN / LOGOUT
+========================================================= */
+
+/* NORMAL / LOGGED OUT */
+#homeSection .hero {
+    background:
+        url("image.png")
+        center center / cover no-repeat !important;
+
+    transition: background 0.5s ease;
+}
+
+/* LOGGED IN */
+#homeSection.logged-in .hero {
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.25),
+            rgba(0, 0, 0, 0.25)
+        ),
+        url("heavens-bg.jpg")
+        center center / cover no-repeat !important;
 }
