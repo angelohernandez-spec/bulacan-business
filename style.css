@@ -2049,29 +2049,28 @@ a:focus-visible {
     padding: 30px;
     color: #777;
 }/* =========================================================
-   MY ACCOUNT - BACKGROUND
+   MY ACCOUNT / AFTER LOGIN BACKGROUND
 ========================================================= */
 
 #userSection {
     position: relative !important;
     min-height: 600px !important;
     padding: 100px 0 !important;
-
-    overflow: hidden;
+    overflow: hidden !important;
 
     background: transparent !important;
 }
 
-/* BACKGROUND IMAGE */
+/* BAGONG BACKGROUND PAG NAKA-LOGIN */
 #userSection::before {
     content: "";
     position: absolute;
     inset: 0;
 
-    background-image: url("image.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-image: url("heavens-bg.jpg") !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
 
     z-index: 0;
 }
@@ -2082,40 +2081,32 @@ a:focus-visible {
     position: absolute;
     inset: 0;
 
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.30);
 
     z-index: 1;
 }
 
-/* CONTENT SA HARAP */
+/* CONTENT */
 #userSection .container {
     position: relative;
     z-index: 2;
 }
 
-/* MY ACCOUNT */
 #userSection .eyebrow {
     color: #ffd700 !important;
 }
 
-/* WELCOME TO BULACAN BUSINESS */
 #userSection .section-heading h2 {
     color: white !important;
 }
 
-/* WHAT WOULD YOU LIKE TO DO TODAY */
 #userSection .section-heading p {
     color: white !important;
 }
 
-/* DASHBOARD CARDS */
 #userSection .dashboard-card {
     background: rgba(255, 255, 255, 0.90) !important;
     backdrop-filter: blur(5px);
-}
-
-.dashboard-section .eyebrow {
-    color: #ffd700 !important;
 }
 /* =========================================================
    LOGGED-IN HOME - HEAVENS PRODUCT BACKGROUND
