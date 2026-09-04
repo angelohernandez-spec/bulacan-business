@@ -2049,83 +2049,26 @@ a:focus-visible {
     padding: 30px;
     color: #777;
 }/* =========================================================
-   MY ACCOUNT / AFTER LOGIN BACKGROUND
+   WELCOME TO BULACAN BUSINESS
+   BACKGROUND AFTER LOGIN
 ========================================================= */
 
-#userSection {
+#userSection,
+.dashboard-section {
     position: relative !important;
     min-height: 600px !important;
     padding: 100px 0 !important;
     overflow: hidden !important;
 
-    background: transparent !important;
-}
-
-/* BAGONG BACKGROUND PAG NAKA-LOGIN */
-#userSection::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-
-    background-image: url("image.jpg") !important;
-    background-size: cover !important;
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
-
-    z-index: 0;
-}
-
-/* DARK OVERLAY */
-#userSection::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-
-    background: rgba(0, 0, 0, 0.30);
-
-    z-index: 1;
-}
-
-/* CONTENT */
-#userSection .container {
-    position: relative;
-    z-index: 2;
-}
-
-#userSection .eyebrow {
-    color: #ffd700 !important;
-}
-
-#userSection .section-heading h2 {
-    color: white !important;
-}
-
-#userSection .section-heading p {
-    color: white !important;
-}
-
-#userSection .dashboard-card {
-    background: rgba(255, 255, 255, 0.90) !important;
-    backdrop-filter: blur(5px);
-}
-/* =========================================================
-   LOGGED-IN HOME - HEAVENS PRODUCT BACKGROUND
-========================================================= */
-
-#homeSection {
-    position: relative !important;
-    min-height: 600px !important;
-    padding: 100px 0 !important;
-    overflow: hidden;
-
-    background-image: url("image.jpg") !important;
+    background-image: url("heavens-bg.jpg") !important;
     background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
 }
 
 /* DARK OVERLAY */
-#homeSection::before {
+#userSection::before,
+.dashboard-section::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -2136,7 +2079,33 @@ a:focus-visible {
 }
 
 /* CONTENT SA HARAP */
-#homeSection .container {
+#userSection .container,
+.dashboard-section .container {
     position: relative;
-    z-index: 1;
+    z-index: 2;
+}
+
+/* TITLE */
+#userSection .section-heading h2,
+.dashboard-section .section-heading h2 {
+    color: white !important;
+}
+
+/* DESCRIPTION */
+#userSection .section-heading p,
+.dashboard-section .section-heading p {
+    color: white !important;
+}
+
+/* MY ACCOUNT */
+#userSection .eyebrow,
+.dashboard-section .eyebrow {
+    color: #ffd700 !important;
+}
+
+/* CARDS */
+#userSection .dashboard-card,
+.dashboard-section .dashboard-card {
+    background: rgba(255, 255, 255, 0.90) !important;
+    backdrop-filter: blur(5px);
 }
