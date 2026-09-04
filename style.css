@@ -2057,12 +2057,11 @@ a:focus-visible {
     text-align: center;
     padding: 30px;
     color: #777;
-}
-/* =========================================================
-   EXPLORE BULACAN - BACKGROUND IMAGE
+}/* =========================================================
+   MY ACCOUNT - BACKGROUND
 ========================================================= */
 
-#regionsSection {
+#userSection {
     position: relative !important;
     min-height: 600px !important;
     padding: 100px 0 !important;
@@ -2073,10 +2072,9 @@ a:focus-visible {
 }
 
 /* BACKGROUND IMAGE */
-#regionsSection::before {
+#userSection::before {
     content: "";
     position: absolute;
-
     inset: 0;
 
     background-image: url("image.png");
@@ -2088,10 +2086,9 @@ a:focus-visible {
 }
 
 /* DARK OVERLAY */
-#regionsSection::after {
+#userSection::after {
     content: "";
     position: absolute;
-
     inset: 0;
 
     background: rgba(0, 0, 0, 0.35);
@@ -2099,30 +2096,31 @@ a:focus-visible {
     z-index: 1;
 }
 
-/* CONTENT SA HARAP NG BACKGROUND */
-#regionsSection .container {
+/* CONTENT SA HARAP */
+#userSection .container {
     position: relative;
     z-index: 2;
 }
 
-/* TEXT */
-#regionsSection .section-heading h2 {
-    color: white !important;
-}
-
-#regionsSection .section-heading p {
-    color: white !important;
-}
-
-#regionsSection .eyebrow {
+/* MY ACCOUNT */
+#userSection .eyebrow {
     color: #ffd700 !important;
 }
-.dashboard-section .section-heading h2 {
+
+/* WELCOME TO BULACAN BUSINESS */
+#userSection .section-heading h2 {
     color: white !important;
 }
 
-.dashboard-section .section-heading p {
+/* WHAT WOULD YOU LIKE TO DO TODAY */
+#userSection .section-heading p {
     color: white !important;
+}
+
+/* DASHBOARD CARDS */
+#userSection .dashboard-card {
+    background: rgba(255, 255, 255, 0.90) !important;
+    backdrop-filter: blur(5px);
 }
 
 .dashboard-section .eyebrow {
