@@ -2050,12 +2050,14 @@ a:focus-visible {
     color: #777;
 }
 /* =========================================================
-   LOGGED-IN HOME
-   ONE BACKGROUND / NO DIVIDER
+   FINAL FIX - LOGGED IN HOME
+   ONE CONTINUOUS BACKGROUND
 ========================================================= */
 
+/* MAIN HOME BACKGROUND */
 #homeSection.logged-in {
     position: relative !important;
+
     background:
         linear-gradient(
             rgba(0, 0, 0, 0.25),
@@ -2065,55 +2067,69 @@ a:focus-visible {
 }
 
 
-/* ITAGO ANG HERO PAG NAKA-LOGIN */
+/* HIDE HERO AFTER LOGIN */
 #homeSection.logged-in .hero {
     display: none !important;
 }
 
 
-/* MY ACCOUNT */
-#homeSection.logged-in #userSection {
-    position: relative !important;
-    min-height: 600px !important;
-    margin: 0 !important;
-    padding: 100px 0 !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-
-/* EXPLORE BULACAN */
+/* MY ACCOUNT + EXPLORE BULACAN */
+#homeSection.logged-in #userSection,
 #homeSection.logged-in #regionsSection {
+
     position: relative !important;
+
+    width: 100% !important;
+
     min-height: 600px !important;
+
     margin: 0 !important;
+
     padding: 100px 0 !important;
 
     background: transparent !important;
+
+    background-image: none !important;
+
     border: none !important;
+
     box-shadow: none !important;
 }
 
 
-/* WALANG HATI */
+/* REMOVE ANY GAP BETWEEN THEM */
 #homeSection.logged-in #userSection + #regionsSection {
     margin-top: 0 !important;
-    padding-top: 100px !important;
+
     border-top: none !important;
+
+    box-shadow: none !important;
 }
 
 
-/* CONTENT */
+/* REMOVE BACKGROUND FROM DASHBOARD */
+#homeSection.logged-in .dashboard-section {
+    background: transparent !important;
+    background-image: none !important;
+}
+
+
+/* REMOVE BACKGROUND FROM REGIONS */
+#homeSection.logged-in .regions-section {
+    background: transparent !important;
+    background-image: none !important;
+}
+
+
+/* KEEP CONTENT ABOVE BACKGROUND */
 #homeSection.logged-in #userSection .container,
 #homeSection.logged-in #regionsSection .container {
-    position: relative;
-    z-index: 2;
+    position: relative !important;
+    z-index: 2 !important;
 }
 
 
-/* TEXT */
+/* WHITE TEXT */
 #homeSection.logged-in #userSection h2,
 #homeSection.logged-in #userSection p,
 #homeSection.logged-in #regionsSection h2,
