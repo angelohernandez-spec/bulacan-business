@@ -2139,3 +2139,10 @@ a:focus-visible {
 #regionsSection .eyebrow {
     color: #ffd700 !important;
 }
+.hidden {
+    display: none !important;
+}
+
+#homeSection.logged-in .hero {
+    display: none !important;
+}
