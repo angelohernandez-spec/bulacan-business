@@ -3059,7 +3059,54 @@ function handleCheckout(event) {
             "paymentMethod"
         )?.value;
 
+    /* =====================================================
+       DELIVERY INFORMATION
+    ===================================================== */
 
+    const deliveryAddress =
+        document.getElementById(
+            "deliveryAddress"
+        )?.value.trim() || "";
+
+    const deliveryBarangay =
+        document.getElementById(
+            "deliveryBarangay"
+        )?.value.trim() || "";
+
+    const deliveryCity =
+        document.getElementById(
+            "deliveryCity"
+        )?.value.trim() || "";
+
+    const deliveryContact =
+        document.getElementById(
+            "deliveryContact"
+        )?.value.trim() || "";
+
+    const deliveryLatitude =
+        document.getElementById(
+            "deliveryLatitude"
+        )?.value || "";
+
+    const deliveryLongitude =
+        document.getElementById(
+            "deliveryLongitude"
+        )?.value || "";
+
+
+    if (
+        !deliveryAddress ||
+        !deliveryBarangay ||
+        !deliveryCity ||
+        !deliveryContact
+    ) {
+
+        showToast(
+            "Please complete your delivery location."
+        );
+
+        return;
+    }
     if (!payment) {
 
         showToast(
@@ -3096,11 +3143,14 @@ if (payment === "GCash" && !gcashReference) {
 const shippingFee = getShippingFee();
 
 const order = {
+
     id: Date.now(),
 
     userId: currentUser.id,
 
     customer: currentUser.name,
+
+    email: currentUser.email,
 
     items: [...cart],
 
@@ -3108,18 +3158,38 @@ const order = {
 
     gcashReference: gcashReference,
 
+    /* DELIVERY INFORMATION */
+
+    deliveryAddress: deliveryAddress,
+
+    deliveryBarangay: deliveryBarangay,
+
+    deliveryCity: deliveryCity,
+
+    deliveryContact: deliveryContact,
+
+    deliveryLatitude:
+        deliveryLatitude || null,
+
+    deliveryLongitude:
+        deliveryLongitude || null,
+
+    /* PAYMENT */
+
     subtotal: subtotal,
 
     shippingFee: shippingFee,
 
-    total: subtotal + shippingFee,
+    total:
+        subtotal + shippingFee,
 
     status:
         payment === "GCash"
             ? "Pending Verification"
             : "Approved",
 
-    date: new Date().toISOString()
+    date:
+        new Date().toISOString()
 };
 
 
@@ -3179,27 +3249,43 @@ const order = {
         );
 
 
-    if (successInfo) {
+ if (successInfo) {
 
-        successInfo.innerHTML = `
+    successInfo.innerHTML = `
 
-            <strong>
-                Order #${order.id}
-            </strong>
+        <strong>
+            Order #${order.id}
+        </strong>
 
-            <br>
+        <br><br>
 
-            Total:
-            ${formatPrice(order.total)}
+        <strong>📍 Delivery Address</strong>
 
-            <br>
+        <br>
 
-            Payment:
-            ${escapeHTML(payment)}
+        ${escapeHTML(order.deliveryAddress)}
 
-        `;
-    }
+        <br>
 
+        ${escapeHTML(order.deliveryBarangay)},
+        ${escapeHTML(order.deliveryCity)}
+
+        <br>
+
+        📱 ${escapeHTML(order.deliveryContact)}
+
+        <br><br>
+
+        <strong>💰 Total:</strong>
+        ${formatPrice(order.total)}
+
+        <br>
+
+        <strong>💳 Payment:</strong>
+        ${escapeHTML(payment)}
+
+    `;
+}
 
     showPage("success");
 
