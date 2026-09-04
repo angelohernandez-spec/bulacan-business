@@ -186,27 +186,85 @@ let toastTimer = null;
    SHIPPING FEE BY DISTANCE / REGION
    ========================================================= */
 
-const SHIPPING_FEES = {
-    "Malolos": 50,
-    "Bulakan": 60,
-    "Bocaue": 70,
-    "Plaridel": 80,
-    "Marilao": 90,
-    "Meycauayan": 100,
-    "Baliwag": 110,
-    "San Jose del Monte": 120
-};
+// ===============================
+// STORE LOCATION
+// ===============================
+const STORE_LATITUDE = 14.855452215232232;
+const STORE_LONGITUDE = 121.01076551066458;
 
 
-function getShippingFee() {
+// ===============================
+// CALCULATE DISTANCE
+// ===============================
+function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth radius in kilometers
 
-    if (!selectedRegion) {
-        return 50;
-    }
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
 
-    return SHIPPING_FEES[selectedRegion] || 100;
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
 }
 
+
+// ===============================
+// SHIPPING FEE BASED ON DISTANCE
+// ===============================
+function getShippingInfo(customerLat, customerLng) {
+
+    if (!customerLat || !customerLng) {
+        return {
+            distanceKm: null,
+            shippingFee: 50
+        };
+    }
+
+    const distanceKm = calculateDistanceKm(
+        STORE_LATITUDE,
+        STORE_LONGITUDE,
+        Number(customerLat),
+        Number(customerLng)
+    );
+
+    let shippingFee;
+
+    if (distanceKm <= 3) {
+        shippingFee = 30;
+    } else if (distanceKm <= 5) {
+        shippingFee = 50;
+    } else if (distanceKm <= 10) {
+        shippingFee = 80;
+    } else if (distanceKm <= 15) {
+        shippingFee = 120;
+    } else if (distanceKm <= 20) {
+        shippingFee = 160;
+    } else {
+        shippingFee = 200 + Math.ceil(distanceKm - 20) * 10;
+    }
+
+    return {
+        distanceKm: distanceKm,
+        shippingFee: shippingFee
+    };
+}
+
+
+// Compatibility function
+function getShippingFee() {
+
+    const lat = document.getElementById("deliveryLatitude")?.value;
+    const lng = document.getElementById("deliveryLongitude")?.value;
+
+    return getShippingInfo(lat, lng).shippingFee;
+}
 /* =========================================================
    LOCAL STORAGE
    ========================================================= */
