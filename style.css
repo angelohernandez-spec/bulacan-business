@@ -2124,7 +2124,7 @@ a:focus-visible {
 #homeSection {
     position: relative;
     min-height: 600px;
-    background-image: url("logged-in-image.jpg") !important;
+    background-image: url("image.jpg") !important;
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
