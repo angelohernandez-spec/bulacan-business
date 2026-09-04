@@ -2049,133 +2049,77 @@ a:focus-visible {
     padding: 30px;
     color: #777;
 }/* =========================================================
-   WELCOME TO BULACAN BUSINESS
-   BACKGROUND AFTER LOGIN
+   BACKGROUND 2 + 3
+   MAGKADIKIT
 ========================================================= */
 
-#userSection,
-.dashboard-section {
+/* BACKGROUND 2 - MY ACCOUNT */
+#userSection {
     position: relative !important;
     min-height: 600px !important;
+    margin: 0 !important;
+
     padding: 100px 0 !important;
-    overflow: hidden !important;
 
-    background-image: url("heavens-bg.jpg") !important;
-    background-size: cover !important;
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.30),
+            rgba(0, 0, 0, 0.30)
+        ),
+        url("heavens-bg.jpg")
+        center center / cover no-repeat !important;
+
+    border: none !important;
+    box-shadow: none !important;
 }
 
-/* DARK OVERLAY */
-#userSection::before,
-.dashboard-section::before {
-    content: "";
-    position: absolute;
-    inset: 0;
 
-    background: rgba(0, 0, 0, 0.30);
+/* BACKGROUND 3 - CHOOSE A LOCATION */
+#regionsSection {
+    position: relative !important;
+    min-height: 600px !important;
 
-    z-index: 0;
+    margin: 0 !important;
+    padding: 100px 0 !important;
+
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15)
+        ),
+        url("heavens-bg.jpg")
+        center center / cover no-repeat !important;
+
+    border: none !important;
+    box-shadow: none !important;
 }
+
+
+/* TANGGAL GAP SA PAGITAN NILA */
+#userSection + #regionsSection {
+    margin-top: 0 !important;
+}
+
 
 /* CONTENT SA HARAP */
 #userSection .container,
-.dashboard-section .container {
+#regionsSection .container {
     position: relative;
     z-index: 2;
 }
 
-/* TITLE */
+
+/* TEXT */
 #userSection .section-heading h2,
-.dashboard-section .section-heading h2 {
+#userSection .section-heading p,
+#regionsSection .section-heading h2,
+#regionsSection .section-heading p {
     color: white !important;
 }
 
-/* DESCRIPTION */
-#userSection .section-heading p,
-.dashboard-section .section-heading p {
-    color: white !important;
-}
 
 /* MY ACCOUNT */
 #userSection .eyebrow,
-.dashboard-section .eyebrow {
+#regionsSection .eyebrow {
     color: #ffd700 !important;
-}
-
-/* CARDS */
-#userSection .dashboard-card,
-.dashboard-section .dashboard-card {
-    background: rgba(255, 255, 255, 0.90) !important;
-    backdrop-filter: blur(5px);
-}
-/* =========================================================
-   HEAVENS PRODUCT BACKGROUND
-========================================================= */
-
-/* BAGO MAG-LOGIN */
-#homeSection .hero {
-    background: url("image.png") center center / cover no-repeat !important;
-}
-
-/* PAG NAKA-LOGIN NA */
-#homeSection.logged-in .hero {
-    background:
-        linear-gradient(
-            rgba(0, 0, 0, 0.25),
-            rgba(0, 0, 0, 0.25)
-        ),
-        url("heavens-bg.jpg") center center / cover no-repeat !important;
-}/* =========================================================
-   HEAVENS PRODUCT BACKGROUND - LOGIN / LOGOUT
-========================================================= */
-
-/* NORMAL / LOGGED OUT */
-#homeSection .hero {
-    background:
-        url("image.png")
-        center center / cover no-repeat !important;
-
-    transition: background 0.5s ease;
-}
-
-/* LOGGED IN */
-#homeSection.logged-in .hero {
-    background:
-        linear-gradient(
-            rgba(0, 0, 0, 0.25),
-            rgba(0, 0, 0, 0.25)
-        ),
-        url("heavens-bg.jpg")
-        center center / cover no-repeat !important;
-}* =========================================================
-   MAGKADIKIT NA BACKGROUND
-========================================================= */
-
-/* HERO */
-#homeSection .hero {
-    margin-bottom: 0 !important;
-}
-
-/* LOCATION SECTION */
-#regionsSection {
-    margin-top: 0 !important;
-    padding-top: 70px !important;
-
-    background:
-        url("heavens-bg.jpg")
-        center center / cover no-repeat !important;
-}
-
-/* USER SECTION */
-#userSection {
-    margin-bottom: 0 !important;
-}
-
-/* TANGGALIN ANG GAP / LINE */
-#userSection,
-#regionsSection,
-#productsSection {
-    border-top: none !important;
-    box-shadow: none !important;
 }
