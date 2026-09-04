@@ -2062,61 +2062,51 @@ a:focus-visible {
 
 
 /* MY ACCOUNT */
-#userSection {
-    position: relative !important;
+/* =========================================================
+   BACKGROUND 2 + BACKGROUND 3
+   ISANG TULOY-TULOY NA BACKGROUND
+========================================================= */
 
-    min-height: 600px !important;
-
-    margin: 0 !important;
-    padding: 100px 0 !important;
-
-    /* TRANSPARENT PARA MAKITA ANG PARENT BACKGROUND */
-    background: transparent !important;
-
-    border: none !important;
-    box-shadow: none !important;
-}
-
-
-/* CHOOSE A LOCATION */
+#userSection,
 #regionsSection {
     position: relative !important;
 
-    min-height: 600px !important;
-
     margin: 0 !important;
-    padding: 100px 0 !important;
-
-    /* TRANSPARENT DIN */
-    background: transparent !important;
-
     border: none !important;
     box-shadow: none !important;
+
+    background-image: url("heavens-bg.jpg") !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+
+    /* IMPORTANT */
+    background-attachment: fixed !important;
 }
 
 
-/* DARK OVERLAY SA MY ACCOUNT LANG */
-#userSection::before {
-    content: "";
-
-    position: absolute;
-    inset: 0;
-
-    background: rgba(0, 0, 0, 0.30);
-
-    z-index: 0;
-    pointer-events: none;
+/* MY ACCOUNT */
+#userSection {
+    min-height: 600px !important;
+    padding: 100px 0 !important;
 }
 
 
-/* CONTENT NG MY ACCOUNT */
-#userSection .container {
-    position: relative;
-    z-index: 2;
+/* EXPLORE BULACAN */
+#regionsSection {
+    min-height: 600px !important;
+    padding: 100px 0 !important;
 }
 
 
-/* CONTENT NG LOCATION */
+/* WALANG PUWANG SA PAGITAN */
+#userSection + #regionsSection {
+    margin-top: 0 !important;
+}
+
+
+/* CONTENT */
+#userSection .container,
 #regionsSection .container {
     position: relative;
     z-index: 2;
@@ -2132,7 +2122,7 @@ a:focus-visible {
 }
 
 
-/* MY ACCOUNT / LOCATION LABEL */
+/* LABEL */
 #userSection .eyebrow,
 #regionsSection .eyebrow {
     color: #ffd700 !important;
