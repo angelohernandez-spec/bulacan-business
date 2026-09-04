@@ -353,16 +353,7 @@ img {
    SECTIONS
 ========================================================= */
 
-.dashboard-section {
-    position: relative;
-    min-height: 600px;
-    padding: 100px 0;
 
-    background-image: url("image.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
 
 .section-heading,
 .page-header {
