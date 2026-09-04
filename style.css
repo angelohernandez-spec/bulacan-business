@@ -2049,60 +2049,74 @@ a:focus-visible {
     padding: 30px;
     color: #777;
 }/* =========================================================
-   BACKGROUND 2 + 3
-   MAGKADIKIT
+   CONTINUOUS BACKGROUND - BACKGROUND 2 + 3
 ========================================================= */
 
-/* BACKGROUND 2 - MY ACCOUNT */
+/* ISANG BACKGROUND LANG PARA SA 2 AT 3 */
+#homeSection {
+    position: relative;
+    background:
+        url("heavens-bg.jpg")
+        center top / cover no-repeat !important;
+}
+
+
+/* MY ACCOUNT */
 #userSection {
     position: relative !important;
-    min-height: 600px !important;
-    margin: 0 !important;
 
+    min-height: 600px !important;
+
+    margin: 0 !important;
     padding: 100px 0 !important;
 
-    background:
-        linear-gradient(
-            rgba(0, 0, 0, 0.30),
-            rgba(0, 0, 0, 0.30)
-        ),
-        url("heavens-bg.jpg")
-        center center / cover no-repeat !important;
+    /* TRANSPARENT PARA MAKITA ANG PARENT BACKGROUND */
+    background: transparent !important;
 
     border: none !important;
     box-shadow: none !important;
 }
 
 
-/* BACKGROUND 3 - CHOOSE A LOCATION */
+/* CHOOSE A LOCATION */
 #regionsSection {
     position: relative !important;
+
     min-height: 600px !important;
 
     margin: 0 !important;
     padding: 100px 0 !important;
 
-    background:
-        linear-gradient(
-            rgba(0, 0, 0, 0.15),
-            rgba(0, 0, 0, 0.15)
-        ),
-        url("heavens-bg.jpg")
-        center center / cover no-repeat !important;
+    /* TRANSPARENT DIN */
+    background: transparent !important;
 
     border: none !important;
     box-shadow: none !important;
 }
 
 
-/* TANGGAL GAP SA PAGITAN NILA */
-#userSection + #regionsSection {
-    margin-top: 0 !important;
+/* DARK OVERLAY SA MY ACCOUNT LANG */
+#userSection::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.30);
+
+    z-index: 0;
+    pointer-events: none;
 }
 
 
-/* CONTENT SA HARAP */
-#userSection .container,
+/* CONTENT NG MY ACCOUNT */
+#userSection .container {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* CONTENT NG LOCATION */
 #regionsSection .container {
     position: relative;
     z-index: 2;
@@ -2118,7 +2132,7 @@ a:focus-visible {
 }
 
 
-/* MY ACCOUNT */
+/* MY ACCOUNT / LOCATION LABEL */
 #userSection .eyebrow,
 #regionsSection .eyebrow {
     color: #ffd700 !important;
