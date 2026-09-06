@@ -2793,3 +2793,53 @@ a:focus-visible {
     position: relative !important;
     z-index: 10 !important;
 }
+/* =========================================================
+   ACTUAL MOVING BACKGROUND
+   MALAKI AT KITANG-KITA ANG GALAW
+========================================================= */
+
+#homeSection.logged-in #userSection {
+    position: relative !important;
+    overflow: hidden !important;
+
+    /* PALAKIHIN ANG IMAGE PARA MAY SPACE SA PAGGALAW */
+    background-image: url("heavens-bg.jpg") !important;
+    background-repeat: no-repeat !important;
+    background-size: 180% 180% !important;
+
+    animation: REAL_HEAVEN_MOVEMENT 8s linear infinite !important;
+}
+
+/* MISMONG BACKGROUND IMAGE ANG GUMAGALAW */
+@keyframes REAL_HEAVEN_MOVEMENT {
+
+    0% {
+        background-position: 0% 0%;
+    }
+
+    20% {
+        background-position: 100% 0%;
+    }
+
+    40% {
+        background-position: 100% 100%;
+    }
+
+    60% {
+        background-position: 0% 100%;
+    }
+
+    80% {
+        background-position: 50% 20%;
+    }
+
+    100% {
+        background-position: 0% 0%;
+    }
+}
+
+/* CONTENT HINDI SASAMA SA GALAW */
+#homeSection.logged-in #userSection .container {
+    position: relative !important;
+    z-index: 100 !important;
+}
