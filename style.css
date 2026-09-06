@@ -2143,3 +2143,92 @@ a:focus-visible {
 #homeSection.logged-in #regionsSection .eyebrow {
     color: #ffd700 !important;
 }
+/* =========================================
+   ANIMATED BACKGROUND - MY ACCOUNT
+   ========================================= */
+
+#homeSection.logged-in #userSection {
+    position: relative !important;
+    overflow: hidden !important;
+    background: transparent !important;
+}
+
+/* Moving glowing lights */
+#homeSection.logged-in #userSection::before {
+    content: "";
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    top: -180px;
+    left: -120px;
+
+    background: radial-gradient(
+        circle,
+        rgba(255, 215, 0, 0.28),
+        transparent 65%
+    );
+
+    border-radius: 50%;
+    filter: blur(15px);
+
+    animation: accountGlow1 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Second moving light */
+#homeSection.logged-in #userSection::after {
+    content: "";
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    right: -150px;
+    bottom: -200px;
+
+    background: radial-gradient(
+        circle,
+        rgba(0, 200, 255, 0.25),
+        transparent 65%
+    );
+
+    border-radius: 50%;
+    filter: blur(20px);
+
+    animation: accountGlow2 10s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Keep MY ACCOUNT text/cards above animation */
+#homeSection.logged-in #userSection .container {
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Animation 1 */
+@keyframes accountGlow1 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(220px, 120px) scale(1.35);
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+/* Animation 2 */
+@keyframes accountGlow2 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(-220px, -120px) scale(1.3);
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+}
