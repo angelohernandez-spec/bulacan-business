@@ -3851,7 +3851,25 @@ function renderAdminOrders() {
     if (!container) return;
 
 
+    /* ADMIN ONLY */
+
+    if (
+        !currentUser ||
+        currentUser.role !== "admin"
+    ) {
+
+        container.innerHTML = `
+            <div class="no-products">
+                Admin access required.
+            </div>
+        `;
+
+        return;
+    }
+
+
     let orders = [];
+
 
     try {
 
@@ -3893,25 +3911,27 @@ function renderAdminOrders() {
     }
 
 
-    /* Pinakabagong order muna */
+    /* =====================================================
+       NEWEST FIRST
+    ===================================================== */
 
     orders
         .slice()
         .reverse()
         .forEach(order => {
 
+
             const orderCard =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
+
 
             orderCard.className =
                 "admin-order-card";
 
 
-            /* =========================
+            /* =================================================
                ITEMS
-            ========================= */
+            ================================================= */
 
             const itemsHTML =
                 (order.items || [])
@@ -3920,9 +3940,7 @@ function renderAdminOrders() {
                         <div class="admin-order-item">
 
                             <span>
-                                ${escapeHTML(
-                                    item.name
-                                )}
+                                ${escapeHTML(item.name)}
                                 × ${Number(
                                     item.quantity || 0
                                 )}
@@ -3941,9 +3959,9 @@ function renderAdminOrders() {
                     .join("");
 
 
-            /* =========================
+            /* =================================================
                GPS
-            ========================= */
+            ================================================= */
 
             let locationHTML = "";
 
@@ -3958,14 +3976,10 @@ function renderAdminOrders() {
             ) {
 
                 const lat =
-                    Number(
-                        order.deliveryLatitude
-                    );
+                    Number(order.deliveryLatitude);
 
                 const lng =
-                    Number(
-                        order.deliveryLongitude
-                    );
+                    Number(order.deliveryLongitude);
 
 
                 const googleMapsURL =
@@ -4019,9 +4033,135 @@ function renderAdminOrders() {
             }
 
 
-            /* =========================
+            /* =================================================
+               GCASH VERIFICATION
+            ================================================= */
+
+            let paymentVerificationHTML = "";
+
+
+            if (order.payment === "GCash") {
+
+                const verified =
+                    order.paymentVerified === true ||
+                    order.status === "Payment Verified";
+
+
+                if (verified) {
+
+                    paymentVerificationHTML = `
+
+                        <div class="gcash-admin-verification verified">
+
+                            <h4>
+                                🟢 GCash Payment Verified
+                            </h4>
+
+                            <p>
+                                <strong>
+                                    Reference Number:
+                                </strong>
+
+                                ${escapeHTML(
+                                    order.gcashReference || "N/A"
+                                )}
+                            </p>
+
+                            <p>
+                                <strong>
+                                    Amount:
+                                </strong>
+
+                                ${formatPrice(
+                                    order.total || 0
+                                )}
+                            </p>
+
+                        </div>
+
+                    `;
+
+                } else {
+
+                    paymentVerificationHTML = `
+
+                        <div class="gcash-admin-verification pending">
+
+                            <h4>
+                                🟡 GCash Payment Verification
+                            </h4>
+
+                            <p>
+                                <strong>
+                                    Reference Number:
+                                </strong>
+
+                                ${escapeHTML(
+                                    order.gcashReference || "N/A"
+                                )}
+                            </p>
+
+                            <p>
+                                <strong>
+                                    Amount to Verify:
+                                </strong>
+
+                                ${formatPrice(
+                                    order.total || 0
+                                )}
+                            </p>
+
+                            <p>
+                                <strong>
+                                    Payment Proof:
+                                </strong>
+
+                                ${
+                                    order.gcashProofName
+                                        ? escapeHTML(
+                                            order.gcashProofName
+                                        )
+                                        : "No proof uploaded"
+                                }
+                            </p>
+
+                            <p class="gcash-warning">
+
+                                ⚠️ Check the actual GCash
+                                transaction before approving.
+
+                            </p>
+
+                            <div class="gcash-admin-buttons">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    onclick="verifyGCashPayment(${order.id})"
+                                >
+                                    ✓ VERIFY PAYMENT
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="btn delete-btn"
+                                    onclick="rejectGCashPayment(${order.id})"
+                                >
+                                    ✕ REJECT PAYMENT
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    `;
+                }
+            }
+
+
+            /* =================================================
                ORDER CARD
-            ========================= */
+            ================================================= */
 
             orderCard.innerHTML = `
 
@@ -4036,17 +4176,17 @@ function renderAdminOrders() {
                         <small>
                             ${new Date(
                                 order.date
-                            ).toLocaleString(
-                                "en-PH"
-                            )}
+                            ).toLocaleString("en-PH")}
                         </small>
 
                     </div>
 
                     <strong class="order-status">
+
                         ${escapeHTML(
                             order.status || "Pending"
                         )}
+
                     </strong>
 
                 </div>
@@ -4081,14 +4221,12 @@ function renderAdminOrders() {
                         📍 Delivery Location
                     </h4>
 
-
                     <p>
                         <strong>Address:</strong><br>
                         ${escapeHTML(
                             order.deliveryAddress || "N/A"
                         )}
                     </p>
-
 
                     <p>
                         <strong>Barangay:</strong>
@@ -4097,14 +4235,15 @@ function renderAdminOrders() {
                         )}
                     </p>
 
-
                     <p>
-                        <strong>City / Municipality:</strong>
+                        <strong>
+                            City / Municipality:
+                        </strong>
+
                         ${escapeHTML(
                             order.deliveryCity || "N/A"
                         )}
                     </p>
-
 
                     <p>
                         📱
@@ -4113,7 +4252,6 @@ function renderAdminOrders() {
                             order.deliveryContact || "N/A"
                         )}
                     </p>
-
 
                     ${locationHTML}
 
@@ -4134,6 +4272,7 @@ function renderAdminOrders() {
                 <div class="admin-order-payment">
 
                     <p>
+
                         <strong>
                             💳 Payment:
                         </strong>
@@ -4141,26 +4280,13 @@ function renderAdminOrders() {
                         ${escapeHTML(
                             order.payment || "N/A"
                         )}
+
                     </p>
 
-
-                    ${
-                        order.gcashReference
-                            ? `
-                                <p>
-                                    <strong>
-                                        📱 GCash Reference:
-                                    </strong>
-
-                                    ${escapeHTML(
-                                        order.gcashReference
-                                    )}
-                                </p>
-                            `
-                            : ""
-                    }
-
                 </div>
+
+
+                ${paymentVerificationHTML}
 
 
                 <div class="admin-order-total">
@@ -4207,6 +4333,214 @@ function renderAdminOrders() {
             );
 
         });
+}
+
+
+/* =========================================================
+   VERIFY GCASH PAYMENT
+   ========================================================= */
+
+function verifyGCashPayment(orderId) {
+
+    if (
+        !currentUser ||
+        currentUser.role !== "admin"
+    ) {
+
+        showToast(
+            "Admin access required."
+        );
+
+        return;
+    }
+
+
+    let orders = [];
+
+
+    try {
+
+        orders =
+            JSON.parse(
+                localStorage.getItem(
+                    "bulacan_business_orders"
+                )
+            ) || [];
+
+    } catch (error) {
+
+        orders = [];
+    }
+
+
+    const order =
+        orders.find(
+            item =>
+                Number(item.id) ===
+                Number(orderId)
+        );
+
+
+    if (!order) {
+
+        showToast(
+            "Order not found."
+        );
+
+        return;
+    }
+
+
+    if (order.payment !== "GCash") {
+
+        showToast(
+            "This order is not a GCash payment."
+        );
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Verify GCash payment for Order #${order.id}?\n\n` +
+            `Reference: ${order.gcashReference}\n` +
+            `Amount: ${formatPrice(order.total)}\n\n` +
+            `Make sure you have checked the actual GCash transaction.`
+        );
+
+
+    if (!confirmed) return;
+
+
+    order.status =
+        "Payment Verified";
+
+
+    order.paymentVerified =
+        true;
+
+
+    order.verifiedBy =
+        currentUser.email;
+
+
+    order.verifiedAt =
+        new Date().toISOString();
+
+
+    localStorage.setItem(
+        "bulacan_business_orders",
+        JSON.stringify(orders)
+    );
+
+
+    renderAdminOrders();
+
+
+    showToast(
+        "GCash payment verified successfully."
+    );
+}
+
+
+/* =========================================================
+   REJECT GCASH PAYMENT
+   ========================================================= */
+
+function rejectGCashPayment(orderId) {
+
+    if (
+        !currentUser ||
+        currentUser.role !== "admin"
+    ) {
+
+        showToast(
+            "Admin access required."
+        );
+
+        return;
+    }
+
+
+    let orders = [];
+
+
+    try {
+
+        orders =
+            JSON.parse(
+                localStorage.getItem(
+                    "bulacan_business_orders"
+                )
+            ) || [];
+
+    } catch (error) {
+
+        orders = [];
+    }
+
+
+    const order =
+        orders.find(
+            item =>
+                Number(item.id) ===
+                Number(orderId)
+        );
+
+
+    if (!order) {
+
+        showToast(
+            "Order not found."
+        );
+
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you rejecting this payment?"
+        );
+
+
+    if (reason === null) return;
+
+
+    order.status =
+        "Payment Rejected";
+
+
+    order.paymentVerified =
+        false;
+
+
+    order.rejectionReason =
+        reason.trim() ||
+        "Payment could not be verified.";
+
+
+    order.rejectedBy =
+        currentUser.email;
+
+
+    order.rejectedAt =
+        new Date().toISOString();
+
+
+    localStorage.setItem(
+        "bulacan_business_orders",
+        JSON.stringify(orders)
+    );
+
+
+    renderAdminOrders();
+
+
+    showToast(
+        "Payment rejected."
+    );
 }
 
 /* =========================================================
