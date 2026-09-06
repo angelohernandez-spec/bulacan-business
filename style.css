@@ -2142,6 +2142,126 @@ a:focus-visible {
 #homeSection.logged-in #userSection .eyebrow,
 #homeSection.logged-in #regionsSection .eyebrow {
     color: #ffd700 !important;
+}/* =========================================================
+   ANIMATED LIGHTS - MY ACCOUNT
+   ========================================================= */
+
+#homeSection.logged-in #userSection {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate;
+}
+
+/* GOLDEN GLOW */
+#homeSection.logged-in #userSection::before {
+    content: "";
+    position: absolute;
+    width: 500px;
+    height: 500px;
+
+    top: -180px;
+    left: -180px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(255, 215, 0, 0.45) 0%,
+        rgba(255, 180, 0, 0.20) 35%,
+        transparent 70%
+    );
+
+    filter: blur(20px);
+
+    animation: moveGoldLight 7s ease-in-out infinite;
+
+    pointer-events: none;
+    z-index: 0;
+}
+
+
+/* BLUE GLOW */
+#homeSection.logged-in #userSection::after {
+    content: "";
+    position: absolute;
+    width: 550px;
+    height: 550px;
+
+    right: -200px;
+    bottom: -250px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(0, 200, 255, 0.40) 0%,
+        rgba(0, 150, 255, 0.18) 35%,
+        transparent 70%
+    );
+
+    filter: blur(25px);
+
+    animation: moveBlueLight 9s ease-in-out infinite;
+
+    pointer-events: none;
+    z-index: 0;
+}
+
+
+/* CONTENT STAYS ON TOP */
+#homeSection.logged-in #userSection .container {
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+
+/* GOLD MOVEMENT */
+@keyframes moveGoldLight {
+
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    25% {
+        transform: translate(180px, 80px) scale(1.2);
+    }
+
+    50% {
+        transform: translate(350px, 180px) scale(1.4);
+    }
+
+    75% {
+        transform: translate(180px, 280px) scale(1.2);
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+
+/* BLUE MOVEMENT */
+@keyframes moveBlueLight {
+
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    25% {
+        transform: translate(-180px, -80px) scale(1.2);
+    }
+
+    50% {
+        transform: translate(-350px, -180px) scale(1.4);
+    }
+
+    75% {
+        transform: translate(-180px, -280px) scale(1.2);
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
 }
 /* =========================================
    ANIMATED BACKGROUND - MY ACCOUNT
