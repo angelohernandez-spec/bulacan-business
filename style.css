@@ -2882,3 +2882,66 @@ a:focus-visible {
     margin: 0 !important;
     max-width: 650px !important;
 }
+/* =========================================================
+   MY ACCOUNT + EXPLORE BULACAN
+   ONE BIG MOVING BACKGROUND
+   DO NOT DELETE EXISTING CODE
+========================================================= */
+
+/* ISANG BACKGROUND PARA SA BUONG HOME */
+#homeSection.logged-in {
+    position: relative !important;
+    overflow: hidden !important;
+
+    background-image: url("heavens-bg.jpg") !important;
+    background-repeat: no-repeat !important;
+
+    /* MALAKI PARA TALAGANG MAKITA ANG GALAW */
+    background-size: 200% 200% !important;
+
+    animation: FULL_HOME_MOVING_BACKGROUND 10s linear infinite !important;
+}
+
+/* MY ACCOUNT AT EXPLORE AY TRANSPARENT */
+#homeSection.logged-in #userSection,
+#homeSection.logged-in #regionsSection {
+    background: transparent !important;
+    background-image: none !important;
+
+    position: relative !important;
+}
+
+/* GALAW NG IISANG BACKGROUND */
+@keyframes FULL_HOME_MOVING_BACKGROUND {
+
+    0% {
+        background-position: 0% 0%;
+    }
+
+    20% {
+        background-position: 100% 0%;
+    }
+
+    40% {
+        background-position: 100% 100%;
+    }
+
+    60% {
+        background-position: 0% 100%;
+    }
+
+    80% {
+        background-position: 50% 50%;
+    }
+
+    100% {
+        background-position: 0% 0%;
+    }
+}
+
+/* CONTENT MANATILING NASA HARAP */
+#homeSection.logged-in #userSection .container,
+#homeSection.logged-in #regionsSection .container {
+    position: relative !important;
+    z-index: 10 !important;
+}
