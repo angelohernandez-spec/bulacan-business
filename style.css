@@ -2460,3 +2460,59 @@ a:focus-visible {
     position: relative;
     z-index: 20 !important;
 }
+/* =========================================================
+   MOVING BACKGROUND - MY ACCOUNT
+   IDAGDAG LANG SA PINAKABABA
+========================================================= */
+
+#homeSection.logged-in #userSection {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15)
+        ),
+        url("heavens-bg.jpg") !important;
+
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+
+    animation: movingHeavenBackground 18s ease-in-out infinite alternate !important;
+}
+
+/* GUMAGALAW ANG BACKGROUND */
+@keyframes movingHeavenBackground {
+
+    0% {
+        background-position: 0% 50%;
+    }
+
+    20% {
+        background-position: 25% 40%;
+    }
+
+    40% {
+        background-position: 50% 60%;
+    }
+
+    60% {
+        background-position: 75% 45%;
+    }
+
+    80% {
+        background-position: 100% 55%;
+    }
+
+    100% {
+        background-position: 50% 50%;
+    }
+}
+
+/* CONTENT MANANATILING NASA HARAP */
+#homeSection.logged-in #userSection .container {
+    position: relative !important;
+    z-index: 10 !important;
+}
