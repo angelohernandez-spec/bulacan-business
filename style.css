@@ -2649,3 +2649,147 @@ a:focus-visible {
         transform: translate(20%, 10%) rotate(0deg) scale(1);
     }
 }
+/* =========================================================
+   VERY OBVIOUS MOVING BACKGROUND
+   ADD ONLY - DO NOT DELETE ANYTHING
+========================================================= */
+
+#homeSection.logged-in #userSection {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+}
+
+/* MALAKING MOVING CLOUDS / LIGHT */
+#homeSection.logged-in #userSection::before {
+    content: "";
+    position: absolute !important;
+
+    width: 180%;
+    height: 180%;
+
+    left: -40%;
+    top: -40%;
+
+    background:
+        radial-gradient(
+            ellipse at 15% 25%,
+            rgba(255,255,255,0.75) 0%,
+            rgba(255,255,255,0.35) 12%,
+            transparent 30%
+        ),
+        radial-gradient(
+            ellipse at 80% 30%,
+            rgba(255,255,255,0.65) 0%,
+            rgba(255,255,255,0.25) 15%,
+            transparent 35%
+        ),
+        radial-gradient(
+            ellipse at 35% 75%,
+            rgba(80,190,255,0.65) 0%,
+            rgba(80,190,255,0.25) 18%,
+            transparent 40%
+        ),
+        radial-gradient(
+            ellipse at 85% 80%,
+            rgba(255,220,80,0.55) 0%,
+            rgba(255,220,80,0.20) 15%,
+            transparent 38%
+        );
+
+    z-index: 1 !important;
+    pointer-events: none;
+
+    animation: OBVIOUS_BACKGROUND_MOVE 6s linear infinite !important;
+}
+
+/* MALAKING GALAW */
+@keyframes OBVIOUS_BACKGROUND_MOVE {
+
+    0% {
+        transform: translate(0%, 0%) scale(1);
+    }
+
+    20% {
+        transform: translate(25%, -15%) scale(1.15);
+    }
+
+    40% {
+        transform: translate(10%, 25%) scale(1.25);
+    }
+
+    60% {
+        transform: translate(-25%, 15%) scale(1.15);
+    }
+
+    80% {
+        transform: translate(-15%, -25%) scale(1.25);
+    }
+
+    100% {
+        transform: translate(0%, 0%) scale(1);
+    }
+}
+
+/* SECOND MOVING LAYER */
+#homeSection.logged-in #userSection::after {
+    content: "";
+    position: absolute !important;
+
+    width: 160%;
+    height: 160%;
+
+    left: -30%;
+    top: -30%;
+
+    background:
+        radial-gradient(
+            circle at 20% 50%,
+            rgba(255,255,255,0.55),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 70% 20%,
+            rgba(0,200,255,0.50),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 75% 75%,
+            rgba(180,80,255,0.45),
+            transparent 28%
+        );
+
+    z-index: 2 !important;
+    pointer-events: none;
+
+    animation: OBVIOUS_LIGHT_MOVE 4s linear infinite alternate !important;
+}
+
+@keyframes OBVIOUS_LIGHT_MOVE {
+
+    0% {
+        transform: translate(-30%, -20%) rotate(0deg);
+    }
+
+    25% {
+        transform: translate(20%, 10%) rotate(8deg);
+    }
+
+    50% {
+        transform: translate(30%, -20%) rotate(-8deg);
+    }
+
+    75% {
+        transform: translate(-10%, 30%) rotate(6deg);
+    }
+
+    100% {
+        transform: translate(-30%, -20%) rotate(0deg);
+    }
+}
+
+/* CONTENT MANATILING NASA HARAP */
+#homeSection.logged-in #userSection .container {
+    position: relative !important;
+    z-index: 10 !important;
+}
