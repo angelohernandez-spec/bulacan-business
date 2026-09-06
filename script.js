@@ -3083,73 +3083,55 @@ function updateGCashAmount() {
    HANDLE CHECKOUT
    ========================================================= */
 
-function handleCheckout(event) {
+/* =========================================================
+   HANDLE CHECKOUT
+   WITH GCASH VERIFICATION
+========================================================= */
+
+async function handleCheckout(event) {
 
     event.preventDefault();
 
-
     if (!currentUser) {
 
-        showToast(
-            "Please login first."
-        );
-
+        showToast("Please login first.");
         showAuth("login");
-
         return;
     }
 
-
     if (cart.length === 0) {
 
-        showToast(
-            "Your cart is empty."
-        );
-
+        showToast("Your cart is empty.");
         showPage("cart");
-
         return;
     }
 
 
     const payment =
-        document.getElementById(
-            "paymentMethod"
-        )?.value;
+        document.getElementById("paymentMethod")?.value || "";
+
 
     /* =====================================================
-       DELIVERY INFORMATION
+       DELIVERY
     ===================================================== */
 
     const deliveryAddress =
-        document.getElementById(
-            "deliveryAddress"
-        )?.value.trim() || "";
+        document.getElementById("deliveryAddress")?.value.trim() || "";
 
     const deliveryBarangay =
-        document.getElementById(
-            "deliveryBarangay"
-        )?.value.trim() || "";
+        document.getElementById("deliveryBarangay")?.value.trim() || "";
 
     const deliveryCity =
-        document.getElementById(
-            "deliveryCity"
-        )?.value.trim() || "";
+        document.getElementById("deliveryCity")?.value.trim() || "";
 
     const deliveryContact =
-        document.getElementById(
-            "deliveryContact"
-        )?.value.trim() || "";
+        document.getElementById("deliveryContact")?.value.trim() || "";
 
     const deliveryLatitude =
-        document.getElementById(
-            "deliveryLatitude"
-        )?.value || "";
+        document.getElementById("deliveryLatitude")?.value || "";
 
     const deliveryLongitude =
-        document.getElementById(
-            "deliveryLongitude"
-        )?.value || "";
+        document.getElementById("deliveryLongitude")?.value || "";
 
 
     if (
@@ -3160,11 +3142,13 @@ function handleCheckout(event) {
     ) {
 
         showToast(
-            "Please complete your delivery location."
+            "Please complete your delivery information."
         );
 
         return;
     }
+
+
     if (!payment) {
 
         showToast(
@@ -3175,12 +3159,13 @@ function handleCheckout(event) {
     }
 
 
+    /* =====================================================
+       TOTAL
+    ===================================================== */
+
     const subtotal =
         cart.reduce(
-            (
-                sum,
-                item
-            ) =>
+            (sum, item) =>
                 sum +
                 (
                     Number(item.price) *
@@ -3190,66 +3175,152 @@ function handleCheckout(event) {
         );
 
 
-   const gcashReference =
-    document.getElementById("gcashReference")?.value.trim() || "";
+    const shippingFee =
+        getShippingFee();
 
-if (payment === "GCash" && !gcashReference) {
-    showToast("Please enter your GCash reference number.");
-    return;
-}
 
-const shippingFee = getShippingFee();
+    const total =
+        subtotal + shippingFee;
 
-const order = {
 
-    id: Date.now(),
+    /* =====================================================
+       GCASH
+    ===================================================== */
 
-    userId: currentUser.id,
+    let gcashReference = "";
+    let gcashProofName = "";
 
-    customer: currentUser.name,
 
-    email: currentUser.email,
+    if (payment === "GCash") {
 
-    items: [...cart],
+        gcashReference =
+            document
+                .getElementById("gcashReference")
+                ?.value
+                .trim() || "";
 
-    payment: payment,
 
-    gcashReference: gcashReference,
+        const gcashProof =
+            document.getElementById("gcashProof");
 
-    /* DELIVERY INFORMATION */
 
-    deliveryAddress: deliveryAddress,
+        if (!gcashReference) {
 
-    deliveryBarangay: deliveryBarangay,
+            showToast(
+                "Please enter your GCash reference number."
+            );
 
-    deliveryCity: deliveryCity,
+            return;
+        }
 
-    deliveryContact: deliveryContact,
 
-    deliveryLatitude:
-        deliveryLatitude || null,
+        if (gcashReference.length < 6) {
 
-    deliveryLongitude:
-        deliveryLongitude || null,
+            showToast(
+                "Please enter a valid GCash reference number."
+            );
 
-    /* PAYMENT */
+            return;
+        }
 
-    subtotal: subtotal,
 
-    shippingFee: shippingFee,
+        if (
+            !gcashProof ||
+            !gcashProof.files ||
+            gcashProof.files.length === 0
+        ) {
 
-    total:
-        subtotal + shippingFee,
+            showToast(
+                "Please upload your GCash payment proof."
+            );
 
-    status:
-        payment === "GCash"
-            ? "Pending Verification"
-            : "Approved",
+            return;
+        }
 
-    date:
-        new Date().toISOString()
-};
 
+        gcashProofName =
+            gcashProof.files[0].name;
+    }
+
+
+    /* =====================================================
+       ORDER
+    ===================================================== */
+
+    const order = {
+
+        id: Date.now(),
+
+        userId:
+            currentUser.id,
+
+        customer:
+            currentUser.name,
+
+        email:
+            currentUser.email,
+
+        items:
+            [...cart],
+
+        payment:
+            payment,
+
+        gcashReference:
+            gcashReference,
+
+        gcashProofName:
+            gcashProofName,
+
+        /* DELIVERY */
+
+        deliveryAddress:
+            deliveryAddress,
+
+        deliveryBarangay:
+            deliveryBarangay,
+
+        deliveryCity:
+            deliveryCity,
+
+        deliveryContact:
+            deliveryContact,
+
+        deliveryLatitude:
+            deliveryLatitude || null,
+
+        deliveryLongitude:
+            deliveryLongitude || null,
+
+        /* PAYMENT */
+
+        subtotal:
+            subtotal,
+
+        shippingFee:
+            shippingFee,
+
+        total:
+            total,
+
+        status:
+            payment === "GCash"
+                ? "Pending Verification"
+                : "Approved",
+
+        paymentVerified:
+            payment === "GCash"
+                ? false
+                : true,
+
+        date:
+            new Date().toISOString()
+    };
+
+
+    /* =====================================================
+       SAVE ORDER
+    ===================================================== */
 
     let orders = [];
 
@@ -3269,6 +3340,36 @@ const order = {
     }
 
 
+    /* =====================================================
+       DUPLICATE GCASH REFERENCE CHECK
+    ===================================================== */
+
+    if (payment === "GCash") {
+
+        const duplicate =
+            orders.some(
+                existingOrder =>
+                    String(
+                        existingOrder.gcashReference || ""
+                    ).trim().toLowerCase()
+                    ===
+                    gcashReference
+                        .trim()
+                        .toLowerCase()
+            );
+
+
+        if (duplicate) {
+
+            showToast(
+                "This GCash reference number has already been used."
+            );
+
+            return;
+        }
+    }
+
+
     orders.push(order);
 
 
@@ -3278,6 +3379,10 @@ const order = {
     );
 
 
+    /* =====================================================
+       CLEAR CART
+    ===================================================== */
+
     cart = [];
 
     saveCart();
@@ -3286,20 +3391,18 @@ const order = {
 
 
     document
-        .getElementById(
-            "checkoutForm"
-        )
+        .getElementById("checkoutForm")
         ?.reset();
 
 
     document
-        .getElementById(
-            "gcashInfo"
-        )
-        ?.classList.add(
-            "hidden"
-        );
+        .getElementById("gcashInfo")
+        ?.classList.add("hidden");
 
+
+    /* =====================================================
+       SUCCESS
+    ===================================================== */
 
     const successInfo =
         document.getElementById(
@@ -3307,52 +3410,94 @@ const order = {
         );
 
 
- if (successInfo) {
+    if (successInfo) {
 
-    successInfo.innerHTML = `
+        successInfo.innerHTML = `
 
-        <strong>
-            Order #${order.id}
-        </strong>
+            <strong>
+                Order #${order.id}
+            </strong>
 
-        <br><br>
+            <br><br>
 
-        <strong>📍 Delivery Address</strong>
+            <strong>
+                📍 Delivery Address
+            </strong>
 
-        <br>
+            <br>
 
-        ${escapeHTML(order.deliveryAddress)}
+            ${escapeHTML(order.deliveryAddress)}
 
-        <br>
+            <br>
 
-        ${escapeHTML(order.deliveryBarangay)},
-        ${escapeHTML(order.deliveryCity)}
+            ${escapeHTML(order.deliveryBarangay)},
+            ${escapeHTML(order.deliveryCity)}
 
-        <br>
+            <br>
 
-        📱 ${escapeHTML(order.deliveryContact)}
+            📱 ${escapeHTML(order.deliveryContact)}
 
-        <br><br>
+            <br><br>
 
-        <strong>💰 Total:</strong>
-        ${formatPrice(order.total)}
+            <strong>
+                💰 Total:
+            </strong>
 
-        <br>
+            ${formatPrice(order.total)}
 
-        <strong>💳 Payment:</strong>
-        ${escapeHTML(payment)}
+            <br>
 
-    `;
-}
+            <strong>
+                💳 Payment:
+            </strong>
+
+            ${escapeHTML(payment)}
+
+            ${
+                payment === "GCash"
+                    ? `
+                        <br><br>
+
+                        <strong>
+                            📱 GCash Reference:
+                        </strong>
+
+                        ${escapeHTML(
+                            order.gcashReference
+                        )}
+
+                        <br>
+
+                        <strong>
+                            🟡 Payment Status:
+                        </strong>
+
+                        Pending Verification
+                    `
+                    : `
+                        <br>
+
+                        <strong>
+                            🟢 Payment Status:
+                        </strong>
+
+                        Approved
+                    `
+            }
+
+        `;
+    }
+
 
     showPage("success");
 
 
     showToast(
-        "Order successfully placed!"
+        payment === "GCash"
+            ? "Order submitted. Waiting for payment verification."
+            : "Order successfully placed!"
     );
 }
-
 
 /* =========================================================
    ADMIN REGIONS
