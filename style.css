@@ -2516,3 +2516,136 @@ a:focus-visible {
     position: relative !important;
     z-index: 10 !important;
 }
+/* =========================================================
+   SUPER VISIBLE MOVING HEAVEN BACKGROUND
+   ADD ONLY - DO NOT DELETE EXISTING CSS
+========================================================= */
+
+#homeSection.logged-in #userSection {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+    background: url("heavens-bg.jpg") center center / 120% 120% no-repeat !important;
+}
+
+/* MOVING LIGHT/CLOUD LAYER */
+#homeSection.logged-in #userSection::before {
+    content: "";
+    position: absolute !important;
+    inset: -30% !important;
+
+    background:
+        radial-gradient(
+            ellipse at 20% 30%,
+            rgba(255,255,255,0.55) 0%,
+            rgba(255,255,255,0.20) 18%,
+            transparent 40%
+        ),
+        radial-gradient(
+            ellipse at 75% 65%,
+            rgba(80,180,255,0.45) 0%,
+            rgba(80,180,255,0.15) 20%,
+            transparent 42%
+        ),
+        radial-gradient(
+            ellipse at 50% 10%,
+            rgba(255,220,100,0.40) 0%,
+            transparent 38%
+        );
+
+    background-size:
+        700px 500px,
+        800px 600px,
+        900px 500px;
+
+    background-repeat: no-repeat;
+
+    z-index: 1 !important;
+    pointer-events: none;
+
+    animation: HUGE_MOVING_LIGHTS 10s ease-in-out infinite alternate !important;
+}
+
+/* SECOND MOVING LAYER */
+#homeSection.logged-in #userSection::after {
+    content: "";
+    position: absolute !important;
+    inset: -40% !important;
+
+    background:
+        radial-gradient(
+            ellipse at 80% 20%,
+            rgba(255,255,255,0.40),
+            transparent 35%
+        ),
+        radial-gradient(
+            ellipse at 15% 80%,
+            rgba(120,200,255,0.35),
+            transparent 38%
+        );
+
+    background-size:
+        600px 500px,
+        750px 550px;
+
+    background-repeat: no-repeat;
+
+    z-index: 2 !important;
+    pointer-events: none;
+
+    animation: HUGE_MOVING_LIGHTS_2 14s linear infinite !important;
+}
+
+/* CONTENT SA HARAP */
+#homeSection.logged-in #userSection .container {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+/* MALAKING GALAW */
+@keyframes HUGE_MOVING_LIGHTS {
+
+    0% {
+        transform: translate(-15%, -10%) scale(1);
+    }
+
+    25% {
+        transform: translate(10%, 5%) scale(1.08);
+    }
+
+    50% {
+        transform: translate(20%, -5%) scale(1.15);
+    }
+
+    75% {
+        transform: translate(-5%, 15%) scale(1.08);
+    }
+
+    100% {
+        transform: translate(-20%, -10%) scale(1);
+    }
+}
+
+/* IKALAWANG GALAW */
+@keyframes HUGE_MOVING_LIGHTS_2 {
+
+    0% {
+        transform: translate(20%, 10%) rotate(0deg) scale(1);
+    }
+
+    25% {
+        transform: translate(-10%, 20%) rotate(4deg) scale(1.1);
+    }
+
+    50% {
+        transform: translate(-25%, -10%) rotate(-3deg) scale(1.2);
+    }
+
+    75% {
+        transform: translate(10%, -20%) rotate(5deg) scale(1.1);
+    }
+
+    100% {
+        transform: translate(20%, 10%) rotate(0deg) scale(1);
+    }
+}
